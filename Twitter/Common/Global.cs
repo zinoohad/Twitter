@@ -8,12 +8,10 @@ namespace Twitter.Common
 {
     static class Global
     {
-        public static bool HasHebChar(string str)
+        public static bool HasHebrewCharacters(string str)
         {
-            for(int i = 0; i < str.Length ; i++)
-            {
-                if ('א' <= str[i] && str[i] <= 'ת') return true;
-            }
+            for (int i = 0; i < str.Length; i++)
+                if ('א' <= str[i] && str[i] <= 'ת') return true;         
             return false;
         }
     }
