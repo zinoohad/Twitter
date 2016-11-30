@@ -12,6 +12,14 @@ namespace Twitter
         public Media[] media { get; set; }
         public URL[] urls { get; set; }
         public UserMention[] user_mentions { get; set; }
+
+        public string hashtagsToString()
+        {
+            string s = "";
+            foreach (Hashtags h in hashtags)
+                s += h.text + " | ";
+            return s;
+        }
     }
 
     public class Hashtags

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,15 @@ namespace Twitter.Classes
         public bool? withheld_copyright { get; set; }
         public string[] withheld_in_countries { get; set; }
         public string withheld_scope { get; set; }
-       
+
+        public string[] GetData()
+        {
+            string[] row = new string[] {id.ToString(), created_at, text, lang, retweet_count.ToString(), entities.hashtagsToString()};
+            return row;
+        }
+
+
+
 
     }
     public class Coordinates
@@ -50,5 +59,7 @@ namespace Twitter.Classes
         public Collection<float> coordinates { get; set; }
         public string type { get; set; }
     }
+
+    
 
 }
