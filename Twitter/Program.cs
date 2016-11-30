@@ -31,9 +31,9 @@ namespace Twitter
 
             //List<long> ids = twitter.GetFriendsIDs("BarRefaeli").Result;
             int count = 0;
-            //List<Tweets> twitts = twitter.SearchTweets("אש").Result;
-            List<Tweets> stwitter = twitter.GetTweets("@netanyahu").Result;
-            List<Tweets> s1twitter = twitter.GetTweets("@BarRefaeli").Result;
+            List<Tweets> twitts = twitter.SearchTweets("אש");
+            //List<Tweets> stwitter = twitter.GetTweets("@netanyahu").Result;
+            //List<Tweets> s1twitter = twitter.GetTweets("@BarRefaeli").Result;
             //FriendsNavigator ff = twitter.GetFriendsIDs("@BarRefaeli").Result;
            // List<Users> u = twitter.GetFriends("@haifacity",false,200).Result;
             //twitts = twitter.GetTwitts(26793734, 20).Result;

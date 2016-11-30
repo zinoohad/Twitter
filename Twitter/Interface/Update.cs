@@ -9,7 +9,7 @@ namespace Twitter.Interface
 {
     public interface Update
     {
-        void UpdateTweets(List<Tweets> tweets);
+        void Update(object obj);
         
 
     }

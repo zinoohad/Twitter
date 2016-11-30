@@ -87,10 +87,10 @@
             this.t5KeywordsTB = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.dgv = new System.Windows.Forms.DataGridView();
             this.t6GoB = new System.Windows.Forms.Button();
             this.t6TweetIDCB = new System.Windows.Forms.TextBox();
             this.t6TweetIDL = new System.Windows.Forms.Label();
+            this.dgv = new System.Windows.Forms.DataGridView();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -201,6 +201,7 @@
             this.t1GoB.TabIndex = 8;
             this.t1GoB.Text = "Go!";
             this.t1GoB.UseVisualStyleBackColor = false;
+            this.t1GoB.Click += new System.EventHandler(this.GoB_Click);
             // 
             // t1TweetsPerPageUD
             // 
@@ -282,10 +283,13 @@
             // 
             // t1UserNameTB
             // 
+            this.t1UserNameTB.BackColor = System.Drawing.Color.Salmon;
+            this.t1UserNameTB.ForeColor = System.Drawing.SystemColors.WindowText;
             this.t1UserNameTB.Location = new System.Drawing.Point(106, 14);
             this.t1UserNameTB.Name = "t1UserNameTB";
             this.t1UserNameTB.Size = new System.Drawing.Size(188, 22);
             this.t1UserNameTB.TabIndex = 1;
+            this.t1UserNameTB.TextChanged += new System.EventHandler(this.TB_TextChanged);
             // 
             // t1UserNameL
             // 
@@ -321,6 +325,7 @@
             this.t2GoB.TabIndex = 9;
             this.t2GoB.Text = "Go!";
             this.t2GoB.UseVisualStyleBackColor = false;
+            this.t2GoB.Click += new System.EventHandler(this.GoB_Click);
             // 
             // t2UserIDTB
             // 
@@ -760,10 +765,12 @@
             // 
             // t5KeywordsTB
             // 
+            this.t5KeywordsTB.BackColor = System.Drawing.Color.Salmon;
             this.t5KeywordsTB.Location = new System.Drawing.Point(106, 14);
             this.t5KeywordsTB.Name = "t5KeywordsTB";
             this.t5KeywordsTB.Size = new System.Drawing.Size(188, 22);
             this.t5KeywordsTB.TabIndex = 28;
+            this.t5KeywordsTB.TextChanged += new System.EventHandler(this.TB_TextChanged);
             // 
             // label12
             // 
@@ -787,19 +794,6 @@
             this.tabPage6.Text = "Get Retweet IDs";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // dgv
-            // 
-            this.dgv.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgv.BackgroundColor = System.Drawing.Color.SkyBlue;
-            this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv.Location = new System.Drawing.Point(7, 283);
-            this.dgv.Name = "dgv";
-            this.dgv.RowTemplate.Height = 24;
-            this.dgv.Size = new System.Drawing.Size(1103, 623);
-            this.dgv.TabIndex = 2;
-            // 
             // t6GoB
             // 
             this.t6GoB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -813,10 +807,12 @@
             // 
             // t6TweetIDCB
             // 
+            this.t6TweetIDCB.BackColor = System.Drawing.Color.Salmon;
             this.t6TweetIDCB.Location = new System.Drawing.Point(106, 14);
             this.t6TweetIDCB.Name = "t6TweetIDCB";
             this.t6TweetIDCB.Size = new System.Drawing.Size(188, 22);
             this.t6TweetIDCB.TabIndex = 28;
+            this.t6TweetIDCB.TextChanged += new System.EventHandler(this.TB_TextChanged);
             // 
             // t6TweetIDL
             // 
@@ -827,15 +823,29 @@
             this.t6TweetIDL.TabIndex = 27;
             this.t6TweetIDL.Text = "User Name:";
             // 
+            // dgv
+            // 
+            this.dgv.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.dgv.Location = new System.Drawing.Point(7, 283);
+            this.dgv.Name = "dgv";
+            this.dgv.RowTemplate.Height = 24;
+            this.dgv.Size = new System.Drawing.Size(1103, 470);
+            this.dgv.TabIndex = 2;
+            // 
             // TwitterResultDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.ClientSize = new System.Drawing.Size(1118, 913);
+            this.ClientSize = new System.Drawing.Size(1118, 760);
             this.Controls.Add(this.dgv);
             this.Controls.Add(this.tc);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TwitterResultDisplay";
             this.Text = "TwitterResultDisplay";
             this.panel1.ResumeLayout(false);

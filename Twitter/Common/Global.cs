@@ -14,5 +14,12 @@ namespace Twitter.Common
                 if ('א' <= str[i] && str[i] <= 'ת') return true;         
             return false;
         }
+        public static bool IsNullOrEmpty(params string[] values)
+        {
+            foreach (string s in values)
+                if (string.IsNullOrEmpty(s.Trim()))
+                    return true;
+            return false;
+        }
     }
 }

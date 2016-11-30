@@ -27,7 +27,7 @@ namespace Twitter
         /// Account Authorization.
         /// </summary>
         /// <returns>Access Token.</returns>
-        public async Task<string> GetAccessToken()
+        public string GetAccessToken()
         {
             var httpClient = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.twitter.com/oauth2/token ");
@@ -35,9 +35,9 @@ namespace Twitter
             request.Headers.Add("Authorization", "Basic " + customerInfo);
             request.Content = new StringContent("grant_type=client_credentials", Encoding.GetEncoding(1255), "application/x-www-form-urlencoded");
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = httpClient.SendAsync(request).Result;
 
-            string json = await response.Content.ReadAsStringAsync();
+            string json = response.Content.ReadAsStringAsync().Result;
             var serializer = new JavaScriptSerializer();
             dynamic item = serializer.Deserialize<object>(json);
             return item["access_token"];
@@ -48,35 +48,35 @@ namespace Twitter
         /// <param name="requestUri">The request URI</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>JSON object.</returns>
-        private async Task<string> GetRequest(string requestUri, string accessToken = null)
+        private string GetRequest(string requestUri, string accessToken = null)
         {
             if (accessToken == null)
             {
-                accessToken = await GetAccessToken();
+                accessToken = GetAccessToken();
             }
 
             var requestUserTimeline = new HttpRequestMessage(HttpMethod.Get, requestUri);
             requestUserTimeline.Headers.Add("Authorization", "Bearer " + accessToken);
             var httpClient = new HttpClient();
-            HttpResponseMessage responseUserTimeLine = await httpClient.SendAsync(requestUserTimeline);           
-            string jsonStr = await responseUserTimeLine.Content.ReadAsStringAsync();
+            HttpResponseMessage responseUserTimeLine = httpClient.SendAsync(requestUserTimeline).Result;           
+            string jsonStr = responseUserTimeLine.Content.ReadAsStringAsync().Result;
             return jsonStr;
         }
         #endregion
         #region GET Requests
-        /// <summary>
-        /// Returns a collection of the most recent Tweets posted by the user indicated by the screen_name or user_id parameters.
-        /// User timelines belonging to protected users may only be requested when the authenticated user either “owns” the timeline or is an approved follower of the owner.
-        /// The timeline returned is the equivalent of the one seen as a user’s profile on twitter.com.
-        /// This method can only return up to 3,200 of a user’s most recent Tweets. Native retweets of other statuses by the user is included in this total, regardless of whether include_rts is set to false when requesting this resource.
-        /// </summary>
-        /// <param name="userName">The screen name of the user for whom to return results for.</param>
-        /// <param name="userID">The ID of the user for whom to return results for.</param>
-        /// <param name="maxTweets">Returns results with an ID less than (that is, older than) or equal to the specified ID.</param>
-        /// <param name="countPerPage">Specifies the number of Tweets to try and retrieve, up to a maximum of 200 per distinct request. The value of count is best thought of as a limit to the number of Tweets to return because suspended or deleted content is removed after the count has been applied. We include retweets in the count, even if include_rts is not supplied. It is recommended you always send include_rts=1 when using this API method.</param>
-        /// <param name="accessToken">Optional access token.</param>
-        /// <returns>List of tweets.</returns>
-        public async Task<List<Tweets>> GetTweets(string userName, long? userID = null, int maxTweets = 3200, int countPerPage = 200, string accessToken = null)
+         ///<summary>
+         ///Returns a collection of the most recent Tweets posted by the user indicated by the screen_name or user_id parameters.
+         ///User timelines belonging to protected users may only be requested when the authenticated user either “owns” the timeline or is an approved follower of the owner.
+         ///The timeline returned is the equivalent of the one seen as a user’s profile on twitter.com.
+         ///This method can only return up to 3,200 of a user’s most recent Tweets. Native retweets of other statuses by the user is included in this total, regardless of whether include_rts is set to false when requesting this resource.
+         ///</summary>
+         ///<param name="userName">The screen name of the user for whom to return results for.</param>
+         ///<param name="userID">The ID of the user for whom to return results for.</param>
+         ///<param name="maxTweets">Returns results with an ID less than (that is, older than) or equal to the specified ID.</param>
+         ///<param name="countPerPage">Specifies the number of Tweets to try and retrieve, up to a maximum of 200 per distinct request. The value of count is best thought of as a limit to the number of Tweets to return because suspended or deleted content is removed after the count has been applied. We include retweets in the count, even if include_rts is not supplied. It is recommended you always send include_rts=1 when using this API method.</param>
+         ///<param name="accessToken">Optional access token.</param>
+         ///<returns>List of tweets.</returns>
+        public List<Tweets> GetTweets(string userName, long? userID = null, int maxTweets = 3200, int countPerPage = 200, Update updater = null, string accessToken = null)
         {
             List<Tweets> t = new List<Tweets>();
             string requestUri, requestUriWithCursor, jsonStr;
@@ -86,17 +86,21 @@ namespace Twitter
                 requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1", countPerPage, userID);
             try
             {
-                jsonStr = await GetRequest(requestUri);
+                jsonStr = GetRequest(requestUri);
                 t = serializer.Deserialize<List<Tweets>>(jsonStr);
                 t = t.OrderBy(x => x.id).ToList();
+                if (updater != null) // Add new tweets to UI
+                    updater.Update(t);
                 long SinceID = t[0].id;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
-                    jsonStr = await GetRequest(requestUriWithCursor);
+                    jsonStr = GetRequest(requestUriWithCursor);
                     List<Tweets> tmp = serializer.Deserialize<List<Tweets>>(jsonStr);
                     t.AddRange(tmp);
                     tmp = tmp.OrderBy(x => x.id).ToList();
+                    if (updater != null) // Add new tweets to UI
+                        updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].id;
                     if (tmp.Count <= 5) return t;
@@ -112,7 +116,7 @@ namespace Twitter
         /// <param name="userID">The ID of the user for whom to return results for.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of id's.</returns>
-        public async Task<List<long>> GetFriendsIDs(string userName,long? userID = null, string accessToken = null)
+        public List<long> GetFriendsIDs(string userName, long? userID = null, Update updater = null, string accessToken = null)
         {
             List<long> friendsIDs = new List<long>();
             long cursor = -1;
@@ -125,11 +129,13 @@ namespace Twitter
             while (cursor != 0)
             {
                 requestUriWithCursor = string.Format(requestUri + "&cursor={0}", cursor);
-                jsonStr = await GetRequest(requestUriWithCursor);
+                jsonStr = GetRequest(requestUriWithCursor);
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
                     f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    if (updater != null) // Add new IDs to UI
+                        updater.Update(f.ids);
                     friendsIDs.AddRange(f.ids);
                     cursor = f.next_cursor;
                 }
@@ -146,7 +152,7 @@ namespace Twitter
         /// <param name="countPerPage">The number of users to return per page, up to a maximum of 200. Defaults to 20.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of users.</returns>
-        public async Task<List<Users>> GetFriends(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, string accessToken = null)
+        public List<Users> GetFriends(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, Update updater = null, string accessToken = null)
         {
             long cursor = -1;
             List<Users> users = new List<Users>();
@@ -159,7 +165,7 @@ namespace Twitter
             while (cursor != 0)
             {
                 requestUriWithCursor = string.Format(requestUri + "&cursor={0}", cursor);
-                jsonStr = await GetRequest(requestUriWithCursor);
+                jsonStr = GetRequest(requestUriWithCursor);
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
@@ -180,7 +186,7 @@ namespace Twitter
         /// <param name="countPerPage">The number of users to return per page, up to a maximum of 200. Defaults to 20.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of users.</returns>
-        public async Task<List<Users>> GetFollowers(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, string accessToken = null)
+        public List<Users> GetFollowers(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, Update updater = null, string accessToken = null)
         {
             long cursor = -1;
             List<Users> users = new List<Users>();
@@ -193,7 +199,7 @@ namespace Twitter
             while (cursor != 0)
             {
                 requestUriWithCursor = string.Format(requestUri + "&cursor={0}", cursor);
-                jsonStr = await GetRequest(requestUri);
+                jsonStr = GetRequest(requestUri);
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
@@ -217,7 +223,7 @@ namespace Twitter
         /// <param name="includeEntities">The entities node will not be included when set to false.	</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of tweets.</returns>
-        public async Task<List<Tweets>> SearchTweets(string keywords, int maxTweets = 2000, int countPerPage = 100, string language = "he", string resultType = "recent", bool includeEntities = false, Update updater = null, string accessToken = null)
+        public List<Tweets> SearchTweets(string keywords, int maxTweets = 2000, int countPerPage = 100, string language = "he", string resultType = "recent", bool includeEntities = false, Update updater = null, string accessToken = null)
         {
             List<Tweets> t = new List<Tweets>();
             SearchTweetsNavigator stn = new SearchTweetsNavigator();
@@ -226,22 +232,22 @@ namespace Twitter
             {
                 keywords = keywords.Replace(' ', '+').Replace("#", "%23").Replace("“", "%22");
                 requestUri = string.Format(serviceAddress + "/search/tweets.json?q={0}&count={1}&lang={2}&result_type={3}&include_entities={4}", keywords, countPerPage, language, resultType, includeEntities);
-                jsonStr = await GetRequest(requestUri);
+                jsonStr = GetRequest(requestUri);
                 stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
                 t.AddRange(stn.statuses);
                 t = t.OrderBy(x => x.id).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.UpdateTweets(t);
+                    updater.Update(t);
                 long SinceID = t[0].id;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
-                    jsonStr = await GetRequest(requestUriWithCursor);
+                    jsonStr = GetRequest(requestUriWithCursor);
                     stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
                     List<Tweets> tmp = stn.statuses.OrderBy(x => x.id).ToList();
                     t.AddRange(tmp);
                     if (updater != null)    // Add new tweets to UI
-                        updater.UpdateTweets(tmp);
+                        updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].id;
                     if (tmp.Count <= 5) return t;
@@ -256,7 +262,7 @@ namespace Twitter
         /// <param name="tweetID">The numerical ID of the desired status.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of id's.</returns>
-        public async Task<List<long>> GetRetweetIDs(string tweetID, string accessToken = null)
+        public  List<long> GetRetweetIDs(string tweetID, string accessToken = null)
         {
             List<long> friendsIDs = new List<long>();
             long cursor = -1;
@@ -267,7 +273,7 @@ namespace Twitter
             while (cursor != 0)
             {
                 requestUriWithCursor = string.Format(requestUri + "&cursor={0}", cursor);
-                jsonStr = await GetRequest(requestUriWithCursor);
+                jsonStr = GetRequest(requestUriWithCursor);
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {

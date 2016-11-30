@@ -17,7 +17,7 @@ namespace Twitter
         {
             string s = "";
             foreach (Hashtags h in hashtags)
-                s += h.text + " | ";
+                s += h.text + " , ";
             return s;
         }
     }
