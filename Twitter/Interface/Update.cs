@@ -10,7 +10,7 @@ namespace Twitter.Interface
     public interface Update
     {
         void Update(object obj);
-        
+        void EndRequest();
 
     }
 }

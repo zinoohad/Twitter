@@ -51,5 +51,11 @@ namespace Twitter.Classes
         public bool? verified { get; set; }
         public string withheld_in_countries { get; set; }
         public string withheld_scope { get; set; }
+
+        public object[] GetData()
+        {
+            object[] row = new object[] { id, created_at, name, name, followers_count, friends_count,lang,location };
+            return row;
+        }
     }
 }

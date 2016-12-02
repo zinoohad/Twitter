@@ -44,9 +44,9 @@ namespace Twitter.Classes
         public string[] withheld_in_countries { get; set; }
         public string withheld_scope { get; set; }
 
-        public string[] GetData()
+        public object[] GetData()
         {
-            string[] row = new string[] {id.ToString(), created_at, text, lang, retweet_count.ToString(), entities.hashtagsToString()};
+            object[] row = new object[] { id.ToString(), created_at, text, lang, retweet_count.ToString(), entities.hashtagsToString() };
             return row;
         }
 

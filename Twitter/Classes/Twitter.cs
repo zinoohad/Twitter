@@ -51,9 +51,7 @@ namespace Twitter
         private string GetRequest(string requestUri, string accessToken = null)
         {
             if (accessToken == null)
-            {
                 accessToken = GetAccessToken();
-            }
 
             var requestUserTimeline = new HttpRequestMessage(HttpMethod.Get, requestUri);
             requestUserTimeline.Headers.Add("Authorization", "Bearer " + accessToken);
@@ -103,11 +101,16 @@ namespace Twitter
                         updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].id;
-                    if (tmp.Count <= 5) return t;
+                    if (tmp.Count <= 5)
+                    {
+                        if (updater != null) updater.EndRequest();
+                        return t;
+                    }
                 }
+                if (updater != null) updater.EndRequest();
                 return t;
             }
-            catch { return t; }
+            catch { if (updater != null)updater.EndRequest(); return t; }
         }     
         /// <summary>
         /// Returns a cursored collection of user IDs for every user the specified user is friends (otherwise known as their “follows”).
@@ -139,8 +142,9 @@ namespace Twitter
                     friendsIDs.AddRange(f.ids);
                     cursor = f.next_cursor;
                 }
-                catch (Exception e) { cursor = 0; }
+                catch { cursor = 0; }
             }
+            if (updater != null) updater.EndRequest();
             return friendsIDs;
         }
         /// <summary>
@@ -170,12 +174,46 @@ namespace Twitter
                 try
                 {
                     u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    if (cursor == u.next_cursor)
+                        break;
+                    else
+                        cursor = u.next_cursor;
+                    if (updater != null) // Add new IDs to UI
+                        updater.Update(u.users);
                     users.AddRange(u.users);
-                    cursor = u.next_cursor;
                 }
-                catch (Exception e) { cursor = 0; }
+                catch { cursor = 0; }
             }
+            if (updater != null) updater.EndRequest();
             return users;
+        }
+        public List<long> GetFollowersIDs(string userName, long? userID = null, Update updater = null, string accessToken = null)
+        {
+            List<long> friendsIDs = new List<long>();
+            long cursor = -1;
+            FriendsNavigator f = new FriendsNavigator();
+            string requestUri, requestUriWithCursor, jsonStr;
+            if (userID == null)
+                requestUri = string.Format(serviceAddress + "/followers/ids.json?screen_name={0}", userName);
+            else
+                requestUri = string.Format(serviceAddress + "/followers/ids.json?user_id={0}", userID);
+            while (cursor != 0)
+            {
+                requestUriWithCursor = string.Format(requestUri + "&cursor={0}", cursor);
+                jsonStr = GetRequest(requestUriWithCursor);
+                //JObject jsonDat = JObject.Parse(jsonStr);                
+                try
+                {
+                    f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    if (updater != null) // Add new IDs to UI
+                        updater.Update(f.ids);
+                    friendsIDs.AddRange(f.ids);
+                    cursor = f.next_cursor;
+                }
+                catch { cursor = 0; }
+            }
+            if (updater != null) updater.EndRequest();
+            return friendsIDs;
         }
         /// <summary>
         /// Returns a cursored collection of user objects for users following the specified user.
@@ -203,12 +241,19 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
+                    u = null;
                     u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    if (cursor == u.next_cursor)
+                        break;
+                    else
+                        cursor = u.next_cursor;
+                    if (updater != null) // Add new IDs to UI
+                        updater.Update(u.users);
                     users.AddRange(u.users);
-                    cursor = u.next_cursor;
                 }
-                catch (Exception e) { cursor = 0; }
+                catch { cursor = 0; }
             }
+            if (updater != null) updater.EndRequest();
             return users;
         }
         /// <summary>
@@ -250,11 +295,16 @@ namespace Twitter
                         updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].id;
-                    if (tmp.Count <= 5) return t;
+                    if (tmp.Count <= 5)
+                    {
+                        if (updater != null) updater.EndRequest();
+                        return t;
+                    }
                 }
+                if (updater != null) updater.EndRequest();
                 return t;
             }
-            catch { return t; }
+            catch { if (updater != null)updater.EndRequest(); return t; }
         }
         /// <summary>
         /// Returns a collection of up to 100 user IDs belonging to users who have retweeted the Tweet specified by the id parameter.
@@ -262,7 +312,7 @@ namespace Twitter
         /// <param name="tweetID">The numerical ID of the desired status.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of id's.</returns>
-        public  List<long> GetRetweetIDs(string tweetID, string accessToken = null)
+        public List<long> GetRetweetIDs(string tweetID, Update updater = null, string accessToken = null)
         {
             List<long> friendsIDs = new List<long>();
             long cursor = -1;
@@ -278,11 +328,14 @@ namespace Twitter
                 try
                 {
                     r = serializer.Deserialize<RetweetNavigator>(jsonStr);
+                    if (updater != null) // Add new IDs to UI
+                        updater.Update(r.ids);
                     friendsIDs.AddRange(r.ids);
                     cursor = r.next_cursor;
                 }
-                catch (Exception e) { cursor = 0; }
+                catch { cursor = 0; }
             }
+            if (updater != null) updater.EndRequest();
             return friendsIDs;
         }
         #endregion

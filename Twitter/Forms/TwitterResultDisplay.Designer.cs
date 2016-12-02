@@ -68,7 +68,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.t4UserIDTB = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.t4UserNameTB = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.label15 = new System.Windows.Forms.Label();
@@ -87,10 +87,24 @@
             this.t5KeywordsTB = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.t6GoB = new System.Windows.Forms.Button();
             this.t6TweetIDCB = new System.Windows.Forms.TextBox();
             this.t6TweetIDL = new System.Windows.Forms.Label();
             this.dgv = new System.Windows.Forms.DataGridView();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox7 = new System.Windows.Forms.PictureBox();
+            this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.pictureBox9 = new System.Windows.Forms.PictureBox();
+            this.recordL = new System.Windows.Forms.Label();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.pictureBox10 = new System.Windows.Forms.PictureBox();
+            this.t7GoB = new System.Windows.Forms.Button();
+            this.t7UserIDTB = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.t7UserNameTB = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -108,7 +122,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.t5MaxTweetsUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.t5TweetsPerPageUD)).BeginInit();
             this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
+            this.tabPage7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -116,6 +138,7 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.recordL);
             this.panel1.Controls.Add(this.pictureBox3);
             this.panel1.Controls.Add(this.pictureBox2);
             this.panel1.Controls.Add(this.pictureBox1);
@@ -166,6 +189,7 @@
             this.tc.Controls.Add(this.tabPage4);
             this.tc.Controls.Add(this.tabPage5);
             this.tc.Controls.Add(this.tabPage6);
+            this.tc.Controls.Add(this.tabPage7);
             this.tc.Location = new System.Drawing.Point(4, 123);
             this.tc.Name = "tc";
             this.tc.SelectedIndex = 0;
@@ -174,6 +198,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.pictureBox9);
             this.tabPage1.Controls.Add(this.t1GoB);
             this.tabPage1.Controls.Add(this.t1TweetsPerPageUD);
             this.tabPage1.Controls.Add(this.t1TweetsPerPageL);
@@ -302,6 +327,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.pictureBox8);
             this.tabPage2.Controls.Add(this.t2GoB);
             this.tabPage2.Controls.Add(this.t2UserIDTB);
             this.tabPage2.Controls.Add(this.t2UserIDL);
@@ -361,6 +387,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.pictureBox7);
             this.tabPage3.Controls.Add(this.t3GoB);
             this.tabPage3.Controls.Add(this.t3WithoutTweetCB);
             this.tabPage3.Controls.Add(this.t2TweetsPerPageUD);
@@ -388,6 +415,7 @@
             this.t3GoB.TabIndex = 17;
             this.t3GoB.Text = "Go!";
             this.t3GoB.UseVisualStyleBackColor = false;
+            this.t3GoB.Click += new System.EventHandler(this.GoB_Click);
             // 
             // t3WithoutTweetCB
             // 
@@ -472,6 +500,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.pictureBox6);
             this.tabPage4.Controls.Add(this.t4GoB);
             this.tabPage4.Controls.Add(this.t4WithoutTweetCB);
             this.tabPage4.Controls.Add(this.t4TweetsPerPageUD);
@@ -479,7 +508,7 @@
             this.tabPage4.Controls.Add(this.label6);
             this.tabPage4.Controls.Add(this.t4UserIDTB);
             this.tabPage4.Controls.Add(this.label7);
-            this.tabPage4.Controls.Add(this.textBox3);
+            this.tabPage4.Controls.Add(this.t4UserNameTB);
             this.tabPage4.Controls.Add(this.label8);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
@@ -499,6 +528,7 @@
             this.t4GoB.TabIndex = 26;
             this.t4GoB.Text = "Go!";
             this.t4GoB.UseVisualStyleBackColor = false;
+            this.t4GoB.Click += new System.EventHandler(this.GoB_Click);
             // 
             // t4WithoutTweetCB
             // 
@@ -567,12 +597,12 @@
             this.label7.TabIndex = 20;
             this.label7.Text = "User ID:";
             // 
-            // textBox3
+            // t4UserNameTB
             // 
-            this.textBox3.Location = new System.Drawing.Point(106, 14);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(188, 22);
-            this.textBox3.TabIndex = 19;
+            this.t4UserNameTB.Location = new System.Drawing.Point(106, 14);
+            this.t4UserNameTB.Name = "t4UserNameTB";
+            this.t4UserNameTB.Size = new System.Drawing.Size(188, 22);
+            this.t4UserNameTB.TabIndex = 19;
             // 
             // label8
             // 
@@ -585,6 +615,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.pictureBox5);
             this.tabPage5.Controls.Add(this.label15);
             this.tabPage5.Controls.Add(this.t5MaxTweetsUD);
             this.tabPage5.Controls.Add(this.t5IncEntCB);
@@ -783,6 +814,7 @@
             // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add(this.pictureBox4);
             this.tabPage6.Controls.Add(this.t6GoB);
             this.tabPage6.Controls.Add(this.t6TweetIDCB);
             this.tabPage6.Controls.Add(this.t6TweetIDL);
@@ -794,6 +826,18 @@
             this.tabPage6.Text = "Get Retweet IDs";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
+            this.pictureBox4.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox4.TabIndex = 3;
+            this.pictureBox4.TabStop = false;
+            // 
             // t6GoB
             // 
             this.t6GoB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -804,6 +848,7 @@
             this.t6GoB.TabIndex = 29;
             this.t6GoB.Text = "Go!";
             this.t6GoB.UseVisualStyleBackColor = false;
+            this.t6GoB.Click += new System.EventHandler(this.GoB_Click);
             // 
             // t6TweetIDCB
             // 
@@ -819,9 +864,9 @@
             this.t6TweetIDL.AutoSize = true;
             this.t6TweetIDL.Location = new System.Drawing.Point(15, 15);
             this.t6TweetIDL.Name = "t6TweetIDL";
-            this.t6TweetIDL.Size = new System.Drawing.Size(83, 17);
+            this.t6TweetIDL.Size = new System.Drawing.Size(67, 17);
             this.t6TweetIDL.TabIndex = 27;
-            this.t6TweetIDL.Text = "User Name:";
+            this.t6TweetIDL.Text = "Tweet ID:";
             // 
             // dgv
             // 
@@ -836,6 +881,147 @@
             this.dgv.Size = new System.Drawing.Size(1103, 470);
             this.dgv.TabIndex = 2;
             // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
+            this.pictureBox5.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox5.TabIndex = 43;
+            this.pictureBox5.TabStop = false;
+            // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
+            this.pictureBox6.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox6.TabIndex = 27;
+            this.pictureBox6.TabStop = false;
+            // 
+            // pictureBox7
+            // 
+            this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox7.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox7.Image")));
+            this.pictureBox7.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox7.Name = "pictureBox7";
+            this.pictureBox7.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox7.TabIndex = 18;
+            this.pictureBox7.TabStop = false;
+            // 
+            // pictureBox8
+            // 
+            this.pictureBox8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox8.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox8.Image")));
+            this.pictureBox8.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox8.Name = "pictureBox8";
+            this.pictureBox8.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox8.TabIndex = 10;
+            this.pictureBox8.TabStop = false;
+            // 
+            // pictureBox9
+            // 
+            this.pictureBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
+            this.pictureBox9.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox9.Name = "pictureBox9";
+            this.pictureBox9.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox9.TabIndex = 9;
+            this.pictureBox9.TabStop = false;
+            // 
+            // recordL
+            // 
+            this.recordL.AutoSize = true;
+            this.recordL.Location = new System.Drawing.Point(129, 100);
+            this.recordL.Name = "recordL";
+            this.recordL.Size = new System.Drawing.Size(111, 17);
+            this.recordL.TabIndex = 4;
+            this.recordL.Text = "Record Count: 0";
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.pictureBox10);
+            this.tabPage7.Controls.Add(this.t7GoB);
+            this.tabPage7.Controls.Add(this.t7UserIDTB);
+            this.tabPage7.Controls.Add(this.label16);
+            this.tabPage7.Controls.Add(this.t7UserNameTB);
+            this.tabPage7.Controls.Add(this.label17);
+            this.tabPage7.Location = new System.Drawing.Point(4, 25);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(1103, 125);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Get Followers IDs";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox10
+            // 
+            this.pictureBox10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox10.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox10.Image")));
+            this.pictureBox10.Location = new System.Drawing.Point(1012, 6);
+            this.pictureBox10.Name = "pictureBox10";
+            this.pictureBox10.Size = new System.Drawing.Size(85, 82);
+            this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox10.TabIndex = 16;
+            this.pictureBox10.TabStop = false;
+            // 
+            // t7GoB
+            // 
+            this.t7GoB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.t7GoB.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.t7GoB.Location = new System.Drawing.Point(1012, 94);
+            this.t7GoB.Name = "t7GoB";
+            this.t7GoB.Size = new System.Drawing.Size(85, 25);
+            this.t7GoB.TabIndex = 15;
+            this.t7GoB.Text = "Go!";
+            this.t7GoB.UseVisualStyleBackColor = false;
+            this.t7GoB.Click += new System.EventHandler(this.GoB_Click);
+            // 
+            // t7UserIDTB
+            // 
+            this.t7UserIDTB.Location = new System.Drawing.Point(106, 42);
+            this.t7UserIDTB.Name = "t7UserIDTB";
+            this.t7UserIDTB.Size = new System.Drawing.Size(188, 22);
+            this.t7UserIDTB.TabIndex = 14;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(15, 43);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(59, 17);
+            this.label16.TabIndex = 13;
+            this.label16.Text = "User ID:";
+            // 
+            // t7UserNameTB
+            // 
+            this.t7UserNameTB.Location = new System.Drawing.Point(106, 14);
+            this.t7UserNameTB.Name = "t7UserNameTB";
+            this.t7UserNameTB.Size = new System.Drawing.Size(188, 22);
+            this.t7UserNameTB.TabIndex = 12;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(15, 15);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(83, 17);
+            this.label17.TabIndex = 11;
+            this.label17.Text = "User Name:";
+            // 
             // TwitterResultDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -849,6 +1035,7 @@
             this.Name = "TwitterResultDisplay";
             this.Text = "TwitterResultDisplay";
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -871,7 +1058,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.t5TweetsPerPageUD)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -920,7 +1116,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox t4UserIDTB;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox t4UserNameTB;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox t5LangCB;
         private System.Windows.Forms.Button t5GoB;
@@ -940,5 +1136,19 @@
         private System.Windows.Forms.Button t6GoB;
         private System.Windows.Forms.TextBox t6TweetIDCB;
         private System.Windows.Forms.Label t6TweetIDL;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pictureBox9;
+        private System.Windows.Forms.PictureBox pictureBox8;
+        private System.Windows.Forms.PictureBox pictureBox7;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.Label recordL;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.PictureBox pictureBox10;
+        private System.Windows.Forms.Button t7GoB;
+        private System.Windows.Forms.TextBox t7UserIDTB;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox t7UserNameTB;
+        private System.Windows.Forms.Label label17;
     }
 }
