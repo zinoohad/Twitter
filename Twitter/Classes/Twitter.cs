@@ -21,6 +21,7 @@ namespace Twitter
         public string OAuthConsumerKey { get; set; }
         private const string serviceAddress = "https://api.twitter.com/1.1";    //Twitter API Address
         private JavaScriptSerializer serializer = new JavaScriptSerializer();
+        private Encoding requestEncoding = Encoding.GetEncoding(1255);  //Hebrew
         #endregion
         #region Global Functions
         /// <summary>
@@ -33,7 +34,7 @@ namespace Twitter
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.twitter.com/oauth2/token ");
             var customerInfo = Convert.ToBase64String(new UTF8Encoding().GetBytes(OAuthConsumerKey + ":" + OAuthConsumerSecret));
             request.Headers.Add("Authorization", "Basic " + customerInfo);
-            request.Content = new StringContent("grant_type=client_credentials", Encoding.GetEncoding(1255), "application/x-www-form-urlencoded");
+            request.Content = new StringContent("grant_type=client_credentials", requestEncoding, "application/x-www-form-urlencoded");
 
             HttpResponseMessage response = httpClient.SendAsync(request).Result;
 
