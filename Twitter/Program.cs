@@ -9,7 +9,7 @@ using Twitter.Classes;
 using Twitter.Classes.Navigators;
 using Twitter.Common;
 using Twitter.Forms;
-
+using Twitter.Analysis;
 namespace Twitter
 {
     static class Program
@@ -18,16 +18,25 @@ namespace Twitter
         static void Main()
         {
 
-            /*--- Test SentimentAnalsys---*/
+            /*--- Test Sentiment & Topic Analsys---*/
+
             var Test1 = new SentimentAnalysis();
+            var Test2 = new TopicAnalysis();
             string Tweet1 = "im happy all day is good" , Tweet2= "bad day , kill all";
+            string Topic1 = @"Robert Downey Jr has topped Forbes magazine's annual list 
+                of the highest paid actors for the second year in a row. The 49-year-old star
+                of the Iron Man and Avengers films made an estimated $75m over the past year,
+                beating rivals Dwayne Johnson, Bradley Cooper, Chris Hemsworth and Leonardo DiCaprio.";
 
             Console.WriteLine(Tweet1);
             Console.WriteLine(Test1.GetAnalysis(Tweet1));
             Console.WriteLine(Tweet2);
             Console.WriteLine(Test1.GetAnalysis(Tweet2));
+            Console.WriteLine("Topic 1 ");
+            Console.WriteLine(Test2.GetAnalysis(Topic1));
 
-            /*--- Test SentimentAnalsys---*/
+
+            /*----------------------------------------*/
 
 
             Application.EnableVisualStyles();
