@@ -17,10 +17,26 @@ namespace Twitter
         [STAThread]
         static void Main()
         {
+
+            /*--- Test SentimentAnalsys---*/
+            var Test1 = new SentimentAnalysis();
+            string Tweet1 = "im happy all day is good" , Tweet2= "bad day , kill all";
+
+            Console.WriteLine(Tweet1);
+            Console.WriteLine(Test1.GetAnalysis(Tweet1));
+            Console.WriteLine(Tweet2);
+            Console.WriteLine(Test1.GetAnalysis(Tweet2));
+
+            /*--- Test SentimentAnalsys---*/
+
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new TwitterResultDisplay());
-            //test();
+           
+            
+            
+           //test();
         }    
         public static void test()
         {
@@ -50,5 +66,6 @@ namespace Twitter
             //    Console.WriteLine(t + "\n");
             //}
         }
+      
     }
 }
