@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twitter", "Twitter\Twitter.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicSentimentAnalysis", "TopicSentimentAnalysis\TopicSentimentAnalysis.csproj", "{E7A7638B-7DDF-4488-A4E8-6ED58B5FAA09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBaseConnections", "DataBaseConnections\DataBaseConnections.csproj", "{344DCBD4-9283-4790-B0DF-4407002806CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{E7A7638B-7DDF-4488-A4E8-6ED58B5FAA09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7A7638B-7DDF-4488-A4E8-6ED58B5FAA09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7A7638B-7DDF-4488-A4E8-6ED58B5FAA09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344DCBD4-9283-4790-B0DF-4407002806CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344DCBD4-9283-4790-B0DF-4407002806CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344DCBD4-9283-4790-B0DF-4407002806CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344DCBD4-9283-4790-B0DF-4407002806CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
