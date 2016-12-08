@@ -80,9 +80,9 @@ namespace Twitter
             List<Tweets> t = new List<Tweets>();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1", countPerPage, userName);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userName);
             else
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1", countPerPage, userID);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userID);
             try
             {
                 jsonStr = GetRequest(requestUri);

@@ -61,7 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analysis\Topic object.cs" />
     <Compile Include="Classes\Entities.cs" />
     <Compile Include="Classes\Navigators\FriendsNavigator.cs" />
     <Compile Include="Classes\Navigators\RetweetNavigator.cs" />
@@ -69,8 +68,6 @@
     <Compile Include="Classes\Navigators\SearchTweetsNavigator.cs" />
     <Compile Include="Classes\Navigators\UsersNavigator.cs" />
     <Compile Include="Classes\Places.cs" />
-    <Compile Include="Analysis\Sentence object.cs" />
-    <Compile Include="Analysis\SentimentAnalysis.cs" />
     <Compile Include="Classes\Tweets.cs" />
     <Compile Include="Classes\Navigators\TwitterNavigator.cs" />
     <Compile Include="Classes\Users.cs" />
@@ -91,7 +88,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Analysis\TopicAnalysis.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -105,6 +101,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TopicSentimentAnalysis\TopicSentimentAnalysis.csproj">
+      <Project>{e7a7638b-7ddf-4488-a4e8-6ed58b5faa09}</Project>
+      <Name>TopicSentimentAnalysis</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

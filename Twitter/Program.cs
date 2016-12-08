@@ -9,7 +9,8 @@ using Twitter.Classes;
 using Twitter.Classes.Navigators;
 using Twitter.Common;
 using Twitter.Forms;
-using Twitter.Analysis;
+using TopicSentimentAnalysis;
+using TopicSentimentAnalysis.Classes;
 namespace Twitter
 {
     static class Program
@@ -17,35 +18,9 @@ namespace Twitter
         [STAThread]
         static void Main()
         {
-
-            /*--- Test Sentiment & Topic Analsys---*/
-
-            var Test1 = new SentimentAnalysis();
-            var Test2 = new TopicAnalysis();
-            string Tweet1 = "im happy all day is good" , Tweet2= "bad day , kill all";
-
-            string Topic1 = @"Robert Downey Jr has topped Forbes magazine's annual list 
-                of the highest paid actors for the second year in a row. The 49-year-old star
-                of the Iron Man and Avengers films made an estimated $75m over the past year,
-                beating rivals Dwayne Johnson, Bradley Cooper, Chris Hemsworth and Leonardo DiCaprio.";
-
-            Console.WriteLine(Tweet1);
-            Console.WriteLine(Test1.GetAnalysis(Tweet1));
-           // Console.WriteLine(Tweet2);
-           // Console.WriteLine(Test1.GetAnalysis(Tweet2));
-            Console.WriteLine("Topic 1 ");
-            Console.WriteLine(Test2.GetAnalysis(Topic1));
-
-
-            /*----------------------------------------*/
-
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new TwitterResultDisplay());
-           
-            
-            
            //test();
         }    
         public static void test()
@@ -56,25 +31,6 @@ namespace Twitter
                 OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"]
             };
 
-            //List<long> ids = twitter.GetFriendsIDs("BarRefaeli").Result;
-            int count = 0;
-            var SERVICE = new TwitterService(ConfigurationSettings.AppSettings["OAuthConsumerKey"],
-                ConfigurationSettings.AppSettings["OAuthConsumerSecret"]);
-            SERVICE.AuthenticateWith(ConfigurationSettings.AppSettings["AccessKey"], ConfigurationSettings.AppSettings["AccessSecret"]);
-            var otweet = new ListFollowersOptions();
-            otweet.ScreenName = "@BarRefaeli";
-            var res = SERVICE.ListFollowers(otweet);
-            List<Tweets> twitts = twitter.SearchTweets("אש");
-            //List<Tweets> stwitter = twitter.GetTweets("@netanyahu").Result;
-            //List<Tweets> s1twitter = twitter.GetTweets("@BarRefaeli").Result;
-            //FriendsNavigator ff = twitter.GetFriendsIDs("@BarRefaeli").Result;
-           // List<Users> u = twitter.GetFriends("@haifacity",false,200).Result;
-            //twitts = twitter.GetTwitts(26793734, 20).Result;
-            //foreach (var t in twitts)
-            //{
-            //    count++;
-            //    Console.WriteLine(t + "\n");
-            //}
         }
       
     }

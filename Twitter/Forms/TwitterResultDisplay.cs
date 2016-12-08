@@ -57,7 +57,7 @@ namespace Twitter.Forms
                             userID = long.Parse(t1UserIDTB.Text);
                     }
                     catch { return; }
-                    SetDGV(new string[]{"ID","Create Date","Tweet","Language","Retweet Number","Hashtags"});
+                    SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number", "Like Number", "Hashtags" });
                     dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     (new Thread(() => twitter.GetTweets(t1UserNameTB.Text, userID, (int)t1MaxTweetsUD.Value, (int)t5TweetsPerPageUD.Value, this))).Start();
                     break;
@@ -110,7 +110,7 @@ namespace Twitter.Forms
                     }
                     string lang = t5LangCB.SelectedItem.Equals("Hebrew") ? "he" : "en";
                     string resultType = t5ResultCB.SelectedItem.Equals("Recent") ? "recent" : t5ResultCB.SelectedItem.Equals("Popular") ? "popular" : "mixed";                    
-                    SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number", "Hashtags" });    // Set headers
+                    SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number","Like Number", "Hashtags" });    // Set headers
                     dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;                    
                     (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, (int)t5TweetsPerPageUD.Value, lang, resultType, t5IncEntCB.Checked,this))).Start();
                     break;
@@ -175,7 +175,7 @@ namespace Twitter.Forms
             foreach (Tweets t in tweets)
             {
                 hashtags = t.entities != null && t.entities.hashtags != null ? t.entities.hashtagsToString() : "";
-                dgv.Rows.Add(t.id, t.created_at, t.text, t.user.lang, t.retweet_count, hashtags);
+                dgv.Rows.Add(t.id, t.created_at, t.text, t.user.lang, t.retweet_count,t.favorite_count, hashtags);
                 AddRecord();
             }
         }

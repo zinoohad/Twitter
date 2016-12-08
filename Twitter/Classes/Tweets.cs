@@ -1,17 +1,23 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Twitter.Classes
 {
     public class Tweets
     {
+        //[XmlElement(ElementName = "TaxRate")]
+        
         public Collection<Users> contributors { get; set; }
         public Coordinates coordinates { get; set; }
+        //[JsonProperty(PropertyName = "created_at")]
+        //[XmlElement(ElementName = "created_at")]
         public string created_at { get; set; }
         public Users current_user_retweet { get; set; }
         public Entities entities { get; set; }
