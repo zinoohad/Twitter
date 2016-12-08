@@ -26,7 +26,6 @@ namespace DataBaseConnections
         public string ExecuteMessage { get { return _DBConnection.ExecuteMessage; } }
         public ConnectionState State { get { return _DBConnection.State; } }
         public string ConnectionString { get { return _DBConnection.ConnectionString; } }
-
         private SQLMethods _DBConnection = null;
 
         public DBConnection(DBTypes DBType, string Server, string Port, string UserID, string Password, string Database)
@@ -82,46 +81,45 @@ namespace DataBaseConnections
             }
         }
 
-        public bool CloseConnection()
+        private bool CloseConnection()
         {
             return _DBConnection.CloseConnection();
         }
-        public bool OpenConnection()
+        private bool OpenConnection()
         {
             return _DBConnection.OpenConnection();
         }
         public DataTable Select(string sqlQuery)
         {
-            return _DBConnection.Select(sqlQuery);
-        }
-        public DataTable Select(ref string message, string sqlQuery)
-        {
-            _DBConnection.SelectErrorMessage = "";
-            DataTable result = _DBConnection.Select(sqlQuery);
-            message = _DBConnection.SelectErrorMessage;
-            return result;
+            DataTable dt;
+            OpenConnection();
+            dt = _DBConnection.Select(sqlQuery);
+            CloseConnection();
+            return dt;
         }
         public int Insert(string sqlQuery)
         {
-            return _DBConnection.Insert(sqlQuery);
+            int recordNum;
+            OpenConnection();
+            recordNum = _DBConnection.Insert(sqlQuery);
+            CloseConnection();
+            return recordNum;
         }
-        public int Insert(ref string message, string sqlQuery)
+        public int Update(string sqlQuery)
         {
-            _DBConnection.InsertMessage = "";
-            int rowsUpdated = Insert(sqlQuery);
-            message = _DBConnection.InsertMessage;
-            return rowsUpdated;
+            int recordNum;
+            OpenConnection();
+            recordNum = _DBConnection.Update(sqlQuery);
+            CloseConnection();
+            return recordNum;
         }
         public int ExecuteNonQuery(string sqlQuery)
         {
-            return _DBConnection.ExecuteNonQuery(sqlQuery);
-        }
-        public int ExecuteNonQuery(ref string message, string sqlQuery)
-        {
-            _DBConnection.ExecuteMessage = "";
-            int rowsUpdated = ExecuteNonQuery(sqlQuery);
-            message = _DBConnection.ExecuteMessage;
-            return rowsUpdated;
+            int recordNum;
+            OpenConnection();
+            recordNum = _DBConnection.ExecuteNonQuery(sqlQuery);
+            CloseConnection();
+            return recordNum;
         }
         public object getConnectionObject()
         {

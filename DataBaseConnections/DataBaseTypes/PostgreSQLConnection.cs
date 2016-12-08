@@ -51,32 +51,8 @@ namespace DataBaseConnections.DataBaseTypes
             // return DataTable
             return dt;
         }
-        public override int Insert(string sqlQuery)
-        {
-            int rowsUpdated = 0;
-            //create command and assign the query and connection from the constructor
-            using (NpgsqlCommand cmd = new NpgsqlCommand(sqlQuery, (NpgsqlConnection)connection))
-            {
-                try
-                {
-                    OpenConnection();
-                    //Execute command
-                    rowsUpdated = cmd.ExecuteNonQuery();
-                    return rowsUpdated;
-                }
-                catch (NpgsqlException e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    if (rowsUpdated == 0)
-                        InsertMessage = "Record not inserted";
-                    else
-                        InsertMessage = "Success!";
-                }
-            }
-        }
+        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
+        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }  
         public override int ExecuteNonQuery(string sqlQuery)
         {
             int rowsUpdated = 0;

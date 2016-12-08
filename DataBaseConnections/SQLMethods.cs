@@ -25,6 +25,7 @@ namespace DataBaseConnections
         public string ConnectionString { get { return _ConnectionString; } set { _ConnectionString = value; } }
         abstract public DataTable Select(string sqlQuery);
         abstract public int Insert(string sqlQuery);
+        abstract public int Update(string sqlQuery);
         abstract public int ExecuteNonQuery(string sqlQuery);      
         public DbConnection getConnectionObject() { return connection; }
         public bool isOpen() { return connection.State == ConnectionState.Open; }

@@ -47,29 +47,8 @@ namespace DataBaseConnections.DataBaseTypes
             }
             return dt;
         }
-        public override int Insert(string sqlQuery)
-        {
-            int rowsUpdated = 0;
-            OracleCommand cmd = new OracleCommand(sqlQuery, (Oracle.ManagedDataAccess.Client.OracleConnection)connection);
-            try
-            {
-                OpenConnection();
-                rowsUpdated = cmd.ExecuteNonQuery();
-                return rowsUpdated;
-            }
-            catch (InvalidOperationException e)
-            {
-                throw new InvalidOperationException(e.Message);
-            }
-            finally
-            {
-                if (rowsUpdated == 0)
-                    InsertMessage = "Record not inserted";
-                else
-                    InsertMessage = "Success!";
-            }
-            
-        }
+        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
+        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }  
         public override int ExecuteNonQuery(string sqlQuery)
         {
             int rowsUpdated = 0;

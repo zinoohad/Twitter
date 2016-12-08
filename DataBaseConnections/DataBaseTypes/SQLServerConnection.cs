@@ -19,73 +19,23 @@ namespace DataBaseConnections.DataBaseTypes
             connection = new SqlConnection(ConnectionString);
 
         }
-
-
         public override DataTable Select(string sqlQuery)
         {
             SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection);
-            DataTable dt = new DataTable();
-            if (!OpenConnection())
-            {
-                SelectErrorMessage = "Can't connect to database, please check the connection and try again.";
-                return dt;
-            }             
-            try
-            {
-                dt.Load(cmd.ExecuteReader());
-            }
-            catch (SqlException e)
-            {
-                SelectErrorMessage = e.Message;
-            }
+            DataTable dt = new DataTable();           
+            dt.Load(cmd.ExecuteReader());
             return dt;
         }
-        public override int Insert(string sqlQuery)
-        {
-            int rowsUpdated = 0;
-            using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
-            {
-                try
-                {
-                    OpenConnection();
-                    rowsUpdated = cmd.ExecuteNonQuery();
-                    return rowsUpdated;
-                }
-                catch (SqlException e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    if (rowsUpdated == 0)
-                        InsertMessage = "Record not inserted";
-                    else
-                        InsertMessage = "Success!";
-                }
-            }
-        }
+        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
+        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }        
         public override int ExecuteNonQuery(string sqlQuery)
         {
             int rowsUpdated = 0;
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
             {
-                try
-                {
-                    OpenConnection();
-                    rowsUpdated = cmd.ExecuteNonQuery();
-                    return rowsUpdated;
-                }
-                catch (SqlException e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    if (rowsUpdated == 0)
-                        ExecuteMessage = "Can't execute query.";
-                    else
-                        ExecuteMessage = "Success!";
-                }
+                OpenConnection();
+                rowsUpdated = cmd.ExecuteNonQuery();
+                return rowsUpdated;                
             }
         }
         
