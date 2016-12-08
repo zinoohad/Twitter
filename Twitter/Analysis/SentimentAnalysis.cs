@@ -24,7 +24,7 @@ namespace Twitter.Analysis
         public string GetAnalysis(string Text)
         {
             /*--- Send Http request with text---*/
-            string content = "key=" + AuthenticationKey + "&of=json&txt=" + Text + ".&model=general&lang=en", jsonStr;
+            string content = "key=" + AuthenticationKey + "&of=json&txt=" + Text + ".&lang=en", jsonStr;
             Sentence_object SentenceResponse = new Analysis.Sentence_object();
             HttpClientHandler handler = new HttpClientHandler();
             HttpClient httpClient = new HttpClient(handler);
