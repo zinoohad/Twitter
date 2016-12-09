@@ -9,13 +9,17 @@ namespace DataBaseConnections.DataBaseTypes
     class SQLServerConnection : SQLMethods
     {
         //private SqlConnection connection = null;
-        public SQLServerConnection(string serverAddress, string dataBase, string userName, string password)
+        public SQLServerConnection(string serverAddress, string dataBase, string userName, string password, bool onLocalHost = false)
         {
             server = serverAddress;
             database = dataBase;
             this.userName = userName;
             this.password = password;
-            string ConnectionString = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}", serverAddress, dataBase, userName, password);
+            string ConnectionString;
+            if(!onLocalHost)
+                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}", serverAddress, dataBase, userName, password);
+            else 
+                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=SSPI", serverAddress, dataBase);
             connection = new SqlConnection(ConnectionString);
 
         }

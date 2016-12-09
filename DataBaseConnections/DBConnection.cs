@@ -28,7 +28,7 @@ namespace DataBaseConnections
         public string ConnectionString { get { return _DBConnection.ConnectionString; } }
         private SQLMethods _DBConnection = null;
 
-        public DBConnection(DBTypes DBType, string Server, string Port, string UserID, string Password, string Database)
+        public DBConnection(DBTypes DBType, string Server, string Port, string UserID, string Password, string Database,bool onLocalHost = false)
         {
             this._DBType = "";
             this.Server = Server;
@@ -40,7 +40,7 @@ namespace DataBaseConnections
             {
                 case DBTypes.SQLServer:
                     this._DBType = "SQL Server";
-                    _DBConnection = new SQLServerConnection(Server, Database, UserID, Password);
+                    _DBConnection = new SQLServerConnection(Server, Database, UserID, Password, onLocalHost);
                     break;
                 case DBTypes.MySQL:
                     this._DBType = "MySQL";

@@ -63,7 +63,7 @@ namespace Twitter
         }
         #endregion
         #region GET Requests
-         ///<summary>
+        ///<summary>
          ///Returns a collection of the most recent Tweets posted by the user indicated by the screen_name or user_id parameters.
          ///User timelines belonging to protected users may only be requested when the authenticated user either “owns” the timeline or is an approved follower of the owner.
          ///The timeline returned is the equivalent of the one seen as a user’s profile on twitter.com.
@@ -269,7 +269,7 @@ namespace Twitter
         /// <param name="includeEntities">The entities node will not be included when set to false.	</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of tweets.</returns>
-        public List<Tweets> SearchTweets(string keywords, int maxTweets = 2000, int countPerPage = 100, string language = "he", string resultType = "recent", bool includeEntities = false, Update updater = null, string accessToken = null)
+        public List<Tweets> SearchTweets(string keywords, int maxTweets = 2000, int countPerPage = 100, string language = "en", string resultType = "recent", bool includeEntities = false, Update updater = null, string accessToken = null)
         {
             List<Tweets> t = new List<Tweets>();
             SearchTweetsNavigator stn = new SearchTweetsNavigator();
@@ -339,6 +339,54 @@ namespace Twitter
             if (updater != null) updater.EndRequest();
             return friendsIDs;
         }
+        /// <summary>
+        /// Returns the X most recent Tweets favorited by the authenticating or specified user.
+        /// </summary>
+        /// <param name="userName">	The screen name of the user for whom to return results for.</param>
+        /// <param name="userID">The ID of the user for whom to return results for.</param>
+        /// <param name="maxTweets">Returns results with an ID less than (that is, older than) or equal to the specified ID.</param>
+        /// <param name="countPerPage">Specifies the number of records to retrieve. Must be less than or equal to 200; defaults to 20. The value of count is best thought of as a limit to the number of tweets to return because suspended or deleted content is removed after the count has been applied.</param>
+        /// <param name="includeEntities">The entities node will be omitted when set to false .</param>
+        /// <param name="updater">Update interface</param>
+        /// <returns>List of tweets.</returns>
+        public List<Tweets> GetUserFavoritesTweets(string userName, long? userID = null, int maxTweets = 4000, int countPerPage = 200, bool includeEntities = false, Update updater = null, string accessToken = null)
+        {
+            List<Tweets> t = new List<Tweets>();
+            string requestUri, requestUriWithCursor, jsonStr;
+            if (userID == null)
+                requestUri = string.Format(serviceAddress + "/favorites/list.json?count={0}&screen_name={1}&include_entities={2}", countPerPage, userName, includeEntities);
+            else
+                requestUri = string.Format(serviceAddress + "/favorites/list.json?count={0}&user_id={1}&include_entities={2}", countPerPage, userID, includeEntities);
+            try
+            {
+                jsonStr = GetRequest(requestUri);
+                t = serializer.Deserialize<List<Tweets>>(jsonStr);
+                t = t.OrderBy(x => x.id).ToList();
+                if (updater != null) // Add new tweets to UI
+                    updater.Update(t);
+                long SinceID = t[0].id;
+                while (t.Count < maxTweets)
+                {
+                    requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
+                    jsonStr = GetRequest(requestUriWithCursor);
+                    List<Tweets> tmp = serializer.Deserialize<List<Tweets>>(jsonStr);
+                    t.AddRange(tmp);
+                    tmp = tmp.OrderBy(x => x.id).ToList();
+                    if (updater != null) // Add new tweets to UI
+                        updater.Update(tmp);
+                    //t = t.OrderBy(x => x.id).ToList();
+                    SinceID = tmp[0].id;
+                    if (tmp.Count <= 5)
+                    {
+                        if (updater != null) updater.EndRequest();
+                        return t;
+                    }
+                }
+                if (updater != null) updater.EndRequest();
+                return t;
+            }
+            catch { if (updater != null)updater.EndRequest(); return t; }
+        }     
         #endregion
     }
 }

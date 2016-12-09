@@ -18,10 +18,10 @@ namespace Twitter
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TwitterResultDisplay());
-           //test();
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new TwitterResultDisplay());
+            test();
         }    
         public static void test()
         {
@@ -30,6 +30,8 @@ namespace Twitter
                 OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"],
                 OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"]
             };
+
+            var a = twitter.GetUserFavoritesTweets("Barrefaeli");
 
         }
       
