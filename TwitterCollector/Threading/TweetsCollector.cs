@@ -10,9 +10,24 @@ namespace TwitterCollector.Threading
     public class TweetsCollector : BaseThread
     {
         private DBHandler db = new DBHandler();
+        private List<string> Keywords = new List<string>();
         public override void RunThread()
         {
-            // Do some stuff
+            try
+            {
+                bool newSubject = bool.Parse(db.GetValueByKey("StartNewSubject").ToString());
+                if (newSubject) StartNewSearch();
+                else ContinueToSearch();
+
+            }
+            catch{}
+        }
+        private void StartNewSearch()
+        {
+
+        }
+        private void ContinueToSearch()
+        {
         }
     }
 }
