@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Net.Http;
@@ -14,15 +15,28 @@ using Twitter.Interface;
 
 namespace Twitter
 {
-    public class Twitter
+    public class TwitterAPI
     {
         #region Params
-        public string OAuthConsumerSecret { get; set; }        
-        public string OAuthConsumerKey { get; set; }
+        private string OAuthConsumerSecret { get; set; }        
+        private string OAuthConsumerKey { get; set; }
         private const string serviceAddress = "https://api.twitter.com/1.1";    //Twitter API Address
         private JavaScriptSerializer serializer = new JavaScriptSerializer();
         private Encoding requestEncoding = Encoding.GetEncoding(1255);  //Hebrew
         #endregion
+
+        public TwitterAPI()
+        {
+            OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"];
+            OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"];
+        }
+        public TwitterAPI(string OAuthConsumerKey, string OAuthConsumerSecret)
+        {
+            this.OAuthConsumerSecret = OAuthConsumerSecret;
+            this.OAuthConsumerKey = OAuthConsumerKey;
+        }
+
+
         #region Global Functions
         /// <summary>
         /// Account Authorization.

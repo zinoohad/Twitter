@@ -13,8 +13,10 @@ namespace TwitterCollector.Common
         #region Params
         private DBConnection db;
         #endregion
+        #region Constructors
         public DBHandler() { db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); }
         public DBHandler(DBConnection db) { this.db = db; }
+        #endregion
         #region General
         public object GetValueByKey(string key)
         {
@@ -24,7 +26,7 @@ namespace TwitterCollector.Common
             DataRow dr = dt.Rows[0];
             return dr.IsNull("Value") ? null : dr["Value"];
         }
-        public int SetValueByKey(string key, string value)
+        public int SetValueByKey(string key, object value)
         {
             string query;
             if (GetValueByKey(key) != null) //Update record
@@ -77,8 +79,20 @@ namespace TwitterCollector.Common
                 return false;
             }
         }
+        private DataTable Select(string query) { return db.Select(query); }
+        private int Update(string query) { return db.Update(query); }
+        private int Insert(string query) { return db.Insert(query); }
         #endregion
         #region Select
+        public List<string> GetActiveSubjects()
+        {
+            List<string> keywords = new List<string>();
+            DataTable dt = Select("SELECT * FROM ViewActiveSubjects");
+            if(dt == null) return keywords;
+            foreach (DataRow dr in dt.Rows)
+                keywords.Add(dr["KeyWord"].ToString());
+            return keywords;
+        }
         #endregion
         #region Insert
         public bool AddPositiveWord(string word)

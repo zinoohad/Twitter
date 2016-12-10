@@ -17,11 +17,7 @@ namespace Twitter.Forms
 {
     public partial class TwitterResultDisplay : Form, Update
     {
-        private Twitter twitter = new Twitter
-        {
-            OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"],
-            OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"]
-        };
+        private TwitterAPI twitter = new TwitterAPI();
         private List<Tweets> tweets = new List<Tweets>();
         private int recordNumber = 0;
 

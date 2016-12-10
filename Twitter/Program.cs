@@ -25,11 +25,7 @@ namespace Twitter
         }    
         public static void test()
         {
-            var twitter = new Twitter
-            {
-                OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"],
-                OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"]
-            };
+            var twitter = new TwitterAPI();
 
             var a = twitter.GetUserFavoritesTweets("Barrefaeli");
 
