@@ -8,6 +8,6 @@ namespace Twitter.Classes.Navigators
 {
     public class UsersNavigator : TwitterNavigator
     {
-        public IList<Users> users { get; set; }
+        public IList<User> users { get; set; }
     }
 }

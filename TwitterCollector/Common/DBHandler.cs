@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using  DataBaseConnections;
 using System.Data;
+using Twitter.Classes;
 
 namespace TwitterCollector.Common
 {
@@ -12,6 +13,7 @@ namespace TwitterCollector.Common
     {
         #region Params
         private DBConnection db;
+        private static object tweetLocker = new object();
         #endregion
         #region Constructors
         public DBHandler() { db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); }
@@ -84,14 +86,35 @@ namespace TwitterCollector.Common
         private int Insert(string query) { return db.Insert(query); }
         #endregion
         #region Select
-        public List<string> GetActiveSubjects()
+        /// <summary>
+        /// Get all the database active subject
+        /// </summary>
+        /// <returns>Dictionary with the subjects ID and name.</returns>
+        public DataTable GetActiveSubjects()
+        {            
+            DataTable dt = Select("SELECT * FROM Subject");
+            return dt;
+        }
+        /// <summary>
+        /// Get all keywords belongs to subject.
+        /// </summary>
+        /// <param name="subjectID">The subject id from DB.</param>
+        /// <returns>Keys and values from DB.</returns>
+        public Dictionary<int, string> GetSubjectKeywords(int subjectID)
         {
-            List<string> keywords = new List<string>();
-            DataTable dt = Select("SELECT * FROM ViewActiveSubjects");
-            if(dt == null) return keywords;
+            Dictionary<int, string> keywords = new Dictionary<int, string>();
+            DataTable dt = Select(string.Format("SELECT * FROM ViewActiveSubjects WHERE ID = {0}", subjectID));
+            if (dt == null) return keywords;
             foreach (DataRow dr in dt.Rows)
-                keywords.Add(dr["KeyWord"].ToString());
+                keywords.Add(int.Parse(dr["KeywordID"].ToString()), dr["KeyWord"].ToString());
             return keywords;
+        }
+        public List<Tweet> GetTweetsWithLock(long userID)
+        {
+            lock (tweetLocker)
+            {
+
+            }
         }
         #endregion
         #region Insert
@@ -101,7 +124,7 @@ namespace TwitterCollector.Common
             string query = string.Format("INSERT INTO DictionaryPositiveNegative (Word, IsPositive) VALUES ('{0}', 1)", word);
             try
             {
-                db.Insert(query);
+                Insert(query);
                 return true;
             }
             catch { return false; }
@@ -112,13 +135,37 @@ namespace TwitterCollector.Common
             string query = string.Format("INSERT INTO DictionaryPositiveNegative (Word, IsPositive) VALUES ('{0}', 0)", word);
             try
             {
-                db.Insert(query);
+                Insert(query);
                 return true;
             }
             catch { return false; }
         }
+        public void SaveTweets(List<Tweet> tweets)
+        {
+            foreach (Tweet tweet in tweets)
+            {
+                User user = tweet.user;
+                Hashtag[] hashtag = tweet.entities.hashtags;
+
+            }
+            //Need to save user first
+        }
+        public void SaveUsers(List<User> tweets)
+        {
+
+        }
         #endregion
         #region Update
+        public bool UpdateSubjectStatus(int subjectID, bool status)
+        {
+            string query = string.Format("UPDATE Subject SET StartNewSubject = '{0}' WHERE ID = {1}", status, subjectID);
+            try
+            {
+                db.Update(query);
+                return true;
+            }
+            catch { return false; }
+        }
         #endregion
 
     }

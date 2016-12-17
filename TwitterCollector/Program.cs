@@ -15,7 +15,8 @@ namespace TwitterCollector
         static void Main()
         {
             DBHandler dbh = new DBHandler();
-
+            //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
+            List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
         }
     }
 }

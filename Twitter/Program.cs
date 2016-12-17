@@ -11,6 +11,8 @@ using Twitter.Common;
 using Twitter.Forms;
 using TopicSentimentAnalysis;
 using TopicSentimentAnalysis.Classes;
+using System.Threading;
+using Twitter.Controllers;
 namespace Twitter
 {
     static class Program
@@ -18,10 +20,10 @@ namespace Twitter
         [STAThread]
         static void Main()
         {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new TwitterResultDisplay());
-            test();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new TwitterResultDisplay());
+            //test();
         }    
         public static void test()
         {

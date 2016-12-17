@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Twitter.Classes
 {
-    public class Places
+    public class Place
     {
         public PlaceAttributes attributes { get; set; }
         public BoundingBox bounding_box { get; set; }

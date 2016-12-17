@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Twitter
+namespace Twitter.Classes
 {
     public class Entities
     {
-        public Hashtags[] hashtags { get; set; }
+        public Hashtag[] hashtags { get; set; }
         public Media[] media { get; set; }
         public URL[] urls { get; set; }
         public UserMention[] user_mentions { get; set; }
@@ -16,13 +16,13 @@ namespace Twitter
         public string hashtagsToString()
         {
             string s = "";
-            foreach (Hashtags h in hashtags)
+            foreach (Hashtag h in hashtags)
                 s += h.text + " , ";
             return s;
         }
     }
 
-    public class Hashtags
+    public class Hashtag
     {
         public int[] indices { get; set; }
         public string text { get; set; }

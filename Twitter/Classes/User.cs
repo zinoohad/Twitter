@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Twitter.Classes
 {
-    public class Users
+    public class User
     {
         public bool? contributors_enabled { get; set; }
         public string created_at { get; set; }
@@ -43,7 +43,7 @@ namespace Twitter.Classes
         public bool? Protected { get; set; }
         public string screen_name { get; set; }
         public bool? show_all_inline_media { get; set; }
-        public Tweets status { get; set; }
+        public Tweet status { get; set; }
         public int statuses_count { get; set; }
         public string time_zone { get; set; }
         public string url { get; set; }

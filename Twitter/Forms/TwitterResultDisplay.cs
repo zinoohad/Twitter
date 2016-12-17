@@ -18,7 +18,7 @@ namespace Twitter.Forms
     public partial class TwitterResultDisplay : Form, Update
     {
         private TwitterAPI twitter = new TwitterAPI();
-        private List<Tweets> tweets = new List<Tweets>();
+        private List<Tweet> tweets = new List<Tweet>();
         private int recordNumber = 0;
 
         public TwitterResultDisplay()
@@ -107,8 +107,8 @@ namespace Twitter.Forms
                     string lang = t5LangCB.SelectedItem.Equals("Hebrew") ? "he" : "en";
                     string resultType = t5ResultCB.SelectedItem.Equals("Recent") ? "recent" : t5ResultCB.SelectedItem.Equals("Popular") ? "popular" : "mixed";                    
                     SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number","Like Number", "Hashtags" });    // Set headers
-                    dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;                    
-                    (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, (int)t5TweetsPerPageUD.Value, lang, resultType, t5IncEntCB.Checked,this))).Start();
+                    dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, resultType, (int)t5TweetsPerPageUD.Value, lang, t5IncEntCB.Checked, this))).Start();
                     break;
                 case "t6GoB":
                     try
@@ -150,12 +150,12 @@ namespace Twitter.Forms
         #region Updates
         public void Update(object obj)
         {       
-            if(obj is List<Tweets>)
-                dgv.Invoke(new MethodInvoker(() => { UpdateTweets((List<Tweets>)obj); }));
+            if(obj is List<Tweet>)
+                dgv.Invoke(new MethodInvoker(() => { UpdateTweets((List<Tweet>)obj); }));
             else if(obj is long[])
                 dgv.Invoke(new MethodInvoker(() => { UpdateIDs((long[])obj); }));
-            else if(obj is List<Users>)
-                dgv.Invoke(new MethodInvoker(() => { UpdateUsers((List<Users>)obj); }));
+            else if(obj is List<User>)
+                dgv.Invoke(new MethodInvoker(() => { UpdateUsers((List<User>)obj); }));
         }
         public void UpdateIDs(long[] ids)
         {
@@ -165,19 +165,19 @@ namespace Twitter.Forms
                 AddRecord();
             }
         }
-        public void UpdateTweets(List<Tweets> tweets)
+        public void UpdateTweets(List<Tweet> tweets)
         {
             string hashtags;
-            foreach (Tweets t in tweets)
+            foreach (Tweet t in tweets)
             {
                 hashtags = t.entities != null && t.entities.hashtags != null ? t.entities.hashtagsToString() : "";
                 dgv.Rows.Add(t.id, t.created_at, t.text, t.user.lang, t.retweet_count,t.favorite_count, hashtags);
                 AddRecord();
             }
         }
-        public void UpdateUsers(List<Users> users)
+        public void UpdateUsers(List<User> users)
         {
-            foreach (Users u in users)
+            foreach (User u in users)
             {
                 dgv.Rows.Add(u.GetData());
                 AddRecord();

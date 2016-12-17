@@ -11,6 +11,21 @@
     <AssemblyName>TwitterCollector</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +50,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,13 +62,52 @@
     <Compile Include="Common\DBHandler.cs" />
     <Compile Include="Common\FileHandler.cs" />
     <Compile Include="Common\TwitterException.cs" />
+    <Compile Include="Common\WebHandler.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CDictionaryManager.cs" />
+    <Compile Include="Controllers\CMain.cs" />
+    <Compile Include="Controllers\CSettings.cs" />
+    <Compile Include="Controllers\CSubjectManager.cs" />
+    <Compile Include="Controllers\CSubjectResult.cs" />
+    <Compile Include="Forms\DictionaryManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DictionaryManager.Designer.cs">
+      <DependentUpon>DictionaryManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SubjectManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SubjectManager.Designer.cs">
+      <DependentUpon>SubjectManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SubjectResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SubjectResult.Designer.cs">
+      <DependentUpon>SubjectResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\BaseThread.cs" />
     <Compile Include="Threading\NewWordsCollector.cs" />
     <Compile Include="Threading\SentimentAnalysis.cs" />
+    <Compile Include="Threading\Supervisor.cs" />
     <Compile Include="Threading\TweetsCollector.cs" />
     <Compile Include="Threading\TweetsPosNeg.cs" />
+    <Compile Include="Threading\UserClassification.cs" />
     <Compile Include="Threading\UsersCollector.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +123,19 @@
       <Project>{944cd58e-ecb7-43fa-a6f6-b962cdf96676}</Project>
       <Name>Twitter</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
