@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Net.Http;
@@ -14,15 +15,28 @@ using Twitter.Interface;
 
 namespace Twitter
 {
-    public class Twitter
+    public class TwitterAPI
     {
         #region Params
-        public string OAuthConsumerSecret { get; set; }        
-        public string OAuthConsumerKey { get; set; }
+        private string OAuthConsumerSecret { get; set; }        
+        private string OAuthConsumerKey { get; set; }
         private const string serviceAddress = "https://api.twitter.com/1.1";    //Twitter API Address
         private JavaScriptSerializer serializer = new JavaScriptSerializer();
         private Encoding requestEncoding = Encoding.GetEncoding(1255);  //Hebrew
         #endregion
+
+        public TwitterAPI()
+        {
+            OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"];
+            OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"];
+        }
+        public TwitterAPI(string OAuthConsumerKey, string OAuthConsumerSecret)
+        {
+            this.OAuthConsumerSecret = OAuthConsumerSecret;
+            this.OAuthConsumerKey = OAuthConsumerKey;
+        }
+
+
         #region Global Functions
         /// <summary>
         /// Account Authorization.
@@ -63,7 +77,7 @@ namespace Twitter
         }
         #endregion
         #region GET Requests
-         ///<summary>
+        ///<summary>
          ///Returns a collection of the most recent Tweets posted by the user indicated by the screen_name or user_id parameters.
          ///User timelines belonging to protected users may only be requested when the authenticated user either “owns” the timeline or is an approved follower of the owner.
          ///The timeline returned is the equivalent of the one seen as a user’s profile on twitter.com.
@@ -75,18 +89,18 @@ namespace Twitter
          ///<param name="countPerPage">Specifies the number of Tweets to try and retrieve, up to a maximum of 200 per distinct request. The value of count is best thought of as a limit to the number of Tweets to return because suspended or deleted content is removed after the count has been applied. We include retweets in the count, even if include_rts is not supplied. It is recommended you always send include_rts=1 when using this API method.</param>
          ///<param name="accessToken">Optional access token.</param>
          ///<returns>List of tweets.</returns>
-        public List<Tweets> GetTweets(string userName, long? userID = null, int maxTweets = 3200, int countPerPage = 200, Update updater = null, string accessToken = null)
+        public List<Tweet> GetTweets(string userName, long? userID = null, int maxTweets = 3200, int countPerPage = 200, Update updater = null, string accessToken = null)
         {
-            List<Tweets> t = new List<Tweets>();
+            List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1", countPerPage, userName);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userName);
             else
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1", countPerPage, userID);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userID);
             try
             {
                 jsonStr = GetRequest(requestUri);
-                t = serializer.Deserialize<List<Tweets>>(jsonStr);
+                t = serializer.Deserialize<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.id).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);
@@ -95,7 +109,7 @@ namespace Twitter
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    List<Tweets> tmp = serializer.Deserialize<List<Tweets>>(jsonStr);
+                    List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
                     t.AddRange(tmp);
                     tmp = tmp.OrderBy(x => x.id).ToList();
                     if (updater != null) // Add new tweets to UI
@@ -157,10 +171,10 @@ namespace Twitter
         /// <param name="countPerPage">The number of users to return per page, up to a maximum of 200. Defaults to 20.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of users.</returns>
-        public List<Users> GetFriends(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, Update updater = null, string accessToken = null)
+        public List<User> GetFriends(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, Update updater = null, string accessToken = null)
         {
             long cursor = -1;
-            List<Users> users = new List<Users>();
+            List<User> users = new List<User>();
             UsersNavigator u = new UsersNavigator();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
@@ -225,10 +239,10 @@ namespace Twitter
         /// <param name="countPerPage">The number of users to return per page, up to a maximum of 200. Defaults to 20.</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of users.</returns>
-        public List<Users> GetFollowers(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, Update updater = null, string accessToken = null)
+        public List<User> GetFollowers(string userName, long? userID = null, bool withoutTweets = true, int countPerPage = 200, Update updater = null, string accessToken = null)
         {
             long cursor = -1;
-            List<Users> users = new List<Users>();
+            List<User> users = new List<User>();
             UsersNavigator u = new UsersNavigator();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
@@ -269,15 +283,15 @@ namespace Twitter
         /// <param name="includeEntities">The entities node will not be included when set to false.	</param>
         /// <param name="accessToken">Optional access token.</param>
         /// <returns>List of tweets.</returns>
-        public List<Tweets> SearchTweets(string keywords, int maxTweets = 2000, int countPerPage = 100, string language = "he", string resultType = "recent", bool includeEntities = false, Update updater = null, string accessToken = null)
+        public List<Tweet> SearchTweets(string keywords, int maxTweets = 2000, string resultType = "mixed", int countPerPage = 100, string language = "en", bool includeEntities = true, Update updater = null, string accessToken = null)
         {
-            List<Tweets> t = new List<Tweets>();
+            List<Tweet> t = new List<Tweet>();
             SearchTweetsNavigator stn = new SearchTweetsNavigator();
             string requestUri, requestUriWithCursor, jsonStr;
             try
             {
                 keywords = keywords.Replace(' ', '+').Replace("#", "%23").Replace("“", "%22");
-                requestUri = string.Format(serviceAddress + "/search/tweets.json?q={0}&count={1}&lang={2}&result_type={3}&include_entities={4}", keywords, countPerPage, language, resultType, includeEntities);
+                requestUri = string.Format(serviceAddress + "/search/tweets.json?q={0}&count={1}&lang={2}&result_type={3}&include_entities={4}&include_my_retweet=1", keywords, countPerPage, language, resultType, includeEntities);
                 jsonStr = GetRequest(requestUri);
                 stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
                 t.AddRange(stn.statuses);
@@ -290,7 +304,7 @@ namespace Twitter
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
                     stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
-                    List<Tweets> tmp = stn.statuses.OrderBy(x => x.id).ToList();
+                    List<Tweet> tmp = stn.statuses.OrderBy(x => x.id).ToList();
                     t.AddRange(tmp);
                     if (updater != null)    // Add new tweets to UI
                         updater.Update(tmp);
@@ -339,6 +353,54 @@ namespace Twitter
             if (updater != null) updater.EndRequest();
             return friendsIDs;
         }
+        /// <summary>
+        /// Returns the X most recent Tweets favorited by the authenticating or specified user.
+        /// </summary>
+        /// <param name="userName">	The screen name of the user for whom to return results for.</param>
+        /// <param name="userID">The ID of the user for whom to return results for.</param>
+        /// <param name="maxTweets">Returns results with an ID less than (that is, older than) or equal to the specified ID.</param>
+        /// <param name="countPerPage">Specifies the number of records to retrieve. Must be less than or equal to 200; defaults to 20. The value of count is best thought of as a limit to the number of tweets to return because suspended or deleted content is removed after the count has been applied.</param>
+        /// <param name="includeEntities">The entities node will be omitted when set to false .</param>
+        /// <param name="updater">Update interface</param>
+        /// <returns>List of tweets.</returns>
+        public List<Tweet> GetUserFavoritesTweets(string userName, long? userID = null, int maxTweets = 4000, int countPerPage = 200, bool includeEntities = false, Update updater = null, string accessToken = null)
+        {
+            List<Tweet> t = new List<Tweet>();
+            string requestUri, requestUriWithCursor, jsonStr;
+            if (userID == null)
+                requestUri = string.Format(serviceAddress + "/favorites/list.json?count={0}&screen_name={1}&include_entities={2}", countPerPage, userName, includeEntities);
+            else
+                requestUri = string.Format(serviceAddress + "/favorites/list.json?count={0}&user_id={1}&include_entities={2}", countPerPage, userID, includeEntities);
+            try
+            {
+                jsonStr = GetRequest(requestUri);
+                t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                t = t.OrderBy(x => x.id).ToList();
+                if (updater != null) // Add new tweets to UI
+                    updater.Update(t);
+                long SinceID = t[0].id;
+                while (t.Count < maxTweets)
+                {
+                    requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
+                    jsonStr = GetRequest(requestUriWithCursor);
+                    List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    t.AddRange(tmp);
+                    tmp = tmp.OrderBy(x => x.id).ToList();
+                    if (updater != null) // Add new tweets to UI
+                        updater.Update(tmp);
+                    //t = t.OrderBy(x => x.id).ToList();
+                    SinceID = tmp[0].id;
+                    if (tmp.Count <= 5)
+                    {
+                        if (updater != null) updater.EndRequest();
+                        return t;
+                    }
+                }
+                if (updater != null) updater.EndRequest();
+                return t;
+            }
+            catch { if (updater != null)updater.EndRequest(); return t; }
+        }     
         #endregion
     }
 }

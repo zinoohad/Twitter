@@ -1,0 +1,13 @@
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\TwitterCollector.exe
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\TwitterCollector.pdb
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\DataBaseConnections.dll
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\TopicSentimentAnalysis.dll
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\Twitter.exe
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\Oracle.ManagedDataAccess.dll
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\Npgsql.dll
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\DataBaseConnections.pdb
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\TopicSentimentAnalysis.pdb
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\Twitter.pdb
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csprojResolveAssemblyReference.cache
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.exe
+C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.pdb

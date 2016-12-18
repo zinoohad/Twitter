@@ -8,7 +8,7 @@ namespace Twitter.Classes.Navigators
 {
     class SearchTweetsNavigator
     {
-        public IList<Tweets> statuses { get; set; }
+        public IList<Tweet> statuses { get; set; }
         public SearchMetadata search_metadata { get; set; }
     }
 }
