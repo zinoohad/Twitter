@@ -45,17 +45,28 @@ namespace TwitterCollector.Threading
             foreach(KeyValuePair<int,string> keyword in keywords)
             {
                 List<Tweet> tweets = GetTweetsByKeyword(keyword.Value);
-                List<User> users = tweets.Select(x => x.user).ToList<User>();
-                db.SaveTweets(tweets);
+                foreach (Tweet tweet in tweets)
+                {
+                    Tweet t = tweet;
+                    IsTweetRelevantToSubject(ref t);
+                    db.SaveTweet(t);
+                }
 
             }
-            
+            ContinueToSearch();
 
         }
         private void ContinueToSearch()
         {
+
         }
 
+        /// <summary>
+        /// There no more tweets in the DB that not already checked.
+        /// </summary>
+        private void ZeroState()
+        {
+        }
          
         /// <summary>
         /// Get tweet referance and put the subject keyword id, if contains one, else set zero.

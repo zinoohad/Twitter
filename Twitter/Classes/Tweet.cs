@@ -52,9 +52,9 @@ namespace Twitter.Classes
 
 
         #region Project Extra Fields
-        public int keywordID;
-        public int positiveWordCount;
-        public int negativeWordCount;
+        public int? keywordID;
+        public int? positiveWordCount;
+        public int? negativeWordCount;
         #endregion
 
         public object[] GetData()
