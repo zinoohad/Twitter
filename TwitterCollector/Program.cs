@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TwitterCollector.Common;
 using DataBaseConnections;
+using System.Windows.Forms;
+using TwitterCollector.Forms;
+using TwitterCollector.Controllers;
 
 namespace TwitterCollector
 {
@@ -14,9 +17,18 @@ namespace TwitterCollector
         [STAThread]
         static void Main()
         {
-            DBHandler dbh = new DBHandler();
+            SubjectManager sm = new SubjectManager();
+            sm.Visible = false;
+            CSubjectManager controller = new CSubjectManager(sm);
+            sm.ShowDialog();
+
+
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new SubjectManager());
+            //DBHandler dbh = new DBHandler();
             //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
-            List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
+            //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
         }
     }
 }

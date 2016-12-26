@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBaseConnections", "Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterCollector", "TwitterCollector\TwitterCollector.csproj", "{7F342281-23A8-4260-AAD6-657AFDD868C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToggleSwitch", "..\..\..\Google Drive\c# good code\ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj", "{49B88FFA-F02C-4709-BA65-9F8996444ECD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{7F342281-23A8-4260-AAD6-657AFDD868C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F342281-23A8-4260-AAD6-657AFDD868C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F342281-23A8-4260-AAD6-657AFDD868C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B88FFA-F02C-4709-BA65-9F8996444ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B88FFA-F02C-4709-BA65-9F8996444ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B88FFA-F02C-4709-BA65-9F8996444ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B88FFA-F02C-4709-BA65-9F8996444ECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

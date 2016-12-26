@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TwitterCollector.Common;
 
 namespace TwitterCollector.Forms
 {
@@ -16,5 +17,11 @@ namespace TwitterCollector.Forms
         {
             InitializeComponent();
         }
+        #region Handlers
+        private void twitterTestUIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.OpenTwitterRestAPI();
+        }
+        #endregion
     }
 }

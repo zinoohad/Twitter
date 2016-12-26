@@ -20,6 +20,7 @@ namespace Twitter
         [STAThread]
         static void Main()
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new TwitterResultDisplay());
@@ -28,7 +29,7 @@ namespace Twitter
         public static void test()
         {
             var twitter = new TwitterAPI();
-
+            User u = twitter.GetUserProfile("", 185260477);
             var a = twitter.GetUserFavoritesTweets("Barrefaeli");
 
         }

@@ -363,7 +363,7 @@ namespace Twitter
         /// <param name="includeEntities">The entities node will be omitted when set to false .</param>
         /// <param name="updater">Update interface</param>
         /// <returns>List of tweets.</returns>
-        public List<Tweet> GetUserFavoritesTweets(string userName, long? userID = null, int maxTweets = 4000, int countPerPage = 200, bool includeEntities = false, Update updater = null, string accessToken = null)
+        public List<Tweet> GetUserFavoritesTweets(string userName, long? userID = null, int maxTweets = 4000, int countPerPage = 200, bool includeEntities = true, Update updater = null, string accessToken = null)
         {
             List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
@@ -400,7 +400,21 @@ namespace Twitter
                 return t;
             }
             catch { if (updater != null)updater.EndRequest(); return t; }
-        }     
+        }
+        public User GetUserProfile(string userName, long? userID = null, bool includeEntities = true)
+        {
+            string requestUri, jsonStr;
+            if (userID == null)
+                requestUri = string.Format(serviceAddress + "/users/show.json?screen_name={0}&include_entities={1}", userName, includeEntities);
+            else
+                requestUri = string.Format(serviceAddress + "/users/show.json?user_id={0}&include_entities={1}", userID, includeEntities);
+            try
+            {
+                jsonStr = GetRequest(requestUri);
+                return serializer.Deserialize<User>(jsonStr);
+            }
+            catch { return null; }
+        }
         #endregion
     }
 }

@@ -15,6 +15,11 @@ namespace TwitterCollector.Forms
         public Main()
         {
             InitializeComponent();
+            Ini();
+        }
+        private void Ini()
+        {
+
         }
     }
 }

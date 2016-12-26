@@ -41,7 +41,6 @@ namespace TwitterCollector.Threading
         /// </summary>
         private void StartNewSearch()
         {
-            db.UpdateSubjectStatus(subjectID, false); //  Set flag to false
             foreach(KeyValuePair<int,string> keyword in keywords)
             {
                 List<Tweet> tweets = GetTweetsByKeyword(keyword.Value);
@@ -53,18 +52,37 @@ namespace TwitterCollector.Threading
                 }
 
             }
+            db.UpdateSubjectStatus(subjectID, false); //  Set flag to false
             ContinueToSearch();
 
         }
         private void ContinueToSearch()
         {
+            List<Tweet> topTweets = db.GetTopTweets(keywords);
+            if (topTweets.Count == 0) ZeroPoint();
+            foreach(Tweet t in topTweets)
+            {
+                List<long> retweetsIDs = twitter.GetRetweetIDs(t.id_str);
+                foreach (long id in retweetsIDs)
+                {
+                    User u = twitter.GetUserProfile("", id);
+                    if (u == null) continue;
+                    List<Tweet> tweets = twitter.GetTweets("", u.id);
+                    foreach (Tweet tweet in tweets)
+                    {
+                        Tweet tmpT = tweet;
+                        IsTweetRelevantToSubject(ref tmpT);
+                        db.SaveTweet(tmpT);
+                    }
 
+                }
+            }
         }
 
         /// <summary>
         /// There no more tweets in the DB that not already checked.
         /// </summary>
-        private void ZeroState()
+        private void ZeroPoint()
         {
         }
          

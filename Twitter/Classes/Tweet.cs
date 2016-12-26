@@ -63,6 +63,28 @@ namespace Twitter.Classes
             return row;
         }
 
+        public Tweet() { }
+        public Tweet(DataRow dr)
+        {
+
+            id = (long)dr["ID"];
+            id_str = dr["ID"].ToString();
+            text = dr["Text"].ToString();
+            lang = dr["Language"].ToString();
+            created_at = dr["Date"].ToString();
+            retweet_count = (int)dr["RetweetCount"];
+            favorite_count = (int?)dr["FavoritesCount"];
+            user = new User();
+            user.id = (long)dr["UserID"];
+            user.id_str = dr["UserID"].ToString();
+            keywordID = (int?)dr["SubjectKeyword"];
+            if (!dr.IsNull("RetweetID"))
+            {
+                retweeted_status = new Tweet();
+                retweeted_status.id = (long)dr["RetweetID"];
+                retweeted_status.id_str = dr["RetweetID"].ToString();
+            }
+        }
 
 
 
