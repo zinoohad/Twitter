@@ -9,6 +9,8 @@ using DataBaseConnections;
 using System.Windows.Forms;
 using TwitterCollector.Forms;
 using TwitterCollector.Controllers;
+using Receptiviti.Client;
+using TopicSentimentAnalysis;
 
 namespace TwitterCollector
 {
@@ -17,15 +19,13 @@ namespace TwitterCollector
         [STAThread]
         static void Main()
         {
-            SubjectManager sm = new SubjectManager();
-            sm.Visible = false;
-            CSubjectManager controller = new CSubjectManager(sm);
-            sm.ShowDialog();
-
-
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new SubjectManager());
+            //ImageAnalysis i = new ImageAnalysis();
+            //i.GetImageAnalysisImagga("http://steezo.com/wp-content/uploads/2012/12/man-in-suit2.jpg");
+            //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
+            //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new SubjectManager());
             //DBHandler dbh = new DBHandler();
             //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
             //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");

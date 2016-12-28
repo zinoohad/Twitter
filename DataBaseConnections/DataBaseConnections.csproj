@@ -45,6 +45,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References Dlls\MySql.Fabric.Plugin.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Npgsql, Version=2.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References Dlls\Npgsql.dll</HintPath>
@@ -52,6 +56,10 @@
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References Dlls\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Receptiviti.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Receptiviti.Client.1.0.13\lib\net451\Receptiviti.Client.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,6 +85,9 @@
     <Content Include="References Dlls\MySql.Fabric.Plugin.dll" />
     <Content Include="References Dlls\Npgsql.dll" />
     <Content Include="References Dlls\Oracle.ManagedDataAccess.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -100,7 +100,8 @@ namespace Twitter
             try
             {
                 jsonStr = GetRequest(requestUri);
-                t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                //t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.id).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);
@@ -109,7 +110,8 @@ namespace Twitter
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    //List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    List<Tweet> tmp = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                     t.AddRange(tmp);
                     tmp = tmp.OrderBy(x => x.id).ToList();
                     if (updater != null) // Add new tweets to UI
@@ -151,7 +153,8 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    //f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    f = JsonConvert.DeserializeObject<FriendsNavigator>(jsonStr);                    
                     if (updater != null) // Add new IDs to UI
                         updater.Update(f.ids);
                     friendsIDs.AddRange(f.ids);
@@ -188,7 +191,8 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    //u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    u = JsonConvert.DeserializeObject<UsersNavigator>(jsonStr);
                     if (cursor == u.next_cursor)
                         break;
                     else
@@ -219,7 +223,8 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    //f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    f = JsonConvert.DeserializeObject<FriendsNavigator>(jsonStr);
                     if (updater != null) // Add new IDs to UI
                         updater.Update(f.ids);
                     friendsIDs.AddRange(f.ids);
@@ -257,7 +262,8 @@ namespace Twitter
                 try
                 {
                     u = null;
-                    u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    //u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    u = JsonConvert.DeserializeObject<UsersNavigator>(jsonStr);                    
                     if (cursor == u.next_cursor)
                         break;
                     else
@@ -293,7 +299,8 @@ namespace Twitter
                 keywords = keywords.Replace(' ', '+').Replace("#", "%23").Replace("“", "%22");
                 requestUri = string.Format(serviceAddress + "/search/tweets.json?q={0}&count={1}&lang={2}&result_type={3}&include_entities={4}&include_my_retweet=1", keywords, countPerPage, language, resultType, includeEntities);
                 jsonStr = GetRequest(requestUri);
-                stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                //stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                stn = JsonConvert.DeserializeObject<SearchTweetsNavigator>(jsonStr);
                 t.AddRange(stn.statuses);
                 t = t.OrderBy(x => x.id).ToList();
                 if (updater != null) // Add new tweets to UI
@@ -303,7 +310,8 @@ namespace Twitter
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                    //stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                    stn = JsonConvert.DeserializeObject<SearchTweetsNavigator>(jsonStr);                    
                     List<Tweet> tmp = stn.statuses.OrderBy(x => x.id).ToList();
                     t.AddRange(tmp);
                     if (updater != null)    // Add new tweets to UI
@@ -342,7 +350,8 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    r = serializer.Deserialize<RetweetNavigator>(jsonStr);
+                    //r = serializer.Deserialize<RetweetNavigator>(jsonStr);
+                    r = JsonConvert.DeserializeObject<RetweetNavigator>(jsonStr);
                     if (updater != null) // Add new IDs to UI
                         updater.Update(r.ids);
                     friendsIDs.AddRange(r.ids);
@@ -374,7 +383,8 @@ namespace Twitter
             try
             {
                 jsonStr = GetRequest(requestUri);
-                t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                //t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.id).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);
@@ -383,7 +393,8 @@ namespace Twitter
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    //List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    List<Tweet> tmp = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);                   
                     t.AddRange(tmp);
                     tmp = tmp.OrderBy(x => x.id).ToList();
                     if (updater != null) // Add new tweets to UI
@@ -411,7 +422,7 @@ namespace Twitter
             try
             {
                 jsonStr = GetRequest(requestUri);
-                return serializer.Deserialize<User>(jsonStr);
+                return JsonConvert.DeserializeObject<User>(jsonStr);
             }
             catch { return null; }
         }

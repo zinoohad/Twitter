@@ -104,6 +104,7 @@ namespace TwitterCollector.Common
         private DataTable Select(string query) { return db.Select(query); }
         private int Update(string query) { return db.Update(query); }
         private int Insert(string query) { return db.Insert(query); }
+        private int Delete(string query) { return db.ExecuteNonQuery(query); }
         #endregion
         #region Select
         /// <summary>
@@ -233,8 +234,8 @@ namespace TwitterCollector.Common
             {
                 tweetID = (long)Insert(string.Format(@"INSERT INTO Tweets (ID,Date,Text,Language,RetweetCount,FavoritesCount,UserID,PlaceID,TweetLength,HasHashtags,SubjectKeyword,RetweetID) 
                               VALUES ({0},'{1}','{2}','{3}',{4},{5},{6},{7},{8},'{9}',{10},'{11}')"
-                    , tweet.id, tweet.created_at, tweet.text, tweet.lang, tweet.retweet_count == null ? "'NULL'" : tweet.retweet_count.ToString(), tweet.favorite_count, userID, placeID == null ? "'NULL'" : placeID.ToString(),
-                                tweet.text.Length, hasHashtag.ToString(), tweet.keywordID == null ? "'NULL'" : tweet.keywordID.ToString(), tweet.retweeted_status == null ? "NULL" : tweet.retweeted_status.id_str));
+                    , tweet.id, tweet.CreateAt, tweet.text, tweet.lang, tweet.retweet_count == 0 ? "'NULL'" : tweet.retweet_count.ToString(), tweet.favorite_count, userID, placeID == null ? "'NULL'" : placeID.ToString(),
+                                tweet.text.Length, hasHashtag.ToString(), tweet.keywordID == null ? "'NULL'" : tweet.keywordID.ToString(), tweet.retweeted_status == null ? "'NULL'" : tweet.retweeted_status.id_str));
                 if (tweet.keywordID != null) IncTweetsKeywordCounter((int)tweet.keywordID);
                 IncTweetsCount();
             }
@@ -284,6 +285,57 @@ namespace TwitterCollector.Common
         {
 
         }
+        public int AddRemoveSubject(Action a, int subjectID = 0, string subjectName = "")
+        {
+            DataTable dt;
+            if (a == Action.ADD)
+            {
+                dt = Select(string.Format("SELECT * FROM Subject WHERE Subject = '{0}'", subjectName));
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    subjectID = Insert(string.Format("INSERT INTO Subject (Subject,IsActive,UsersBelong,StartNewSubject) VALUES ('{0}','{1}',0,'{1}')", subjectName, "True"));
+                    
+                }
+                else
+                {
+                    DataRow dr = dt.Rows[0];
+                    subjectID = (int)dr["ID"];
+                }
+            }
+            else if (a == Action.REMOVE)
+            {
+                if (subjectID != 0)
+                {
+                    subjectID = Delete(string.Format("DELETE FROM Subject WHERE ID = {0}",subjectID));
+                }
+            }
+            return subjectID;
+        }
+        public int AddRemoveKeyword(Action a, int subjectID, int keywordID = 0, string keywordName = "")
+        {
+            DataTable dt;
+            if (a == Action.ADD)
+            {
+                dt = Select(string.Format("SELECT * FROM SubjectKeywords WHERE SubjectID = {0} AND Keyword = '{1}'", subjectID,keywordName));
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    keywordID = Insert(string.Format("INSERT INTO SubjectKeywords (SubjectID,Keyword,Count) VALUES ({0},'{1}',0)", subjectID, keywordName));
+                }
+                else
+                {
+                    DataRow dr = dt.Rows[0];
+                    keywordID = (int)dr["ID"];
+                }
+            }
+            else if (a == Action.REMOVE)
+            {
+                if (keywordID != 0)
+                {
+                    keywordID = Delete(string.Format("DELETE FROM SubjectKeywords WHERE ID = {0}", keywordID));
+                }
+            }
+            return keywordID;
+        }
         #endregion
         #region Update
         public bool UpdateSubjectStatus(int subjectID, bool status)
@@ -298,5 +350,10 @@ namespace TwitterCollector.Common
         }
         #endregion
 
+    }
+    public enum Action
+    {
+        ADD,
+        REMOVE
     }
 }

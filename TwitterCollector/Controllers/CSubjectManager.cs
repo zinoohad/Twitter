@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TwitterCollector.Forms;
+using TwitterCollector.Common;
 
 namespace TwitterCollector.Controllers
 {
@@ -12,10 +13,21 @@ namespace TwitterCollector.Controllers
     {
         #region Params
         private SubjectManager sm;
+        private Dictionary<int, Dictionary<int, string>> keywords = new Dictionary<int,Dictionary<int,string>>();
+        private Dictionary<int, string> subjects = new Dictionary<int,string>();
         #endregion
         #region UI Functions
         #endregion
         #region Functions
+        private int CheckIfValueExistsInDictionary(Dictionary<int, string> dic, string value)
+        {
+            foreach(KeyValuePair<int, string> d in dic) // or foreach(book b in books.Values)
+            {
+                if (d.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase))
+                    return d.Key;
+            }
+            return -1;
+        }
         #endregion
         public CSubjectManager(SubjectManager sm)
         {
@@ -30,7 +42,15 @@ namespace TwitterCollector.Controllers
             }
             else
             {
-                //TODO: write to db
+                if (subjects.Values.Contains(subject)) return;  // The subject already exists
+                int subjectID = db.AddRemoveSubject(Common.Action.ADD, 0, subject); //Save subject in DB
+                subjects.Add(subjectID, subject);   //Save subject in global param
+                int keywordID = db.AddRemoveKeyword(Common.Action.ADD, subjectID, 0, subject);  //Save keyword in DB
+                //Save keyword in global param
+                Dictionary<int, string> tmpKeyword = new Dictionary<int, string>();
+                tmpKeyword.Add(keywordID, subject);
+                keywords.Add(subjectID, tmpKeyword);
+
                 sm.AddSubjectToGrid(0, subject);
             }
         }
@@ -42,7 +62,15 @@ namespace TwitterCollector.Controllers
             }
             else
             {
-                //TODO: write to db
+                int subjectID = CheckIfValueExistsInDictionary(subjects,subject);
+                if (keywords[subjectID].Values.Contains(keyword)) return;    // The keyword already exists
+                int keywordID = db.AddRemoveKeyword(Common.Action.ADD, subjectID, 0, keyword); //Save keyword in DB
+
+                //Save keyword in global param
+                Dictionary<int, string> tmpKeyword = keywords[subjectID];
+                tmpKeyword.Add(keywordID, keyword);
+                keywords[subjectID] = tmpKeyword;
+
                 sm.AddKeywordToGrid(0, keyword);
             }
         }

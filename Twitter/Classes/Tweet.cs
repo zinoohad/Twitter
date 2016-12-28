@@ -18,7 +18,8 @@ namespace Twitter.Classes
         public Coordinates coordinates { get; set; }
         //[JsonProperty(PropertyName = "created_at")]
         //[XmlElement(ElementName = "created_at")]
-        public string created_at { get; set; }
+        [JsonProperty("created_at")]
+        public string CreateAt { get; set; }
         public User current_user_retweet { get; set; }
         public Entities entities { get; set; }
         public int? favorite_count { get; set; }
@@ -59,7 +60,7 @@ namespace Twitter.Classes
 
         public object[] GetData()
         {
-            object[] row = new object[] { id.ToString(), created_at, text, lang, retweet_count.ToString(), entities.hashtagsToString() };
+            object[] row = new object[] { id.ToString(), CreateAt, text, lang, retweet_count.ToString(), entities.hashtagsToString() };
             return row;
         }
 
@@ -71,7 +72,7 @@ namespace Twitter.Classes
             id_str = dr["ID"].ToString();
             text = dr["Text"].ToString();
             lang = dr["Language"].ToString();
-            created_at = dr["Date"].ToString();
+            CreateAt = dr["Date"].ToString();
             retweet_count = (int)dr["RetweetCount"];
             favorite_count = (int?)dr["FavoritesCount"];
             user = new User();
