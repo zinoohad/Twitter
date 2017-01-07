@@ -107,7 +107,7 @@ namespace Twitter.Forms
                     string lang = t5LangCB.SelectedItem.Equals("Hebrew") ? "he" : "en";
                     string resultType = t5ResultCB.SelectedItem.Equals("Recent") ? "recent" : t5ResultCB.SelectedItem.Equals("Popular") ? "popular" : "mixed";                    
                     SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number","Like Number", "Hashtags" });    // Set headers
-                    dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    //dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, resultType, (int)t5TweetsPerPageUD.Value, lang, t5IncEntCB.Checked, this))).Start();
                     break;
                 case "t6GoB":
@@ -204,6 +204,10 @@ namespace Twitter.Forms
             else
                 recordNumber++;
             recordL.Text = string.Format("Record Number: {0}", recordNumber);
+        }
+        public void ExternalShow()
+        {
+            this.BeginInvoke(new MethodInvoker(() => { this.Show(); }));
         }
         #endregion
         #region DataGridView

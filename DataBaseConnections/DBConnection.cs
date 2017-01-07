@@ -113,6 +113,14 @@ namespace DataBaseConnections
             CloseConnection();
             return recordNum;
         }
+        public int Delete(string sqlQuery)
+        {
+            int recordNum;
+            OpenConnection();
+            recordNum = _DBConnection.Delete(sqlQuery);
+            CloseConnection();
+            return recordNum;
+        }
         public int ExecuteNonQuery(string sqlQuery)
         {
             int recordNum;

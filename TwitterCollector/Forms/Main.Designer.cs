@@ -28,47 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.eDITToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vIEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topPanel = new System.Windows.Forms.Panel();
             this.tiltleL = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.menuStrip1.SuspendLayout();
+            this.lastSubject = new System.Windows.Forms.Label();
+            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.mainIcon = new System.Windows.Forms.ToolStripButton();
+            this.subjectIcon = new System.Windows.Forms.ToolStripButton();
+            this.statisticsIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolIcon = new System.Windows.Forms.ToolStripButton();
+            this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
             this.topPanel.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.eDITToolStripMenuItem,
-            this.vIEWToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1017, 28);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(47, 24);
-            this.fileToolStripMenuItem.Text = "FILE";
-            // 
-            // eDITToolStripMenuItem
-            // 
-            this.eDITToolStripMenuItem.Name = "eDITToolStripMenuItem";
-            this.eDITToolStripMenuItem.Size = new System.Drawing.Size(52, 24);
-            this.eDITToolStripMenuItem.Text = "EDIT";
-            // 
-            // vIEWToolStripMenuItem
-            // 
-            this.vIEWToolStripMenuItem.Name = "vIEWToolStripMenuItem";
-            this.vIEWToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
-            this.vIEWToolStripMenuItem.Text = "VIEW";
             // 
             // topPanel
             // 
@@ -92,29 +82,181 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
+            this.panel1.Controls.Add(this.lastSubject);
+            this.panel1.Controls.Add(this.chart2);
+            this.panel1.Controls.Add(this.chart1);
             this.panel1.Location = new System.Drawing.Point(13, 89);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(992, 585);
             this.panel1.TabIndex = 2;
+            // 
+            // lastSubject
+            // 
+            this.lastSubject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lastSubject.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.lastSubject.Location = new System.Drawing.Point(3, 28);
+            this.lastSubject.Name = "lastSubject";
+            this.lastSubject.Size = new System.Drawing.Size(986, 58);
+            this.lastSubject.TabIndex = 11;
+            this.lastSubject.Text = "Last Subject Division";
+            this.lastSubject.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // chart2
+            // 
+            this.chart2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea1.Name = "ChartArea1";
+            this.chart2.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart2.Legends.Add(legend1);
+            this.chart2.Location = new System.Drawing.Point(505, 159);
+            this.chart2.Name = "chart2";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart2.Series.Add(series1);
+            this.chart2.Size = new System.Drawing.Size(484, 406);
+            this.chart2.TabIndex = 10;
+            this.chart2.Text = "chart2";
+            title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
+            title1.Name = "Title";
+            title1.Text = "Gender Division";
+            this.chart2.Titles.Add(title1);
+            // 
+            // chart1
+            // 
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
+            this.chart1.Location = new System.Drawing.Point(3, 159);
+            this.chart1.Name = "chart1";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(496, 398);
+            this.chart1.TabIndex = 9;
+            this.chart1.Text = "chart1v";
+            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
+            title2.Name = "Age Split";
+            title2.Text = "Age Division";
+            this.chart1.Titles.Add(title2);
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mainIcon,
+            this.toolStripSeparator4,
+            this.subjectIcon,
+            this.toolStripSeparator1,
+            this.statisticsIcon,
+            this.toolStripSeparator2,
+            this.toolIcon,
+            this.toolStripSeparator3,
+            this.dictionaryIcon});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(1017, 27);
+            this.toolStrip1.TabIndex = 3;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
+            // 
+            // mainIcon
+            // 
+            this.mainIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mainIcon.Image = global::TwitterCollector.Properties.Resources.home;
+            this.mainIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mainIcon.Name = "mainIcon";
+            this.mainIcon.Size = new System.Drawing.Size(23, 24);
+            this.mainIcon.Text = "toolStripButton1";
+            this.mainIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // subjectIcon
+            // 
+            this.subjectIcon.Image = global::TwitterCollector.Properties.Resources.blue_pencil;
+            this.subjectIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.subjectIcon.Name = "subjectIcon";
+            this.subjectIcon.Size = new System.Drawing.Size(78, 24);
+            this.subjectIcon.Text = "Subject";
+            this.subjectIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // statisticsIcon
+            // 
+            this.statisticsIcon.Image = global::TwitterCollector.Properties.Resources.pie_chart;
+            this.statisticsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.statisticsIcon.Name = "statisticsIcon";
+            this.statisticsIcon.Size = new System.Drawing.Size(87, 24);
+            this.statisticsIcon.Text = "Statistics";
+            this.statisticsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // toolIcon
+            // 
+            this.toolIcon.Image = global::TwitterCollector.Properties.Resources.twitter;
+            this.toolIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolIcon.Name = "toolIcon";
+            this.toolIcon.Size = new System.Drawing.Size(155, 24);
+            this.toolIcon.Text = "Twitter Search Tool";
+            this.toolIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // dictionaryIcon
+            // 
+            this.dictionaryIcon.Image = global::TwitterCollector.Properties.Resources.dictionary;
+            this.dictionaryIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.dictionaryIcon.Name = "dictionaryIcon";
+            this.dictionaryIcon.Size = new System.Drawing.Size(97, 24);
+            this.dictionaryIcon.Text = "Dictionary";
+            this.dictionaryIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1017, 754);
+            this.ClientSize = new System.Drawing.Size(1017, 688);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.topPanel);
-            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Twitter Tool";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onExit_Click);
             this.topPanel.ResumeLayout(false);
             this.topPanel.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -122,12 +264,21 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem eDITToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem vIEWToolStripMenuItem;
         private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.Label tiltleL;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton subjectIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton statisticsIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton dictionaryIcon;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.Label lastSubject;
+        private System.Windows.Forms.ToolStripButton mainIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }

@@ -100,8 +100,8 @@ namespace Twitter
             try
             {
                 jsonStr = GetRequest(requestUri);
-                //t = serializer.Deserialize<List<Tweet>>(jsonStr);
-                t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
+                t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                //t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.id).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);

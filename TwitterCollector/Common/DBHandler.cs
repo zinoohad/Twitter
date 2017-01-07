@@ -104,16 +104,18 @@ namespace TwitterCollector.Common
         private DataTable Select(string query) { return db.Select(query); }
         private int Update(string query) { return db.Update(query); }
         private int Insert(string query) { return db.Insert(query); }
-        private int Delete(string query) { return db.ExecuteNonQuery(query); }
+        private int Delete(string query) { return db.Delete(query); }
         #endregion
         #region Select
         /// <summary>
         /// Get all the database active subject
         /// </summary>
         /// <returns>Dictionary with the subjects ID and name.</returns>
-        public DataTable GetActiveSubjects()
-        {            
-            DataTable dt = Select("SELECT * FROM Subject");
+        public DataTable GetActiveSubjects(bool JustActive = false)
+        {         
+            DataTable dt;
+            if (JustActive) dt = Select("SELECT * FROM Subject WHERE IsActive = 'True'");
+            else dt = Select("SELECT * FROM Subject");
             return dt;
         }
         /// <summary>
@@ -293,7 +295,7 @@ namespace TwitterCollector.Common
                 dt = Select(string.Format("SELECT * FROM Subject WHERE Subject = '{0}'", subjectName));
                 if (dt == null || dt.Rows.Count == 0)
                 {
-                    subjectID = Insert(string.Format("INSERT INTO Subject (Subject,IsActive,UsersBelong,StartNewSubject) VALUES ('{0}','{1}',0,'{1}')", subjectName, "True"));
+                    subjectID = Insert(string.Format("INSERT INTO Subject (Subject,IsActive,UsersBelong,StartNewSubject) OUTPUT Inserted.ID VALUES ('{0}','{1}',0,'{1}')", subjectName, "True"));
                     
                 }
                 else

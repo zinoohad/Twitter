@@ -29,66 +29,39 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubjectManager));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.eDITToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vIEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topPanel = new System.Windows.Forms.Panel();
             this.tiltleL = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.addKeywordB = new System.Windows.Forms.Button();
             this.dgvKeyword = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.addKeywordL = new System.Windows.Forms.Label();
             this.addKeywordTB = new System.Windows.Forms.TextBox();
             this.addSubjectB = new System.Windows.Forms.Button();
             this.dgvSubject = new System.Windows.Forms.DataGridView();
+            this.subecjtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.addSubjectL = new System.Windows.Forms.Label();
             this.addSubjectTB = new System.Windows.Forms.TextBox();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
-            this.twitterTestUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.subecjtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.delete = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mainIcon = new System.Windows.Forms.ToolStripButton();
+            this.subjectIcon = new System.Windows.Forms.ToolStripButton();
+            this.statisticsIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolIcon = new System.Windows.Forms.ToolStripButton();
+            this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
             this.deleteKey = new System.Windows.Forms.DataGridViewImageColumn();
-            this.menuStrip1.SuspendLayout();
+            this.delete = new System.Windows.Forms.DataGridViewImageColumn();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKeyword)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubject)).BeginInit();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.eDITToolStripMenuItem,
-            this.vIEWToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1017, 28);
-            this.menuStrip1.TabIndex = 2;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(47, 24);
-            this.fileToolStripMenuItem.Text = "FILE";
-            // 
-            // eDITToolStripMenuItem
-            // 
-            this.eDITToolStripMenuItem.Name = "eDITToolStripMenuItem";
-            this.eDITToolStripMenuItem.Size = new System.Drawing.Size(52, 24);
-            this.eDITToolStripMenuItem.Text = "EDIT";
-            // 
-            // vIEWToolStripMenuItem
-            // 
-            this.vIEWToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.twitterTestUIToolStripMenuItem});
-            this.vIEWToolStripMenuItem.Name = "vIEWToolStripMenuItem";
-            this.vIEWToolStripMenuItem.Size = new System.Drawing.Size(65, 24);
-            this.vIEWToolStripMenuItem.Text = "TOOLS";
             // 
             // topPanel
             // 
@@ -162,6 +135,13 @@
             this.dgvKeyword.TabIndex = 6;
             this.dgvKeyword.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.keywordDGV_CellClick);
             // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Keyword";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
             // addKeywordL
             // 
             this.addKeywordL.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -211,6 +191,13 @@
             this.dgvSubject.TabIndex = 2;
             this.dgvSubject.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.subjectDGV_CellClick);
             // 
+            // subecjtName
+            // 
+            this.subecjtName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.subecjtName.HeaderText = "Subject Name";
+            this.subecjtName.Name = "subecjtName";
+            this.subecjtName.ReadOnly = true;
+            // 
             // addSubjectL
             // 
             this.addSubjectL.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -230,15 +217,54 @@
             this.addSubjectTB.TabIndex = 0;
             this.addSubjectTB.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Subject_OnKeyDownHandler);
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mainIcon,
+            this.toolStripSeparator4,
+            this.subjectIcon,
+            this.toolStripSeparator1,
+            this.statisticsIcon,
+            this.toolStripSeparator2,
+            this.toolIcon,
+            this.toolStripSeparator3,
+            this.dictionaryIcon});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(1017, 27);
+            this.toolStrip1.TabIndex = 5;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
+            // 
             // dataGridViewImageColumn1
             // 
+            this.dataGridViewImageColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewImageColumn1.HeaderText = "Delete";
             this.dataGridViewImageColumn1.Image = global::TwitterCollector.Properties.Resources.X;
             this.dataGridViewImageColumn1.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
             this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
             this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewImageColumn1.Width = 74;
+            this.dataGridViewImageColumn1.Width = 19;
             // 
             // dataGridViewImageColumn2
             // 
@@ -249,72 +275,97 @@
             this.dataGridViewImageColumn2.Name = "dataGridViewImageColumn2";
             this.dataGridViewImageColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewImageColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewImageColumn2.Width = 74;
+            this.dataGridViewImageColumn2.Width = 19;
             // 
-            // twitterTestUIToolStripMenuItem
+            // mainIcon
             // 
-            this.twitterTestUIToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("twitterTestUIToolStripMenuItem.Image")));
-            this.twitterTestUIToolStripMenuItem.Name = "twitterTestUIToolStripMenuItem";
-            this.twitterTestUIToolStripMenuItem.Size = new System.Drawing.Size(186, 24);
-            this.twitterTestUIToolStripMenuItem.Text = "Twitter REST API";
-            this.twitterTestUIToolStripMenuItem.Click += new System.EventHandler(this.twitterTestUIToolStripMenuItem_Click);
+            this.mainIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mainIcon.Image = global::TwitterCollector.Properties.Resources.home;
+            this.mainIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mainIcon.Name = "mainIcon";
+            this.mainIcon.Size = new System.Drawing.Size(23, 24);
+            this.mainIcon.Text = "toolStripButton1";
+            this.mainIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
-            // subecjtName
+            // subjectIcon
             // 
-            this.subecjtName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.subecjtName.HeaderText = "Subject Name";
-            this.subecjtName.Name = "subecjtName";
-            this.subecjtName.ReadOnly = true;
+            this.subjectIcon.Image = global::TwitterCollector.Properties.Resources.blue_pencil;
+            this.subjectIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.subjectIcon.Name = "subjectIcon";
+            this.subjectIcon.Size = new System.Drawing.Size(78, 24);
+            this.subjectIcon.Text = "Subject";
+            this.subjectIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
-            // delete
+            // statisticsIcon
             // 
-            this.delete.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.delete.HeaderText = "Delete";
-            this.delete.Image = global::TwitterCollector.Properties.Resources.X;
-            this.delete.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.delete.Name = "delete";
-            this.delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.delete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.delete.Width = 74;
+            this.statisticsIcon.Image = global::TwitterCollector.Properties.Resources.pie_chart;
+            this.statisticsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.statisticsIcon.Name = "statisticsIcon";
+            this.statisticsIcon.Size = new System.Drawing.Size(87, 24);
+            this.statisticsIcon.Text = "Statistics";
+            this.statisticsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
-            // dataGridViewTextBoxColumn1
+            // toolIcon
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Keyword";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.toolIcon.Image = global::TwitterCollector.Properties.Resources.twitter;
+            this.toolIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolIcon.Name = "toolIcon";
+            this.toolIcon.Size = new System.Drawing.Size(155, 24);
+            this.toolIcon.Text = "Twitter Search Tool";
+            this.toolIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // dictionaryIcon
+            // 
+            this.dictionaryIcon.Image = global::TwitterCollector.Properties.Resources.dictionary;
+            this.dictionaryIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.dictionaryIcon.Name = "dictionaryIcon";
+            this.dictionaryIcon.Size = new System.Drawing.Size(97, 24);
+            this.dictionaryIcon.Text = "Dictionary";
+            this.dictionaryIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
             // deleteKey
             // 
             this.deleteKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.deleteKey.HeaderText = "Delete";
+            this.deleteKey.HeaderText = "";
             this.deleteKey.Image = global::TwitterCollector.Properties.Resources.X;
             this.deleteKey.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
             this.deleteKey.Name = "deleteKey";
             this.deleteKey.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.deleteKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.deleteKey.Width = 74;
+            this.deleteKey.Width = 19;
+            // 
+            // delete
+            // 
+            this.delete.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.delete.HeaderText = "";
+            this.delete.Image = global::TwitterCollector.Properties.Resources.X;
+            this.delete.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.delete.Name = "delete";
+            this.delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.delete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.delete.Width = 19;
             // 
             // SubjectManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1017, 754);
+            this.ClientSize = new System.Drawing.Size(1017, 688);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.topPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SubjectManager";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Twitter Tool";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onExit_Click);
             this.topPanel.ResumeLayout(false);
             this.topPanel.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKeyword)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubject)).EndInit();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -322,10 +373,6 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem eDITToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem vIEWToolStripMenuItem;
         private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.Label tiltleL;
         private System.Windows.Forms.Panel panel1;
@@ -337,13 +384,22 @@
         private System.Windows.Forms.TextBox addKeywordTB;
         private System.Windows.Forms.Button addSubjectB;
         private System.Windows.Forms.DataGridView dgvSubject;
-        private System.Windows.Forms.ToolStripMenuItem twitterTestUIToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
+        private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn2;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton subjectIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton statisticsIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton dictionaryIcon;
+        private System.Windows.Forms.ToolStripButton mainIcon;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewImageColumn deleteKey;
         private System.Windows.Forms.DataGridViewTextBoxColumn subecjtName;
         private System.Windows.Forms.DataGridViewImageColumn delete;
-        private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
-        private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn2;
 
     }
 }

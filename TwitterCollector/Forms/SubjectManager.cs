@@ -16,19 +16,11 @@ namespace TwitterCollector.Forms
     {
         #region Params
         private CSubjectManager controller;
-        private string CurrentSubject;
         #endregion
         public SubjectManager()
         {
             InitializeComponent();
-            Init();
         }
-        private void Init()
-        {
-            dgvSubject.Columns[0].AutoSizeMode = 
-                dgvKeyword.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        }
-
 
         #region Handlers
         private void addSubjectB_Click(object sender, EventArgs e)
@@ -38,22 +30,26 @@ namespace TwitterCollector.Forms
         }
         private void addKeywordB_Click(object sender, EventArgs e)
         {
-            controller.AddKeyword(addSubjectTB.Text,addKeywordTB.Text);
+            controller.AddKeyword(addKeywordTB.Text);
             addKeywordTB.Text = "";
         }
         private void subjectDGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 1)
-            {                
-                controller.RemoveSubject(CurrentSubject, e.RowIndex);
+
+            if (e.ColumnIndex == 1 && e.RowIndex != -1)
+            {
+                DataGridViewRow selectedRow = dgvSubject.Rows[e.RowIndex];
+                string CurrentSubject = (string)selectedRow.Cells[0].Value;
+                controller.RemoveSubject(CurrentSubject,e.RowIndex);
 
                 //MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
                 //dgvSubject.Rows.RemoveAt(e.RowIndex);
             }
-            else if (e.ColumnIndex == 0)
+            else if (e.ColumnIndex == 0 && e.RowIndex != -1)
             {
                 DataGridViewRow selectedRow = dgvSubject.Rows[e.RowIndex];
-                CurrentSubject = (string)selectedRow.Cells[0].Value;
+                string CurrentSubject = (string)selectedRow.Cells[0].Value;
+                controller.SetSelectedSubject(CurrentSubject);
             }
         }
         private void keywordDGV_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -61,11 +57,11 @@ namespace TwitterCollector.Forms
             if (e.ColumnIndex == 1)
             {
                 DataGridViewRow selectedRow = dgvKeyword.Rows[e.RowIndex];
-                controller.RemoveKeyword(CurrentSubject, (string)selectedRow.Cells[0].Value, e.RowIndex);
+                controller.RemoveKeyword((string)selectedRow.Cells[0].Value, e.RowIndex);
                 //MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
                 //dgvKeyword.Rows.RemoveAt(e.RowIndex);
             }
-            else if (e.ColumnIndex == 0)
+            else if (e.ColumnIndex == 0 && e.RowIndex != -1)
             {
             }
         }
@@ -85,9 +81,13 @@ namespace TwitterCollector.Forms
                 e.Handled = e.SuppressKeyPress = true;
             }
         }
-        private void twitterTestUIToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripAction_Click(object sender, EventArgs e)
         {
-            Global.OpenTwitterRestAPI();
+            controller.ToolStripAction(((ToolStripButton)sender).Name);
+        }
+        private void onExit_Click(object sender, FormClosingEventArgs e)
+        {
+            Global.ExitApplication(sender, e);
         }
         #endregion
         #region Interface Implement
@@ -99,15 +99,21 @@ namespace TwitterCollector.Forms
         #region Functions
         public void LoadSubjects(Dictionary<int, string> subjects)
         {
+            foreach (KeyValuePair<int, string> subject in subjects)
+                AddSubjectToGrid(subject.Value);
+            dgvSubject.Rows[1].Cells[1].Selected = false;
         }
-        public void LoadKeywords(Dictionary<int, Dictionary<int, string>> keywords)
+        public void LoadKeywords(Dictionary<int, string> keywords)
         {
+            dgvKeyword.Rows.Clear();
+            foreach (KeyValuePair<int, string> keyword in keywords)
+                AddKeywordToGrid(keyword.Value);
         }
-        public void AddSubjectToGrid(int id, string subject)
+        public void AddSubjectToGrid(string subject)
         {
             dgvSubject.Rows.Add(subject);
         }
-        public void AddKeywordToGrid(int id, string keyword)
+        public void AddKeywordToGrid(string keyword)
         {
             dgvKeyword.Rows.Add(keyword);
         }

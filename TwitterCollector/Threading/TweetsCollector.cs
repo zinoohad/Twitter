@@ -63,7 +63,7 @@ namespace TwitterCollector.Threading
             foreach(Tweet t in topTweets)
             {
                 List<long> retweetsIDs = twitter.GetRetweetIDs(t.id_str);
-                foreach (long id in retweetsIDs)
+                foreach (long id in retweetsIDs)    // For each user that has retweet.
                 {
                     User u = twitter.GetUserProfile("", id);
                     if (u == null) continue;
@@ -74,13 +74,14 @@ namespace TwitterCollector.Threading
                         IsTweetRelevantToSubject(ref tmpT);
                         db.SaveTweet(tmpT);
                     }
+                    // TODO: set flag in db sign that all user tweets arrived.
 
                 }
             }
         }
 
         /// <summary>
-        /// There no more tweets in the DB that not already checked.
+        /// There no more tweets in the DB that hasn't checked already.
         /// </summary>
         private void ZeroPoint()
         {
@@ -103,6 +104,11 @@ namespace TwitterCollector.Threading
             }
             return false;
         }
+        /// <summary>
+        /// Return tweets searched by keyword, distinct by tweet id.
+        /// </summary>
+        /// <param name="keyword">String to search</param>
+        /// <returns>List of all relevant tweets</returns>
         private List<Tweet> GetTweetsByKeyword(string keyword)
         {
             List<Tweet> t1 = twitter.SearchTweets(keyword, 10000, "recent");

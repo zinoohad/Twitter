@@ -23,12 +23,19 @@ namespace TwitterCollector
             //i.GetImageAnalysisImagga("http://steezo.com/wp-content/uploads/2012/12/man-in-suit2.jpg");
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SubjectManager());
+            new CMain();
+            Application.Run();
+
             //DBHandler dbh = new DBHandler();
             //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
             //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
+
+
+            //CMain controller = new CMain();
+
         }
     }
 }

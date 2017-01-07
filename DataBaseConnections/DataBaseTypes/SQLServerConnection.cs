@@ -30,15 +30,35 @@ namespace DataBaseConnections.DataBaseTypes
             dt.Load(cmd.ExecuteReader());
             return dt;
         }
-        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
-        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }        
+        public override int Insert(string sqlQuery) 
+        {
+            if (!sqlQuery.Contains("OUTPUT"))
+                sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("values"), "OUTPUT Inserted.ID ");
+            return ExecuteNonQuery(sqlQuery); 
+        }
+        public override int Update(string sqlQuery)
+        {
+            if (!sqlQuery.Contains("OUTPUT"))
+                sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("into"), "OUTPUT Inserted.ID ");
+            return ExecuteNonQuery(sqlQuery);
+        }
+        public override int Delete(string sqlQuery)
+        {
+            if (!sqlQuery.Contains("OUTPUT"))
+                sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("where"), "OUTPUT Deleted.ID ");
+            return ExecuteNonQuery(sqlQuery);
+        }
         public override int ExecuteNonQuery(string sqlQuery)
         {
             int rowsUpdated = 0;
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
-            {
+            {     
                 OpenConnection();
-                rowsUpdated = cmd.ExecuteNonQuery();
+                try
+                {
+                    rowsUpdated = (int)cmd.ExecuteScalar();
+                }
+                catch { rowsUpdated = cmd.ExecuteNonQuery(); }
                 return rowsUpdated;                
             }
         }
