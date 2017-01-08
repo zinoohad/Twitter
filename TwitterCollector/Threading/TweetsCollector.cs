@@ -74,6 +74,7 @@ namespace TwitterCollector.Threading
                         IsTweetRelevantToSubject(ref tmpT);
                         db.SaveTweet(tmpT);
                     }
+                    db.SetSingleValue("Users", "HasAllHistory", id, "True");    //Update this user get his all tweets
                     // TODO: set flag in db sign that all user tweets arrived.
 
                 }

@@ -10,6 +10,7 @@ namespace DataBaseConnections
 {
     abstract class SQLMethods
     {
+        #region Params
         protected string server;
         protected string database;
         protected string userName;
@@ -23,11 +24,8 @@ namespace DataBaseConnections
         public string ExecuteMessage = "";
         public ConnectionState State { get { return connection.State; } }
         public string ConnectionString { get { return _ConnectionString; } set { _ConnectionString = value; } }
-        abstract public DataTable Select(string sqlQuery);
-        abstract public int Insert(string sqlQuery);
-        abstract public int Update(string sqlQuery);
-        virtual public int Delete(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
-        abstract public int ExecuteNonQuery(string sqlQuery);      
+        #endregion
+        #region Functions
         public DbConnection getConnectionObject() { return connection; }
         public bool isOpen() { return connection.State == ConnectionState.Open; }
         public bool isClosed() { return connection.State == ConnectionState.Closed; }
@@ -59,6 +57,15 @@ namespace DataBaseConnections
             }
             return true;
         }
+        #endregion
+        #region Abstract / Virtual Functions
+        abstract public DataTable Select(string sqlQuery);
+        abstract public int Insert(string sqlQuery);
+        abstract public int Update(string sqlQuery);
+        virtual public int Delete(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
+        abstract public int ExecuteNonQuery(string sqlQuery);
+        #endregion
+
 
     }
 }

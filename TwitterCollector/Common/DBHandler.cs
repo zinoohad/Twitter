@@ -350,6 +350,19 @@ namespace TwitterCollector.Common
             }
             catch { return false; }
         }
+        public bool SetSingleValue(string tableName, string columnName, long rowID, object value)
+        {
+            try
+            {
+                string sqlQuery = string.Format("UPDATE {0} SET {1} = {2} WHERE ID = {3}", tableName, columnName, value, rowID);
+                db.Update(sqlQuery);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         #endregion
 
     }

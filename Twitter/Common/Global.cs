@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Twitter.Common
 {
-    static class Global
+    public static class Global
     {
         public static bool HasHebrewCharacters(string str)
         {
