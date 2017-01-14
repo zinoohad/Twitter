@@ -42,21 +42,21 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.lastSubject = new System.Windows.Forms.Label();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.agePieChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mainIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.subjectIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.statisticsIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.agePieChart)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,7 +88,7 @@
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
             this.panel1.Controls.Add(this.lastSubject);
             this.panel1.Controls.Add(this.chart2);
-            this.panel1.Controls.Add(this.chart1);
+            this.panel1.Controls.Add(this.agePieChart);
             this.panel1.Location = new System.Drawing.Point(13, 89);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(992, 585);
@@ -128,29 +128,29 @@
             title1.Text = "Gender Division";
             this.chart2.Titles.Add(title1);
             // 
-            // chart1
+            // agePieChart
             // 
-            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.agePieChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            this.agePieChart.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
-            this.chart1.Location = new System.Drawing.Point(3, 159);
-            this.chart1.Name = "chart1";
+            this.agePieChart.Legends.Add(legend2);
+            this.agePieChart.Location = new System.Drawing.Point(3, 159);
+            this.agePieChart.Name = "agePieChart";
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             series2.Legend = "Legend1";
             series2.Name = "Series1";
-            this.chart1.Series.Add(series2);
-            this.chart1.Size = new System.Drawing.Size(496, 398);
-            this.chart1.TabIndex = 9;
-            this.chart1.Text = "chart1v";
+            this.agePieChart.Series.Add(series2);
+            this.agePieChart.Size = new System.Drawing.Size(496, 398);
+            this.agePieChart.TabIndex = 9;
+            this.agePieChart.Text = "chart1v";
             title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
             title2.Name = "Age Split";
             title2.Text = "Age Division";
-            this.chart1.Titles.Add(title2);
+            this.agePieChart.Titles.Add(title2);
             // 
             // toolStrip1
             // 
@@ -170,26 +170,6 @@
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
-            // 
             // mainIcon
             // 
             this.mainIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -200,6 +180,11 @@
             this.mainIcon.Text = "toolStripButton1";
             this.mainIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
+            // 
             // subjectIcon
             // 
             this.subjectIcon.Image = global::TwitterCollector.Properties.Resources.blue_pencil;
@@ -208,6 +193,11 @@
             this.subjectIcon.Size = new System.Drawing.Size(78, 24);
             this.subjectIcon.Text = "Subject";
             this.subjectIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
             // 
             // statisticsIcon
             // 
@@ -218,6 +208,11 @@
             this.statisticsIcon.Text = "Statistics";
             this.statisticsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
             // toolIcon
             // 
             this.toolIcon.Image = global::TwitterCollector.Properties.Resources.twitter;
@@ -226,6 +221,11 @@
             this.toolIcon.Size = new System.Drawing.Size(155, 24);
             this.toolIcon.Text = "Twitter Search Tool";
             this.toolIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
             // 
             // dictionaryIcon
             // 
@@ -254,7 +254,7 @@
             this.topPanel.PerformLayout();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.agePieChart)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -276,7 +276,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton dictionaryIcon;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart agePieChart;
         private System.Windows.Forms.Label lastSubject;
         private System.Windows.Forms.ToolStripButton mainIcon;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;

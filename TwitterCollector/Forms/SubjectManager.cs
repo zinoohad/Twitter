@@ -101,7 +101,7 @@ namespace TwitterCollector.Forms
         {
             foreach (KeyValuePair<int, string> subject in subjects)
                 AddSubjectToGrid(subject.Value);
-            dgvSubject.Rows[1].Cells[1].Selected = false;
+            //dgvSubject.Rows[1].Cells[1].Selected = false;
         }
         public void LoadKeywords(Dictionary<int, string> keywords)
         {

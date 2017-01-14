@@ -33,7 +33,6 @@ namespace TwitterCollector.Forms
                 controller.SwitchStateChanged(SwitchState.ON);
             else controller.SwitchStateChanged(SwitchState.OFF);
         }
-
         private void subjectCB_SelectedIndexChanged(object sender, EventArgs e)
         {
             controller.SubjectChanged(subjectCB.SelectedItem.ToString(), subjectCB.SelectedIndex);

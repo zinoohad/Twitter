@@ -21,7 +21,7 @@ namespace TwitterCollector.Threading
         public void Start() { ThreadOn = true;  _thread.Start(); }
         public void Join() { _thread.Join(); }
         public bool IsAlive { get { return _thread.IsAlive; } }
-        public void Abort() { ThreadOn = false; _thread.Abort(); }
+        public virtual void Abort() { ThreadOn = false; _thread.Abort(); }
 
         // Override in base class
         public abstract void RunThread();

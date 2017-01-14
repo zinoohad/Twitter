@@ -72,7 +72,7 @@
     <Compile Include="Common\DBHandler.cs" />
     <Compile Include="Common\FileHandler.cs" />
     <Compile Include="Common\Global.cs" />
-    <Compile Include="Common\SentencteHandler.cs" />
+    <Compile Include="Common\SentenceHandler.cs" />
     <Compile Include="Common\TwitterException.cs" />
     <Compile Include="Common\WebHandler.cs" />
     <Compile Include="Controllers\BaseController.cs" />

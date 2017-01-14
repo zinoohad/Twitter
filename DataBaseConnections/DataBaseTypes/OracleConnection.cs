@@ -47,17 +47,41 @@ namespace DataBaseConnections.DataBaseTypes
             }
             return dt;
         }
-        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
-        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }  
-        public override int ExecuteNonQuery(string sqlQuery)
+        public override long Insert(string sqlQuery, bool returnInsertedID = false, string columnName = "ID") { return ExecuteNonQuery(sqlQuery); }
+        public override long Update(string sqlQuery, bool returnUpdatedID = false, string columnName = "ID") { return ExecuteNonQuery(sqlQuery); }
+        public override long ExecuteNonQuery(string sqlQuery)
         {
-            int rowsUpdated = 0;
+            long rowsUpdated = 0;
             using (OracleCommand cmd = new OracleCommand(sqlQuery, (Oracle.ManagedDataAccess.Client.OracleConnection)connection))
             {
                 try
                 {
                     OpenConnection();
-                    rowsUpdated = cmd.ExecuteNonQuery();
+                    rowsUpdated = (long)cmd.ExecuteNonQuery();
+                    return rowsUpdated;
+                }
+                catch (InvalidOperationException e)
+                {
+                    throw new InvalidOperationException(e.Message);
+                }
+                finally
+                {
+                    if (rowsUpdated == 0)
+                        ExecuteMessage = "Can't execute query.";
+                    else
+                        ExecuteMessage = "Success!";
+                }
+            }
+        }
+        public override long ExecuteScalar(string sqlQuery)
+        {
+            long rowsUpdated = 0;
+            using (OracleCommand cmd = new OracleCommand(sqlQuery, (Oracle.ManagedDataAccess.Client.OracleConnection)connection))
+            {
+                try
+                {
+                    OpenConnection();
+                    rowsUpdated = (long)cmd.ExecuteScalar();
                     return rowsUpdated;
                 }
                 catch (InvalidOperationException e)

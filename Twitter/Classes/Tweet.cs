@@ -12,39 +12,40 @@ namespace Twitter.Classes
 {
     public class Tweet
     {
-        //[XmlElement(ElementName = "TaxRate")]
-        
         public Collection<User> contributors { get; set; }
         public Coordinates coordinates { get; set; }
-        //[JsonProperty(PropertyName = "created_at")]
-        //[XmlElement(ElementName = "created_at")]
         [JsonProperty("created_at")]
-        public string CreateAt { get; set; }
+        public string Date { get; set; }
         public User current_user_retweet { get; set; }
         public Entities entities { get; set; }
-        public int? favorite_count { get; set; }
+        [JsonProperty("favorite_count")]
+        public int? FavoritesCount { get; set; }
         public bool? favorited { get; set; }
         public string filter_level { get; set; }
         public Coordinates geo { get; set; }
-        public long id { get; set; }
+        [JsonProperty("id")]
+        public long ID { get; set; }
         public string id_str { get; set; }
         public string in_reply_to_screen_name { get; set; }
         public long? in_reply_to_status_id { get; set; }
         public string in_reply_to_status_id_str { get; set; }
         public long? in_reply_to_user_id { get; set; }
         public string in_reply_to_user_id_str { get; set; }
-        public string lang { get; set; }
+        [JsonProperty("lang")]
+        public string Language { get; set; }
         public Place place { get; set; }
         public bool? possibly_sensitive { get; set; }
         public long quoted_status_id { get; set; }
         public string quoted_status_id_str { get; set; }
         public Tweet quoted_status { get; set; }
         public Dictionary<string,bool?> scopes { get; set; }
-        public int retweet_count { get; set; }
+        [JsonProperty("retweet_count")]
+        public int RetweetCount { get; set; }
         public bool? retweeted { get; set; }
         public Tweet retweeted_status { get; set; }
         public string source { get; set; }
-        public string text { get; set; }
+        [JsonProperty("text")]
+        public string Text { get; set; }
         public bool? truncated { get; set; }
         public User user { get; set; }
         public bool? withheld_copyright { get; set; }
@@ -53,36 +54,36 @@ namespace Twitter.Classes
 
 
         #region Project Extra Fields
-        public int? keywordID;
+        public List<int> keywordID;
         public int? positiveWordCount;
         public int? negativeWordCount;
         #endregion
 
         public object[] GetData()
         {
-            object[] row = new object[] { id.ToString(), CreateAt, text, lang, retweet_count.ToString(), entities.hashtagsToString() };
+            object[] row = new object[] { ID.ToString(), Date, Text, Language, RetweetCount.ToString(), entities.hashtagsToString() };
             return row;
         }
 
         public Tweet() { }
-        public Tweet(DataRow dr)
+        public Tweet(DataRow dr, List<int> keywords = null)
         {
-
-            id = (long)dr["ID"];
+            ID = (long)dr["ID"];
             id_str = dr["ID"].ToString();
-            text = dr["Text"].ToString();
-            lang = dr["Language"].ToString();
-            CreateAt = dr["Date"].ToString();
-            retweet_count = (int)dr["RetweetCount"];
-            favorite_count = (int?)dr["FavoritesCount"];
+            Text = dr["Text"].ToString();
+            Language = dr["Language"].ToString();
+            Date = dr["Date"].ToString();
+            RetweetCount = (int)dr["RetweetCount"];
+            FavoritesCount = (int?)dr["FavoritesCount"];
             user = new User();
-            user.id = (long)dr["UserID"];
+            user.ID = (long)dr["UserID"];
             user.id_str = dr["UserID"].ToString();
-            keywordID = (int?)dr["SubjectKeyword"];
+            if (keywords != null)
+                keywordID = keywords;
             if (!dr.IsNull("RetweetID"))
             {
                 retweeted_status = new Tweet();
-                retweeted_status.id = (long)dr["RetweetID"];
+                retweeted_status.ID = (long)dr["RetweetID"];
                 retweeted_status.id_str = dr["RetweetID"].ToString();
             }
         }

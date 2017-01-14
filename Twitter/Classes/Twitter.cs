@@ -94,18 +94,18 @@ namespace Twitter
             List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userName);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=0&exclude_replies=1&contributor_details=1", countPerPage, userName);
             else
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userID);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=0&exclude_replies=1&contributor_details=1", countPerPage, userID);
             try
             {
                 jsonStr = GetRequest(requestUri);
-                t = serializer.Deserialize<List<Tweet>>(jsonStr);
-                //t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
-                t = t.OrderBy(x => x.id).ToList();
+                //t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
+                t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);
-                long SinceID = t[0].id;
+                long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
@@ -113,11 +113,11 @@ namespace Twitter
                     //List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
                     List<Tweet> tmp = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                     t.AddRange(tmp);
-                    tmp = tmp.OrderBy(x => x.id).ToList();
+                    tmp = tmp.OrderBy(x => x.ID).ToList();
                     if (updater != null) // Add new tweets to UI
                         updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
-                    SinceID = tmp[0].id;
+                    SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
                     {
                         if (updater != null) updater.EndRequest();
@@ -302,22 +302,22 @@ namespace Twitter
                 //stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
                 stn = JsonConvert.DeserializeObject<SearchTweetsNavigator>(jsonStr);
                 t.AddRange(stn.statuses);
-                t = t.OrderBy(x => x.id).ToList();
+                t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);
-                long SinceID = t[0].id;
+                long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
                     //stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
                     stn = JsonConvert.DeserializeObject<SearchTweetsNavigator>(jsonStr);                    
-                    List<Tweet> tmp = stn.statuses.OrderBy(x => x.id).ToList();
+                    List<Tweet> tmp = stn.statuses.OrderBy(x => x.ID).ToList();
                     t.AddRange(tmp);
                     if (updater != null)    // Add new tweets to UI
                         updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
-                    SinceID = tmp[0].id;
+                    SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
                     {
                         if (updater != null) updater.EndRequest();
@@ -341,7 +341,7 @@ namespace Twitter
             long cursor = -1;
             RetweetNavigator r = new RetweetNavigator();
             string requestUriWithCursor, jsonStr;
-            string requestUri = string.Format(serviceAddress + "/statuses/retweeters/ids.json?id={0}", tweetID);
+            string requestUri = string.Format(serviceAddress + "/statuses/retweeters/ids.json?id={0}&count=100&stringify_ids=true", tweetID);
 
             while (cursor != 0)
             {
@@ -385,10 +385,10 @@ namespace Twitter
                 jsonStr = GetRequest(requestUri);
                 //t = serializer.Deserialize<List<Tweet>>(jsonStr);
                 t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
-                t = t.OrderBy(x => x.id).ToList();
+                t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t);
-                long SinceID = t[0].id;
+                long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
@@ -396,11 +396,11 @@ namespace Twitter
                     //List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
                     List<Tweet> tmp = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);                   
                     t.AddRange(tmp);
-                    tmp = tmp.OrderBy(x => x.id).ToList();
+                    tmp = tmp.OrderBy(x => x.ID).ToList();
                     if (updater != null) // Add new tweets to UI
                         updater.Update(tmp);
                     //t = t.OrderBy(x => x.id).ToList();
-                    SinceID = tmp[0].id;
+                    SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
                     {
                         if (updater != null) updater.EndRequest();

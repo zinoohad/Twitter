@@ -25,17 +25,17 @@ namespace DataBaseConnections.DataBaseTypes
         }
 
         //Insert statement
-        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
-        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }  
-        public override int ExecuteNonQuery(string sqlQuery)
+        public override long Insert(string sqlQuery, bool returnInsertedID = false, string columnName = "ID") { return ExecuteNonQuery(sqlQuery); }
+        public override long Update(string sqlQuery, bool returnUpdatedID = false, string columnName = "ID") { return ExecuteNonQuery(sqlQuery); }
+        public override long ExecuteNonQuery(string sqlQuery)
         {
-            int rowsUpdated = 0;
+            long rowsUpdated = 0;
             using (MySqlCommand cmd = new MySqlCommand(sqlQuery, (MySqlConnection)connection))
             {
                 try
                 {
                     OpenConnection();
-                    rowsUpdated = cmd.ExecuteNonQuery();
+                    rowsUpdated = (long)cmd.ExecuteNonQuery();
                     return rowsUpdated;
                 }
                 catch (Exception e)
@@ -50,7 +50,31 @@ namespace DataBaseConnections.DataBaseTypes
                         ExecuteMessage = "Success!";
                 }
             }
-        }        
+        }
+        public override long ExecuteScalar(string sqlQuery)
+        {
+            long rowsUpdated = 0;
+            using (MySqlCommand cmd = new MySqlCommand(sqlQuery, (MySqlConnection)connection))
+            {
+                try
+                {
+                    OpenConnection();
+                    rowsUpdated = (long)cmd.ExecuteScalar();
+                    return rowsUpdated;
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    if (rowsUpdated == 0)
+                        ExecuteMessage = "Can't execute query.";
+                    else
+                        ExecuteMessage = "Success!";
+                }
+            }
+        }  
         public override DataTable Select(string sqlQuery)
         {
             DataTable dt = new DataTable();

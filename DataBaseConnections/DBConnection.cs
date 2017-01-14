@@ -97,33 +97,33 @@ namespace DataBaseConnections
             CloseConnection();
             return dt;
         }
-        public int Insert(string sqlQuery)
+        public long Insert(string sqlQuery, bool returnInsertedID = false, string columnName = "ID")
         {
-            int recordNum;
+            long recordNum;
             OpenConnection();
-            recordNum = _DBConnection.Insert(sqlQuery);
+            recordNum = _DBConnection.Insert(sqlQuery, returnInsertedID, columnName);
             CloseConnection();
             return recordNum;
         }
-        public int Update(string sqlQuery)
+        public long Update(string sqlQuery, bool returnUpdatedID = false, string columnName = "ID")
         {
-            int recordNum;
+            long recordNum;
             OpenConnection();
-            recordNum = _DBConnection.Update(sqlQuery);
+            recordNum = _DBConnection.Update(sqlQuery, returnUpdatedID, columnName);
             CloseConnection();
             return recordNum;
         }
-        public int Delete(string sqlQuery)
+        public long Delete(string sqlQuery, bool returnDeletedID = false, string columnName = "ID")
         {
-            int recordNum;
+            long recordNum;
             OpenConnection();
-            recordNum = _DBConnection.Delete(sqlQuery);
+            recordNum = _DBConnection.Delete(sqlQuery, returnDeletedID, columnName);
             CloseConnection();
             return recordNum;
         }
-        public int ExecuteNonQuery(string sqlQuery)
+        public long ExecuteNonQuery(string sqlQuery)
         {
-            int recordNum;
+            long recordNum;
             OpenConnection();
             recordNum = _DBConnection.ExecuteNonQuery(sqlQuery);
             CloseConnection();
