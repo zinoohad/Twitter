@@ -118,6 +118,8 @@
     <Compile Include="Forms\SubjectResult.Designer.cs">
       <DependentUpon>SubjectResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Objects\GeneralThreadParams.cs" />
+    <Compile Include="Objects\SubjectO.cs" />
     <Compile Include="Objects\SubjectResultUI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,6 +127,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Threading\BaseThread.cs" />
     <Compile Include="Threading\NewWordsCollector.cs" />
@@ -134,6 +141,11 @@
     <Compile Include="Threading\TweetsPosNeg.cs" />
     <Compile Include="Threading\UserClassification.cs" />
     <Compile Include="Threading\UsersCollector.cs" />
+    <Compile Include="TwitterDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TwitterDataSet.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Google Drive\c# good code\ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj">
@@ -196,6 +208,17 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Pictures\X.png" />
+    <None Include="TwitterDataSet.xsc">
+      <DependentUpon>TwitterDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="TwitterDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>TwitterDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="TwitterDataSet.xss">
+      <DependentUpon>TwitterDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Pictures\blue pencil.png" />
@@ -204,6 +227,10 @@
     <None Include="Pictures\pie chart.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\twitter.png" />
   </ItemGroup>
   <ItemGroup>

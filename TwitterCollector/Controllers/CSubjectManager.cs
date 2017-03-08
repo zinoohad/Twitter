@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TwitterCollector.Forms;
 using TwitterCollector.Common;
 using System.Data;
+using TwitterCollector.Objects;
 
 namespace TwitterCollector.Controllers
 {
@@ -14,9 +15,8 @@ namespace TwitterCollector.Controllers
     {
         #region Params
         private SubjectManager form = new SubjectManager();
-        private Dictionary<int, Dictionary<int, string>> keywords = new Dictionary<int,Dictionary<int,string>>();
-        private Dictionary<int, string> subjects = new Dictionary<int,string>();
-        private int CurrentSubjectID = -1;
+        private List<SubjectO> subjectsList = new List<SubjectO>();
+        private SubjectO CurrentSubject;
         #endregion
         public CSubjectManager()
         {
@@ -33,18 +33,16 @@ namespace TwitterCollector.Controllers
             }
             else
             {
-                if (subjects.Values.Contains(subject)) return;  // The subject already exists
+                SubjectO s;
+                if (subjectsList.Where(sn => sn.Name.Equals(subject)).ToList().Count > 0) return;    // The subject already exists
                 int subjectID = db.AddRemoveSubject(Common.Action.ADD, 0, subject); //Save subject in DB
-                subjects.Add(subjectID, subject);   //Save subject in global param
+                subjectsList.Add(s = new SubjectO(subjectID, subject));   //Save subject in global param
                 int keywordID = db.AddRemoveKeyword(Common.Action.ADD, subjectID, 0, subject);  //Save keyword in DB
-                //Save keyword in global param
-                Dictionary<int, string> tmpKeyword = new Dictionary<int, string>();
-                tmpKeyword.Add(keywordID, subject);
-                keywords.Add(subjectID, tmpKeyword);
-
+                s.Keywords.Add(new KeywordO(keywordID, subject));
                 form.AddSubjectToGrid(subject);
             }
         }
+        
         public void AddKeyword(string keyword)
         {
             if (string.IsNullOrEmpty(keyword))
@@ -52,47 +50,66 @@ namespace TwitterCollector.Controllers
                 Global.ShowDialogMessageOk("Can't create new empty keyword.");
                 return;
             }
-            else if (CurrentSubjectID == -1)
+            else if (CurrentSubject == null)
             {
                 Global.ShowDialogMessageOk("Please select subject first.");
                 return;
             }
             else
             {
-                //int subjectID = CheckIfValueExistsInDictionary(subjects, subject);
-                if (keywords[CurrentSubjectID].Values.Contains(keyword)) return;    // The keyword already exists
-                int keywordID = db.AddRemoveKeyword(Common.Action.ADD, CurrentSubjectID, 0, keyword); //Save keyword in DB
+                if (CurrentSubject.Keywords.Where(k => k.Name.Equals(keyword)).ToList().Count > 0) return;   // The keyword already exists
+                int keywordID = db.AddRemoveKeyword(Common.Action.ADD, CurrentSubject.ID, 0, keyword,CurrentSubject.LanguageID); //Save keyword in DB
+                CurrentSubject.Keywords.Add(new KeywordO(keywordID, keyword));
+                form.AddKeywordToGrid(keyword,CurrentSubject.LanguageName);
+            }
+        }
 
-                //Save keyword in global param
-                Dictionary<int, string> tmpKeyword = keywords[CurrentSubjectID];
-                tmpKeyword.Add(keywordID, keyword);
-                keywords[CurrentSubjectID] = tmpKeyword;
-
-                form.AddKeywordToGrid(keyword);
+        public void UpdateKeywordLanguage(string keywordName, string Language)
+        {
+            var key = CurrentSubject.Keywords.Where(k => k.Name.Equals(keywordName)).Select(k => k).ToArray()[0]; //Get the key of the keyword
+            if (db.UpdateKeywordLanguage(ref key, Language))
+            {
+                //The record was updated
+            }
+            else
+            {
+                //Failed to update record
+            }
+        }
+        public void UpdateSubjectLanguage(string subjectName, string Language)
+        {
+            var subject = subjectsList.Where(sn => sn.Name.Equals(subjectName)).Select(s => s).ToArray()[0];
+            if (db.UpdateSubjectLanguage(ref subject, Language))
+            {
+                //The record was updated
+            }
+            else
+            {
+                //Failed to update record
             }
         }
         public void RemoveSubject(string subject, int rowNumber)
         {
-            int subjectID = subjects.Where(s => s.Value.Equals(subject)).Select(s => s.Key).ToArray()[0];
-            if (keywords[subjectID].Count > 0)  //Have keywords
+            SubjectO subjectObj = subjectsList.Where(sn => sn.Name.Equals(subject)).Select(sn => sn).ToArray()[0];
+            if (subjectObj.Keywords.Count > 0)  //Have keywords
             {
                 if (!Global.ShowDialogMessageYesNo("Are you sure you want delete this subject with all his keywords?")) return;  //Do not delete this subject 
             }
-            foreach (KeyValuePair<int, string> keyword in keywords[subjectID])  //Delete all keywords
+            foreach (KeywordO keyword in subjectObj.Keywords)  //Delete all keywords
             {
-                db.AddRemoveKeyword(Common.Action.REMOVE, subjectID, keyword.Key); //Remove keyword from DB
+                db.AddRemoveKeyword(Common.Action.REMOVE, subjectObj.ID, keyword.ID); //Remove keyword from DB
                 form.RemoveKeywordFromGrid(0);
             }
-            db.AddRemoveSubject(Common.Action.REMOVE, subjectID);   //Remove subject from db
+            db.AddRemoveSubject(Common.Action.REMOVE, subjectObj.ID);   //Remove subject from db
             form.RemoveSubjectFromGrid(rowNumber);    //Remove subject from UI
-            CurrentSubjectID = -1;
+            CurrentSubject = null;
+            subjectsList.Remove(subjectObj);
         }
         public void RemoveKeyword(string keyword, int rowNumber)
         {
-            Dictionary<int, string> tmpKeyword = keywords[CurrentSubjectID];
-            int keywordID = tmpKeyword.Where(k => k.Value.Equals(keyword)).Select(k => k.Key).ToArray()[0]; //Get the key of the keyword from dictionary
-            db.AddRemoveKeyword(Common.Action.REMOVE, CurrentSubjectID, keywordID); //Remove keyword from DB
-            keywords[CurrentSubjectID].Remove(keywordID);   //Remove keyword from dictionary
+            var key = CurrentSubject.Keywords.Where(k => k.Name.Equals(keyword)).Select(k => k).ToArray()[0]; //Get the key of the keyword
+            db.AddRemoveKeyword(Common.Action.REMOVE, CurrentSubject.ID, key.ID); //Remove keyword from DB
+            CurrentSubject.Keywords.Remove(key);
             form.RemoveKeywordFromGrid(rowNumber);
         }
         private void LoadSubjectsAndKeywords()
@@ -100,21 +117,21 @@ namespace TwitterCollector.Controllers
             DataTable subjectsDT = db.GetActiveSubjects(true);
             foreach (DataRow dr in subjectsDT.Rows)    // Run on all subjects
             {
-                subjects.Add(int.Parse(dr["ID"].ToString()), dr["Subject"].ToString()); // Add subject to dictionary
-                var subjectKeywords = db.GetSubjectKeywords((int)dr["ID"]); //Get subject keywords
-                keywords.Add(int.Parse(dr["ID"].ToString()), subjectKeywords);  // Save subject keywords in global object
+                SubjectO tmpSubject = new SubjectO(dr);
+                DataTable keywordsDT = db.GetSubjectKeywordsDT((int)dr["ID"]);
+                foreach (DataRow kdr in keywordsDT.Rows)
+                {
+                    tmpSubject.Keywords.Add(new KeywordO(kdr));
+                }
+                subjectsList.Add(tmpSubject);
             }
-            form.LoadSubjects(subjects);
+            form.LoadSubjects(subjectsList);
         }
         public void SetSelectedSubject(string subjectName)
         {
-            var keywordID = subjects.Where(sn => sn.Value.Equals(subjectName)).Select(sn => sn.Key).ToArray();
-            if (keywordID.Length != 0)
-            {
-                CurrentSubjectID = keywordID[0];
-                form.LoadKeywords(keywords[CurrentSubjectID]);
-            }
-
+            var subject = subjectsList.Where(sn => sn.Name.Equals(subjectName)).Select(s => s).ToArray()[0];
+            CurrentSubject = subject;
+            form.LoadKeywords(subject.Keywords);
         }
         #endregion
         #region Functions

@@ -16,6 +16,7 @@ namespace TwitterCollector.Threading
         protected TwitterAPI twitter = new TwitterAPI();
         protected BaseThread() { _thread = new Thread(new ThreadStart(this.RunThread)); }
         protected bool ThreadOn = false;
+        protected Thread streamThread;
 
         // Thread methods / properties
         public void Start() { ThreadOn = true;  _thread.Start(); }

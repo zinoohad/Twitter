@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 using TwitterCollector.Common;
 using Twitter;
 using Twitter.Classes;
+using Twitter.Interface;
+using System.Threading;
 
 namespace TwitterCollector.Threading
 {
-    public class TweetsCollector : BaseThread
+    public class TweetsCollector : BaseThread, Update
     {
         #region Params
         private Dictionary<int, string> keywords = new Dictionary<int, string>();
         private int subjectID;
         private bool newSubject;
+        
+        private List<Tweet> globalTweetList = new List<Tweet>();
+        private static readonly object locker = new object();
         #endregion
         public override void RunThread()
         {
@@ -23,6 +28,10 @@ namespace TwitterCollector.Threading
                 try
                 {
                     keywords = db.GetSubjectKeywords(subjectID);
+
+                    // Run stream thread
+                    if (streamThread == null || !streamThread.IsAlive) (streamThread = new Thread(new ThreadStart(this.ManageOnStream))).Start();
+
                     if (newSubject) StartNewSearch();
                     else ContinueToSearch();
                 }
@@ -37,6 +46,8 @@ namespace TwitterCollector.Threading
             subjectID = (int)Params[0];
             newSubject = (bool)Params[1];
         }
+
+        #region Collector Main Functions
         /// <summary>
         /// New search need to start.
         /// It's possible there a new subjects to check.
@@ -45,8 +56,8 @@ namespace TwitterCollector.Threading
         {
             foreach (KeyValuePair<int, string> keyword in keywords)
             {
-                List<Tweet> tweets = GetTweetsByKeyword(keyword.Value);
-                CheckSubjectRelevantTweetAndSave(tweets);
+                List<Tweet> tweets = GetTweetsByKeyword(keyword.Value, keyword.Key);
+                //CheckSubjectRelevantTweetAndSave(tweets);
             }
             db.UpdateSubjectStatus(subjectID, false); //  Set flag to false
             ContinueToSearch();
@@ -58,7 +69,7 @@ namespace TwitterCollector.Threading
             {
                 List<Tweet> topTweets = db.GetTopTweets(subjectID);
                 if (topTweets.Count == 0) ZeroPoint();
-                else ExploreTweets(topTweets);                
+                else ExploreTweets(topTweets);
             }
         }
         /// <summary>
@@ -68,26 +79,7 @@ namespace TwitterCollector.Threading
         {
             List<long> topRatedUsersIDs = db.GetTopUsersIDRatingForZeroPoint(subjectID);    // Get top (X) rated users
             List<Tweet> tweets = db.TopRatedNotRelatedSubjectTweet(subjectID, topRatedUsersIDs.ToArray());  //Get users top rated, but not related to subject, tweet.
-            ExploreTweets(tweets);           
-        }         
-        /// <summary>
-        /// Get tweet referance and put the subject keyword id, if contains one, else set zero.
-        /// </summary>
-        /// <param name="tweet">Tweet object.</param>
-        /// <returns>True if contains keyword, else false.</returns>
-        private bool IsTweetRelevantToSubject(ref Tweet tweet) 
-        {
-            List<int> keyword = new List<int>();
-            foreach (KeyValuePair<int,string> key in keywords)
-            {
-                if (tweet.Text.Contains(key.Value))
-                {
-                    keyword.Add(key.Key);                 
-                }
-            }
-            tweet.keywordID = keyword;
-            if (keyword.Count == 0) return false;
-            return true;
+            ExploreTweets(tweets);
         }
         /// <summary>
         /// Collect all relevant information about given tweet
@@ -103,12 +95,51 @@ namespace TwitterCollector.Threading
                     User u = twitter.GetUserProfile("", id);
                     if (u == null || (db.GetSingleValue("Users", "HasAllHistory", string.Format("ID = {0} AND HasAllHistory = 1", id))) != null) continue;
                     db.InsertUser(u);
-                    List<Tweet> userTweets = twitter.GetTweets("", u.ID);
-                    CheckSubjectRelevantTweetAndSave(userTweets);                   
+                    List<Tweet> userTweets = twitter.GetTweets("", u.ID, 3200, 200, this);
+                    //CheckSubjectRelevantTweetAndSave(userTweets);
                     db.SetSingleValue("Users", "HasAllHistory", id, "'True'");    //  Update this user get his all tweets
                 }
                 db.SetSingleValue("Tweets", "CheckedByTweetCollector", t.ID, 1);    // Tweet was checked
             }
+        }
+        private void ManageOnStream()
+        {
+            while(ThreadOn)
+            {
+                try
+                {
+                    List<Tweet> tweets;
+                    while (ThreadOn)
+                    {
+                        tweets = GetSafeData();     // Get the data without create collision with another thread
+                        if (tweets.Count == 0) Global.Sleep(10);
+                        else
+                            CheckSubjectRelevantTweetAndSave(tweets);
+                    }
+                }
+                catch (Exception e) { new TwitterException(e); }
+            }
+        }
+        #endregion
+        #region Functions
+        /// <summary>
+        /// Get tweet referance and put the subject keyword id, if contains one, else set zero.
+        /// </summary>
+        /// <param name="tweet">Tweet object.</param>
+        /// <returns>True if contains keyword, else false.</returns>
+        private bool IsTweetRelevantToSubject(ref Tweet tweet)
+        {
+            List<int> keyword = new List<int>();
+            foreach (KeyValuePair<int, string> key in keywords)
+            {
+                if (tweet.Text.Contains(key.Value))
+                {
+                    keyword.Add(key.Key);
+                }
+            }
+            tweet.keywordID = keyword;
+            if (keyword.Count == 0) return false;
+            return true;
         }
         /// <summary>
         /// Check if tweets relevant to subject and save them in DB.
@@ -129,13 +160,61 @@ namespace TwitterCollector.Threading
         /// </summary>
         /// <param name="keyword">String to search</param>
         /// <returns>List of all relevant tweets</returns>
-        private List<Tweet> GetTweetsByKeyword(string keyword)
+        private List<Tweet> GetTweetsByKeyword(string keyword, int keywordID)
         {
-            List<Tweet> t1 = twitter.SearchTweets(keyword, 10000, "recent");
-            List<Tweet> t2 = twitter.SearchTweets(keyword, 10000, "popular");
+            string lang = db.GetLanguageCodeFromKeyword(keywordID);
+            List<Tweet> t1 = twitter.SearchTweets(keyword, 50000, "recent", 100, lang, true, this);
+            List<Tweet> t2 = twitter.SearchTweets(keyword, 10000, "popular", 100, lang, true, this);
             t1.AddRange(t2);
             List<Tweet> t = t1.GroupBy(x => x.ID).Select(x => x.First()).ToList<Tweet>();
             return t;
         }
+       
+        #endregion
+        #region Synchronized Functions
+        public void AddSafeData(List<Tweet> tweets)
+        {
+            lock (locker)
+            {
+                globalTweetList.AddRange(tweets);
+            }
+        }
+        private List<Tweet> GetSafeData()
+        {
+            List<Tweet> tweets;
+            lock (locker)
+            {
+                tweets = globalTweetList;
+                globalTweetList = new List<Tweet>();
+            }
+            return tweets;
+        }
+        #endregion
+        #region Implement Methods
+        /// <summary>
+        /// Data update with paging
+        /// </summary>
+        /// <param name="obj">Returns object from API</param>
+        /// <param name="action">Which function in the API call this method.</param>
+        public void Update(object obj, ApiAction action = ApiAction.SEARCH_TWEETS)
+        {
+            switch (action)
+            {
+                case ApiAction.SEARCH_TWEETS:
+                case ApiAction.GET_TWEETS:
+                    AddSafeData((List<Tweet>)obj);
+                    break;
+            }
+        }
+        public void EndRequest()
+        {
+
+        }
+        public override void Abort()
+        {
+            base.Abort();
+            streamThread.Abort();
+        }
+        #endregion
     }
 }

@@ -35,8 +35,6 @@ namespace Twitter
             this.OAuthConsumerSecret = OAuthConsumerSecret;
             this.OAuthConsumerKey = OAuthConsumerKey;
         }
-
-
         #region Global Functions
         /// <summary>
         /// Account Authorization.
@@ -104,7 +102,7 @@ namespace Twitter
                 t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.Update(t);
+                    updater.Update(t, ApiAction.GET_TWEETS);
                 long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
@@ -115,7 +113,7 @@ namespace Twitter
                     t.AddRange(tmp);
                     tmp = tmp.OrderBy(x => x.ID).ToList();
                     if (updater != null) // Add new tweets to UI
-                        updater.Update(tmp);
+                        updater.Update(tmp, ApiAction.GET_TWEETS);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
@@ -156,7 +154,7 @@ namespace Twitter
                     //f = serializer.Deserialize<FriendsNavigator>(jsonStr);
                     f = JsonConvert.DeserializeObject<FriendsNavigator>(jsonStr);                    
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(f.ids);
+                        updater.Update(f.ids, ApiAction.GET_FRIENDS_ID);
                     friendsIDs.AddRange(f.ids);
                     cursor = f.next_cursor;
                 }
@@ -198,7 +196,7 @@ namespace Twitter
                     else
                         cursor = u.next_cursor;
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(u.users);
+                        updater.Update(u.users, ApiAction.GET_FRIENDS);
                     users.AddRange(u.users);
                 }
                 catch { cursor = 0; }
@@ -226,7 +224,7 @@ namespace Twitter
                     //f = serializer.Deserialize<FriendsNavigator>(jsonStr);
                     f = JsonConvert.DeserializeObject<FriendsNavigator>(jsonStr);
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(f.ids);
+                        updater.Update(f.ids, ApiAction.GET_FOLLOWERS_ID);
                     friendsIDs.AddRange(f.ids);
                     cursor = f.next_cursor;
                 }
@@ -269,7 +267,7 @@ namespace Twitter
                     else
                         cursor = u.next_cursor;
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(u.users);
+                        updater.Update(u.users, ApiAction.GET_FOLLOWERS);
                     users.AddRange(u.users);
                 }
                 catch { cursor = 0; }
@@ -304,7 +302,7 @@ namespace Twitter
                 t.AddRange(stn.statuses);
                 t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.Update(t);
+                    updater.Update(t, ApiAction.SEARCH_TWEETS);
                 long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
@@ -315,7 +313,7 @@ namespace Twitter
                     List<Tweet> tmp = stn.statuses.OrderBy(x => x.ID).ToList();
                     t.AddRange(tmp);
                     if (updater != null)    // Add new tweets to UI
-                        updater.Update(tmp);
+                        updater.Update(tmp, ApiAction.SEARCH_TWEETS);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
@@ -353,7 +351,7 @@ namespace Twitter
                     //r = serializer.Deserialize<RetweetNavigator>(jsonStr);
                     r = JsonConvert.DeserializeObject<RetweetNavigator>(jsonStr);
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(r.ids);
+                        updater.Update(r.ids, ApiAction.GET_RETWEET_ID);
                     friendsIDs.AddRange(r.ids);
                     cursor = r.next_cursor;
                 }
@@ -387,7 +385,7 @@ namespace Twitter
                 t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.Update(t);
+                    updater.Update(t, ApiAction.GET_USER_FAVORITES_TWEETS);
                 long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
@@ -398,7 +396,7 @@ namespace Twitter
                     t.AddRange(tmp);
                     tmp = tmp.OrderBy(x => x.ID).ToList();
                     if (updater != null) // Add new tweets to UI
-                        updater.Update(tmp);
+                        updater.Update(tmp, ApiAction.GET_USER_FAVORITES_TWEETS);
                     //t = t.OrderBy(x => x.id).ToList();
                     SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
@@ -428,30 +426,17 @@ namespace Twitter
         }
         #endregion
     }
-}
-#region Comments
-/**
-public async Task<Friends> GetFriends(string userName, string accessToken = null)
-        {
-            string requestUri = string.Format("https://api.twitter.com/1.1/friends/ids.json?screen_name={0}", userName);
-            string jsonStr = await GetRequest(requestUri);
-            Friends f = serializer.Deserialize<Friends>(jsonStr);
-            return f;
-            if (accessToken == null)
-            {
-                accessToken = await GetAccessToken();
-            }
 
-            var requestUserTimeline = new HttpRequestMessage(HttpMethod.Get, string.Format("https://api.twitter.com/1.1/friends/ids.json?screen_name={0}", userName));
-            requestUserTimeline.Headers.Add("Authorization", "Bearer " + accessToken);
-            var httpClient = new HttpClient();
-            HttpResponseMessage responseUserTimeLine = await httpClient.SendAsync(requestUserTimeline);
-            //var serializer = new JavaScriptSerializer();
-            string jsonStr = await responseUserTimeLine.Content.ReadAsStringAsync();
-            Friends f1 = serializer.Deserialize<Friends>(jsonStr);
-            //JObject jsonDat = JObject.Parse(jsonStr);
-            //Friends f = jsonDat.ToObject<Friends>();
-            return f1;
-        }
- **/
-#endregion
+    public enum ApiAction
+    {
+        GET_TWEETS,
+        GET_FRIENDS_ID,
+        GET_FRIENDS,
+        GET_FOLLOWERS_ID,
+        GET_FOLLOWERS,
+        SEARCH_TWEETS,
+        GET_USER_FAVORITES_TWEETS,
+        GET_RETWEET_ID
+    }
+
+}

@@ -8,7 +8,6 @@ namespace DataBaseConnections.DataBaseTypes
 {
     class SQLServerConnection : SQLMethods
     {
-        //private SqlConnection connection = null;
         public SQLServerConnection(string serverAddress, string dataBase, string userName, string password, bool onLocalHost = false)
         {
             server = serverAddress;
@@ -66,11 +65,7 @@ namespace DataBaseConnections.DataBaseTypes
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
             {     
                 OpenConnection();
-                try
-                {
-                    rowsUpdated = (long)cmd.ExecuteNonQuery();
-                }
-                catch {  }
+                rowsUpdated = (long)cmd.ExecuteNonQuery();
                 return rowsUpdated;                
             }
         }
@@ -80,16 +75,12 @@ namespace DataBaseConnections.DataBaseTypes
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
             {
                 OpenConnection();
-                try
+                if (sqlQuery.Contains("OUTPUT"))
                 {
-                    if (sqlQuery.Contains("OUTPUT"))
-                    {
-                        object returnObj = cmd.ExecuteScalar();
-                        rowsUpdated = long.Parse(returnObj.ToString());
-                    }
-                    else rowsUpdated = (long)cmd.ExecuteNonQuery();
+                    object returnObj = cmd.ExecuteScalar();
+                    rowsUpdated = long.Parse(returnObj.ToString());
                 }
-                catch {  }
+                else rowsUpdated = (long)cmd.ExecuteNonQuery();
                 return rowsUpdated;
             }
         }

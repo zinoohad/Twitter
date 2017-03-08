@@ -32,23 +32,10 @@ namespace DataBaseConnections.DataBaseTypes
             long rowsUpdated = 0;
             using (MySqlCommand cmd = new MySqlCommand(sqlQuery, (MySqlConnection)connection))
             {
-                try
-                {
-                    OpenConnection();
-                    rowsUpdated = (long)cmd.ExecuteNonQuery();
-                    return rowsUpdated;
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    if (rowsUpdated == 0)
-                        ExecuteMessage = "Can't execute query.";
-                    else
-                        ExecuteMessage = "Success!";
-                }
+                OpenConnection();
+                cmd.ExecuteNonQuery();
+                rowsUpdated = cmd.LastInsertedId;
+                return rowsUpdated;              
             }
         }
         public override long ExecuteScalar(string sqlQuery)
@@ -56,44 +43,21 @@ namespace DataBaseConnections.DataBaseTypes
             long rowsUpdated = 0;
             using (MySqlCommand cmd = new MySqlCommand(sqlQuery, (MySqlConnection)connection))
             {
-                try
-                {
-                    OpenConnection();
-                    rowsUpdated = (long)cmd.ExecuteScalar();
-                    return rowsUpdated;
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    if (rowsUpdated == 0)
-                        ExecuteMessage = "Can't execute query.";
-                    else
-                        ExecuteMessage = "Success!";
-                }
+                OpenConnection();
+                rowsUpdated = (long)cmd.ExecuteScalar();
+                return rowsUpdated;
             }
         }  
         public override DataTable Select(string sqlQuery)
         {
             DataTable dt = new DataTable();
-            MySqlCommand cmd = new MySqlCommand(sqlQuery, (MySqlConnection)connection);
-            if (!OpenConnection())
+            MySqlCommand cmd = new MySqlCommand(sqlQuery, (MySqlConnection)connection);           
+            if (!isOpen())
             {
-                SelectErrorMessage = "Can't connect to database, please check the connection and try again.";
-                return dt;
+                throw new Exception("Can't connect to database, please check the connection and try again.");
             }    
             MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-            try
-            {
-                da.Fill(dt);
-            }
-            catch (MySqlException e)
-            {
-                SelectErrorMessage = e.Message;
-                return null;
-            }
+            da.Fill(dt);
             return dt;
         }
        

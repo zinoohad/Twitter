@@ -148,7 +148,7 @@ namespace Twitter.Forms
         }
         #endregion
         #region Updates
-        public void Update(object obj)
+        public void Update(object obj, ApiAction action = ApiAction.SEARCH_TWEETS)
         {       
             if(obj is List<Tweet>)
                 dgv.Invoke(new MethodInvoker(() => { UpdateTweets((List<Tweet>)obj); }));
@@ -224,7 +224,6 @@ namespace Twitter.Forms
         }
         #endregion
 
-        
 
     }
 }
