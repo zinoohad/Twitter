@@ -16,12 +16,13 @@ namespace TwitterCollector.Threading
         protected TwitterAPI twitter = new TwitterAPI();
         protected BaseThread() { _thread = new Thread(new ThreadStart(this.RunThread)); }
         protected bool ThreadOn = false;
+        protected Thread streamThread;
 
         // Thread methods / properties
         public void Start() { ThreadOn = true;  _thread.Start(); }
         public void Join() { _thread.Join(); }
         public bool IsAlive { get { return _thread.IsAlive; } }
-        public void Abort() { ThreadOn = false; _thread.Abort(); }
+        public virtual void Abort() { ThreadOn = false; _thread.Abort(); }
 
         // Override in base class
         public abstract void RunThread();

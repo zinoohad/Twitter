@@ -8,7 +8,6 @@ namespace DataBaseConnections.DataBaseTypes
 {
     class SQLServerConnection : SQLMethods
     {
-        //private SqlConnection connection = null;
         public SQLServerConnection(string serverAddress, string dataBase, string userName, string password, bool onLocalHost = false)
         {
             server = serverAddress;
@@ -30,38 +29,60 @@ namespace DataBaseConnections.DataBaseTypes
             dt.Load(cmd.ExecuteReader());
             return dt;
         }
-        public override int Insert(string sqlQuery) 
+        public override long Insert(string sqlQuery, bool returnInsertedID = false, string columnName = "ID") 
         {
-            if (!sqlQuery.Contains("OUTPUT"))
-                sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("values"), "OUTPUT Inserted.ID ");
-            return ExecuteNonQuery(sqlQuery); 
+            if (returnInsertedID)
+            {
+                if (!sqlQuery.Contains("OUTPUT"))
+                    sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("values"), string.Format("OUTPUT Inserted.{0} ",columnName));
+                return ExecuteScalar(sqlQuery);
+            }
+            else return ExecuteNonQuery(sqlQuery); 
         }
-        public override int Update(string sqlQuery)
+        public override long Update(string sqlQuery, bool returnUpdatedID = false, string columnName = "ID")
         {
-            if (!sqlQuery.Contains("OUTPUT"))
-                sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("into"), "OUTPUT Inserted.ID ");
-            return ExecuteNonQuery(sqlQuery);
+            if (returnUpdatedID)
+            {
+                if (!sqlQuery.Contains("OUTPUT") && sqlQuery.ToLower().Contains("into"))
+                    sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("into"), string.Format("OUTPUT Inserted.{0} ", columnName));
+                return ExecuteScalar(sqlQuery);
+            }
+            else return ExecuteNonQuery(sqlQuery); 
         }
-        public override int Delete(string sqlQuery)
+        public override long Delete(string sqlQuery, bool returnDeletedID = false, string columnName = "ID")
         {
-            if (!sqlQuery.Contains("OUTPUT"))
-                sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("where"), "OUTPUT Deleted.ID ");
-            return ExecuteNonQuery(sqlQuery);
+            if (returnDeletedID)
+            {
+                if (!sqlQuery.Contains("OUTPUT"))
+                    sqlQuery = sqlQuery.Insert(sqlQuery.ToLower().IndexOf("where"), string.Format("OUTPUT Deleted.{0} ", columnName));
+                return ExecuteScalar(sqlQuery);
+            }
+            else return ExecuteNonQuery(sqlQuery); 
         }
-        public override int ExecuteNonQuery(string sqlQuery)
+        public override long ExecuteNonQuery(string sqlQuery)
         {
-            int rowsUpdated = 0;
+            long rowsUpdated = 0;
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
             {     
                 OpenConnection();
-                try
-                {
-                    rowsUpdated = (int)cmd.ExecuteScalar();
-                }
-                catch { rowsUpdated = cmd.ExecuteNonQuery(); }
+                rowsUpdated = (long)cmd.ExecuteNonQuery();
                 return rowsUpdated;                
             }
         }
-        
+        public override long ExecuteScalar(string sqlQuery)
+        {
+            long rowsUpdated = 0;
+            using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
+            {
+                OpenConnection();
+                if (sqlQuery.Contains("OUTPUT"))
+                {
+                    object returnObj = cmd.ExecuteScalar();
+                    rowsUpdated = long.Parse(returnObj.ToString());
+                }
+                else rowsUpdated = (long)cmd.ExecuteNonQuery();
+                return rowsUpdated;
+            }
+        }
     }
 }

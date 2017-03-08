@@ -148,7 +148,7 @@ namespace Twitter.Forms
         }
         #endregion
         #region Updates
-        public void Update(object obj)
+        public void Update(object obj, ApiAction action = ApiAction.SEARCH_TWEETS)
         {       
             if(obj is List<Tweet>)
                 dgv.Invoke(new MethodInvoker(() => { UpdateTweets((List<Tweet>)obj); }));
@@ -171,7 +171,7 @@ namespace Twitter.Forms
             foreach (Tweet t in tweets)
             {
                 hashtags = t.entities != null && t.entities.hashtags != null ? t.entities.hashtagsToString() : "";
-                dgv.Rows.Add(t.id, t.CreateAt, t.text, t.user.lang, t.retweet_count,t.favorite_count, hashtags);
+                dgv.Rows.Add(t.ID, t.Date, t.Text, t.user.Language, t.RetweetCount,t.FavoritesCount, hashtags);
                 AddRecord();
             }
         }
@@ -224,7 +224,6 @@ namespace Twitter.Forms
         }
         #endregion
 
-        
 
     }
 }

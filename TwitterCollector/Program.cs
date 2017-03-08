@@ -11,6 +11,7 @@ using TwitterCollector.Forms;
 using TwitterCollector.Controllers;
 using Receptiviti.Client;
 using TopicSentimentAnalysis;
+using TwitterCollector.Threading;
 
 namespace TwitterCollector
 {
@@ -23,6 +24,8 @@ namespace TwitterCollector
             //i.GetImageAnalysisImagga("http://steezo.com/wp-content/uploads/2012/12/man-in-suit2.jpg");
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
+
+            //(new Supervisor()).Start();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TwitterCollector.Common;
 using TwitterCollector.Controllers;
+using TwitterCollector.Objects;
 
 namespace TwitterCollector.Forms
 {
@@ -36,7 +37,7 @@ namespace TwitterCollector.Forms
         private void subjectDGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
 
-            if (e.ColumnIndex == 1 && e.RowIndex != -1)
+            if (e.ColumnIndex == 2 && e.RowIndex != -1)
             {
                 DataGridViewRow selectedRow = dgvSubject.Rows[e.RowIndex];
                 string CurrentSubject = (string)selectedRow.Cells[0].Value;
@@ -44,6 +45,12 @@ namespace TwitterCollector.Forms
 
                 //MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
                 //dgvSubject.Rows.RemoveAt(e.RowIndex);
+            }
+            if (e.ColumnIndex == 1 && e.RowIndex != -1)
+            {
+                //DataGridViewRow selectedRow = dgvSubject.Rows[e.RowIndex];
+                //string CurrentSubject = (string)selectedRow.Cells[0].Value;
+                //string lang = (string)((DataGridViewComboBoxCell)selectedRow.Cells[1]).EditedFormattedValue;
             }
             else if (e.ColumnIndex == 0 && e.RowIndex != -1)
             {
@@ -54,12 +61,15 @@ namespace TwitterCollector.Forms
         }
         private void keywordDGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 1)
+            if (e.ColumnIndex == 2)
             {
                 DataGridViewRow selectedRow = dgvKeyword.Rows[e.RowIndex];
                 controller.RemoveKeyword((string)selectedRow.Cells[0].Value, e.RowIndex);
                 //MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
                 //dgvKeyword.Rows.RemoveAt(e.RowIndex);
+            }
+            else if (e.ColumnIndex == 1 && e.RowIndex != -1)
+            {
             }
             else if (e.ColumnIndex == 0 && e.RowIndex != -1)
             {
@@ -89,6 +99,48 @@ namespace TwitterCollector.Forms
         {
             Global.ExitApplication(sender, e);
         }
+        private void SubjectManager_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'twitterDataSet.Languages' table. You can move, or remove it, as needed.
+            this.languagesTableAdapter.Fill(this.twitterDataSet.Languages);
+
+        }
+
+        private void dgvSubject_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+
+        }
+        /// <summary>
+        /// Evant calls when chackBox value changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvSubject_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            DataGridView ldgv = (DataGridView)sender;
+            Point CellAddress = ldgv.CurrentCellAddress;
+
+            if (CellAddress.X == 1 && CellAddress.Y != -1)
+            {
+                DataGridViewRow selectedRow = dgvSubject.Rows[CellAddress.Y];
+                string CurrentSubject = (string)selectedRow.Cells[0].Value;
+                string lang = (string)((DataGridViewComboBoxCell)selectedRow.Cells[1]).EditedFormattedValue;
+                controller.UpdateSubjectLanguage(CurrentSubject, lang); 
+            }
+        }
+        private void dgvKeyword_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            DataGridView ldgv = (DataGridView)sender;
+            Point CellAddress = ldgv.CurrentCellAddress;
+
+            if (CellAddress.X == 1 && CellAddress.Y != -1)
+            {
+                DataGridViewRow selectedRow = dgvKeyword.Rows[CellAddress.Y];
+                string CurrentKeyword = (string)selectedRow.Cells[0].Value;
+                string lang = (string)((DataGridViewComboBoxCell)selectedRow.Cells[1]).EditedFormattedValue;
+                controller.UpdateKeywordLanguage(CurrentKeyword, lang);
+            }
+        }
         #endregion
         #region Interface Implement
         public void SetController(BaseController controller)
@@ -97,25 +149,33 @@ namespace TwitterCollector.Forms
         }
         #endregion
         #region Functions
-        public void LoadSubjects(Dictionary<int, string> subjects)
+        public void LoadSubjects(List<SubjectO> subjects)
         {
-            foreach (KeyValuePair<int, string> subject in subjects)
-                AddSubjectToGrid(subject.Value);
-            dgvSubject.Rows[1].Cells[1].Selected = false;
+            foreach (SubjectO s in subjects)
+            {
+                AddSubjectToGrid(s.Name, s.LanguageName);
+            }
         }
-        public void LoadKeywords(Dictionary<int, string> keywords)
+        public void LoadKeywords(List<KeywordO> keywords)
         {
             dgvKeyword.Rows.Clear();
-            foreach (KeyValuePair<int, string> keyword in keywords)
-                AddKeywordToGrid(keyword.Value);
+            foreach (KeywordO k in keywords)
+                AddKeywordToGrid(k.Name, k.LanguageName);
         }
-        public void AddSubjectToGrid(string subject)
+        public void AddSubjectToGrid(string subject, string lang = null)
         {
-            dgvSubject.Rows.Add(subject);
+            int row;
+            if(lang != null)
+                row = dgvSubject.Rows.Add(subject, lang);
+            else
+                row = dgvSubject.Rows.Add(subject, "English");
         }
-        public void AddKeywordToGrid(string keyword)
+        public void AddKeywordToGrid(string keyword, string lang = null)
         {
-            dgvKeyword.Rows.Add(keyword);
+            if (lang != null)
+                dgvKeyword.Rows.Add(keyword, lang);
+            else
+                dgvKeyword.Rows.Add(keyword, "English");
         }
         public void RemoveSubjectFromGrid(int rowNumber)
         {
@@ -126,6 +186,8 @@ namespace TwitterCollector.Forms
             dgvKeyword.Rows.RemoveAt(rowNumber);
         }
         #endregion
+
+        
 
         
 

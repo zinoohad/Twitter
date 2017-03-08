@@ -9,7 +9,8 @@ namespace Twitter.Interface
 {
     public interface Update
     {
-        void Update(object obj);
+        //void Update(object obj);
+        void Update(object obj, ApiAction action = ApiAction.SEARCH_TWEETS);
         void EndRequest();
 
     }

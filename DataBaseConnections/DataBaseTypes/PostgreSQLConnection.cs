@@ -29,53 +29,40 @@ namespace DataBaseConnections.DataBaseTypes
         {
             // data adapter making request from our connection
             NpgsqlDataAdapter da = new NpgsqlDataAdapter(sqlQuery, (NpgsqlConnection)connection);
-            if (!OpenConnection())
+            if (!isOpen())
             {
-                SelectErrorMessage = "Can't connect to database, please check the connection and try again.";
-                return dt;
+                throw new Exception("Can't connect to database, please check the connection and try again.");
             }    
             // reset DataSet
             ds.Reset();
-            try
-            {
-                // filling DataSet with result from NpgsqlDataAdapter
-                da.Fill(ds);
-            }
-            catch (NpgsqlException e)
-            {
-                SelectErrorMessage = e.Message;
-                return null;
-            }
+            // filling DataSet with result from NpgsqlDataAdapter
+            da.Fill(ds);
             // since it C# DataSet can handle multiple tables, i'm will select first
             dt = ds.Tables[0];
             // return DataTable
             return dt;
         }
-        public override int Insert(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }
-        public override int Update(string sqlQuery) { return ExecuteNonQuery(sqlQuery); }  
-        public override int ExecuteNonQuery(string sqlQuery)
+        public override long Insert(string sqlQuery, bool returnInsertedID = false, string columnName = "ID") { return ExecuteNonQuery(sqlQuery); }
+        public override long Update(string sqlQuery, bool returnUpdatedID = false, string columnName = "ID") { return ExecuteNonQuery(sqlQuery); }
+        public override long ExecuteNonQuery(string sqlQuery)
         {
-            int rowsUpdated = 0;
+            long rowsUpdated = 0;
             using (NpgsqlCommand cmd = new NpgsqlCommand(sqlQuery, (NpgsqlConnection)connection))
             {
-                try
-                {
-                    OpenConnection();
-                    rowsUpdated = cmd.ExecuteNonQuery();
-                    return rowsUpdated;
-                }
-                catch (NpgsqlException e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    if (rowsUpdated == 0)
-                        ExecuteMessage = "Can't execute query.";
-                    else
-                        ExecuteMessage = "Success!";
-                }
+                OpenConnection();
+                rowsUpdated = (long)cmd.ExecuteNonQuery();
+                return rowsUpdated;
             }
-        }       
+        }
+        public override long ExecuteScalar(string sqlQuery)
+        {
+            long rowsUpdated = 0;
+            using (NpgsqlCommand cmd = new NpgsqlCommand(sqlQuery, (NpgsqlConnection)connection))
+            {
+                OpenConnection();
+                rowsUpdated = (long)cmd.ExecuteScalar();
+                return rowsUpdated;
+            }
+        }      
     }
 }
