@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Common\CustomMessageBox.cs" />
     <Compile Include="Common\DBHandler.cs" />
+    <Compile Include="Common\Emuns.cs" />
     <Compile Include="Common\FileHandler.cs" />
     <Compile Include="Common\Global.cs" />
     <Compile Include="Common\SentenceHandler.cs" />
@@ -118,7 +119,9 @@
     <Compile Include="Forms\SubjectResult.Designer.cs">
       <DependentUpon>SubjectResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Objects\ApiKeys.cs" />
     <Compile Include="Objects\GeneralThreadParams.cs" />
+    <Compile Include="Objects\PosNegTweet.cs" />
     <Compile Include="Objects\SubjectO.cs" />
     <Compile Include="Objects\SubjectResultUI.cs" />
     <Compile Include="Program.cs" />

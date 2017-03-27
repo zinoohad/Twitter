@@ -27,5 +27,6 @@ namespace TwitterCollector.Threading
         // Override in base class
         public abstract void RunThread();
         public virtual void SetInitialParams(params object[] Params) { }
+
     }
 }

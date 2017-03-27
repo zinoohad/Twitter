@@ -8,12 +8,19 @@ namespace TopicSentimentAnalysis
     public class APIConnection
     {
         #region Params
+
         private string _AuthenticationKey { get; set; } // Authentication 
+
         //private string AuthenticationKey = "ade760cc94704e9a224e9323d63467b1"; // Authentication 
+
         private JavaScriptSerializer serializer = new JavaScriptSerializer();
+
         private Encoding requestEncoding = Encoding.GetEncoding(1255);  //Hebrew
+
         private const string SentimentAnalysisAddress = "http://api.meaningcloud.com/sentiment-2.1";    //SentimentAnalysis API Address
+
         #endregion
+
         public APIConnection(string AuthenticationKey = null)
         {
             if (AuthenticationKey == null)
@@ -21,6 +28,7 @@ namespace TopicSentimentAnalysis
             else
                 _AuthenticationKey = AuthenticationKey;
         }
+
         /// <summary>
         /// Get request by sending a text string and return in json form.
         /// </summary>
@@ -40,6 +48,7 @@ namespace TopicSentimentAnalysis
             HttpResponseMessage response = httpClient.SendAsync(request).Result;
             return response.Content.ReadAsStringAsync().Result;
         }
+
         /// <summary>
         /// The text provided is analyzed to determine if it expresses a positive/negative/neutral sentiment; 
         /// to do this, the local polarity of the different sentences in the text is identified and the relationship between them evaluated, 
@@ -78,6 +87,7 @@ namespace TopicSentimentAnalysis
             ///*--- http request not Succeeded ---*/
             //return "error code:" + SentenceResponse.status.code;
         }
+
         public Topic GetTopicAnalysis(string Text)
         {
             Topic t = new Topic();
@@ -98,6 +108,7 @@ namespace TopicSentimentAnalysis
             ///*--- http request not Succeeded ---*/
             //return "error code:" + TopicResponse.status.code;
         }
+
     }
     public enum RequestType
     {

@@ -16,5 +16,19 @@ namespace TopicSentimentAnalysis.Classes
         public string score_tag { get; set; }
         public IList<Entity> sentimented_entity_list { get; set; }
         public IList<Concept> sentimented_concept_list { get; set; }
+
+        public bool NotIn(params string[] scoreTag)
+        {
+            if (score_tag.Contains(this.score_tag))
+                return false;
+            return true;
+        }
+
+        public bool In(params string[] scoreTag)
+        {
+            if (score_tag.Contains(this.score_tag))
+                return true;
+            return false;
+        }
     }
 }
