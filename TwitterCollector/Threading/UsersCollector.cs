@@ -45,6 +45,8 @@ namespace TwitterCollector.Threading
             List<long> usersID = db.GetTopUncheckedUsers();
             foreach (long id in usersID)
             {
+                // The API update this class in real time for every request. 
+                // That the reason why we don't need to do nothing.
                 List<Tweet> userTweets = twitter.GetTweets("", id,3200,200,this);
             }
         }

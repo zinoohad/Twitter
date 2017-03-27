@@ -7,6 +7,7 @@ using  DataBaseConnections;
 using System.Data;
 using Twitter.Classes;
 using TwitterCollector.Objects;
+using TopicSentimentAnalysis.Classes;
 
 namespace TwitterCollector.Common
 {
@@ -16,12 +17,16 @@ namespace TwitterCollector.Common
         private DBConnection db;
         public const string TwitterDateTemplate = "ddd MMM dd HH:mm:ss +ffff yyyy";
         #endregion
+
         #region Constructors
         public DBHandler() { db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); }
         public DBHandler(DBConnection db) { this.db = db; }
         #endregion
+
         #region General
+
         #region System Functions
+
         public object GetValueByKey(string key)
         {
             string selectQuery = string.Format("SELECT Value FROM Settings WHERE [Key] = '{0}'", key);
@@ -30,6 +35,7 @@ namespace TwitterCollector.Common
             DataRow dr = dt.Rows[0];
             return dr.IsNull("Value") ? null : dr["Value"];
         }
+
         public long SetValueByKey(string key, object value)
         {
             string query;
@@ -52,6 +58,7 @@ namespace TwitterCollector.Common
                 catch { return 0; }
             }
         }
+
         private long UpdateSettingsCount(string key, long? value = null)
         {
             string query;
@@ -59,6 +66,7 @@ namespace TwitterCollector.Common
             else query = string.Format("UPDATE Settings SET Value = CAST(Value AS INT) + 1 WHERE [Key] = '{0}'", key);
             return Update(query);
         }
+
         public bool IncTweetsCount(long? value = null)
         {
             try
@@ -71,6 +79,7 @@ namespace TwitterCollector.Common
                 return false;
             }
         }
+
         public bool IncUsersCount(long? value = null)
         {
             try
@@ -83,7 +92,32 @@ namespace TwitterCollector.Common
                 return false;
             }
         }
-        #endregion        
+
+        public ApiKeys GetApiKey(ExternalAPI externalApi)
+        {
+            string sqlQuery = string.Format("SELECT TOP 1 * FROM ExternalApiKeys WHERE AccountName = '{0}' AND RemainingCredits > 0", externalApi.ToString());
+            DataTable dt = Select(sqlQuery);
+            if (dt == null || dt.Rows.Count == 0) 
+                return null;
+            DataRow dr = dt.Rows[0];
+            return new ApiKeys((int)dr["ID"]
+                , (ExternalAPI) Enum.Parse(typeof(ExternalAPI), dr["AccountName"].ToString())
+                , (int)dr["RemainingCredits"]
+                , dr["Key1"].ToString()
+                , dr["Key2"].ToString()
+                , dr["Key3"].ToString()
+                , dr["Key4"].ToString()
+                );
+        }
+
+        public void UpdateRemainingCredits(ref ApiKeys key)
+        {
+            key.RemainingCredits--;
+            SetSingleValue("ExternalApiKeys", "RemainingCredits", key.ID, key.externalApi);
+        }
+
+        #endregion      
+  
         public bool IncTweetsKeywordCounter(List<int> keywordIDs)
         {
             try
@@ -97,6 +131,7 @@ namespace TwitterCollector.Common
             }
             catch(Exception e) { new TwitterException(e); return false; }
         }
+
         public bool IncSubjectUsersBelongCounter(int keywordID)
         {
             try
@@ -108,11 +143,17 @@ namespace TwitterCollector.Common
             }
             catch (Exception e) { new TwitterException(e); return false; }
         }
+
         private DataTable Select(string query) { return db.Select(query); }
+
         private long Update(string query, bool returnInsertedID = false, string columnName = "ID") { return db.Update(query, returnInsertedID, columnName); }
+
         private long Insert(string query, bool returnUpdatedID = false, string columnName = "ID") { return db.Insert(query, returnUpdatedID, columnName); }
+
         private long Delete(string query, bool returnDeletedID = false, string columnName = "ID") { return db.Delete(query, returnDeletedID, columnName); }
+
         public string ReplaceQuote(string text) { return string.IsNullOrEmpty(text) ? "NULL" : "'"+text.Replace("'", "''")+"'"; }
+
         public object GetSingleValue(string tableName, string columnName, string where)
         {
             try
@@ -127,6 +168,7 @@ namespace TwitterCollector.Common
                 return null;
             }
         }
+
         public bool SetSingleValue(string tableName, string columnName, long rowID, object value)
         {
             try
@@ -140,7 +182,9 @@ namespace TwitterCollector.Common
                 return false;
             }
         }
+
         #endregion
+
         #region Select
 
         #region Tweets Collector
@@ -231,7 +275,7 @@ namespace TwitterCollector.Common
             if (dt == null || dt.Rows.Count == 0) return null;
             List<Tweet> tweets = new List<Tweet>();
             foreach (DataRow dr in dt.Rows)
-                tweets.Add(Global.FillClassFromDataRow<Tweet>(dr, new Tweet()));
+                tweets.Add(Global.FillClassFromDataRow<Tweet>(dr));
             return tweets;
         }
 
@@ -322,6 +366,58 @@ namespace TwitterCollector.Common
             return true;
         }
 
+        #region TweetPosNeg
+
+        /// <summary>
+        /// Search for emoticons in split sentence
+        /// </summary>
+        /// <param name="splitSentence">Split sentence</param>
+        /// <returns>DataTable with all the results.</returns>
+        public DataTable FindEmoticons(string[] splitSentence)
+        {
+            string orJoin = string.Join("', '", splitSentence);
+            string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 1 AND Word IN ('{0}')", orJoin);
+            return Select(sqlQuery);
+        }
+
+        public DataTable FindPositiveNegativeWords(string[] splitSentence)
+        {
+            string orJoin = string.Join("', '", splitSentence);
+            string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 0 AND Word IN ('{0}')", orJoin);
+            return Select(sqlQuery);
+        }
+
+        public List<Tweet> GetTweetsToCheckSentementAnalysis(ThreadType threadType, int? topNumber = null)
+        {
+            List<Tweet> topTweets = new List<Tweet>();
+            int top;
+            string query;
+            if (topNumber != null) top = (int)topNumber;
+            else
+            {
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                if (tmpTop == null) top = 100;
+                else top = int.Parse(tmpTop.ToString());
+            }
+
+            if(threadType == ThreadType.SENTIMENT_ANALYSIS)
+                query = "SELECT TOP {0} * FROM Tweets WHERE SentementAnalysisRank IS NULL AND RetweetID IS NULL";
+            else
+                query = "SELECT TOP {0} * FROM Tweets WHERE Rank IS NULL AND RetweetID IS NULL";
+
+            DataTable dt = Select(query);
+            if (dt != null)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    topTweets.Add(new Tweet(dr));
+                }
+            }
+            return topTweets;
+        }
+
+        #endregion
+
         #endregion
 
         #region Insert
@@ -356,7 +452,10 @@ namespace TwitterCollector.Common
             long userID, tweetID;
             bool IsNewTweet = true;
             long? placeID = null;
-            if (keywordID != null) tweet.keywordID = keywordID;
+            if (keywordID != null)
+            {
+                tweet.keywordID = keywordID;
+            }
             // Insert User if not exists
             if (!UserAlreadyExists(tweet.user.ID))
             {
@@ -482,6 +581,16 @@ namespace TwitterCollector.Common
             }
             return placeID;
         }
+
+        /// <summary>
+        /// Save tweet in the database.
+        /// If the tweet is a retweet, save also the original tweet id.
+        /// </summary>
+        /// <param name="tweet">Tweet object</param>
+        /// <param name="userID">Relevant user id</param>
+        /// <param name="placeID">Place id</param>
+        /// <param name="IsNewTweet">An referance to flag that check if the tweet already exists in the data base.</param>
+        /// <returns>Tweet ID</returns>
         public long InsertTweet(Tweet tweet, long userID, long? placeID,ref bool IsNewTweet)
         {
             IsNewTweet = true;
@@ -581,6 +690,112 @@ namespace TwitterCollector.Common
             subject.LanguageName = dr["Name"].ToString();
             subject.LanguageCode = dr["Code"].ToString();
             return true;
+        }
+
+        #endregion
+
+        #region Sentiment Analysis
+
+        public void SaveTweetScore(Tweet tweet, string score, int confidence)
+        {
+            // TODO: Save score for all the retweets 
+            DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", tweet.id_str));
+            string[] ids = dt.AsEnumerable()
+                            .Select(row => row["ID"].ToString())
+                            .ToArray();
+            Update(string.Format("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID IN ({2})", score, confidence, string.Join(",", ids)));
+        }
+
+        //public void LearnNewPosNegWord(Concept concept)
+        //{
+        //    DataTable dt = Select(string.Format("SELECT * FROM DictionaryPositiveNegative WHERE Word = '{0}'", concept.form));
+        //    bool isPositive = concept.In("P+", "P");
+        //    bool isEmoticon = Global.IsEmoticon(concept.form);
+        //    if (dt == null || dt.Rows.Count == 0)
+        //    {
+        //        //New word
+        //        if (isPositive)
+        //            Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,PositiveAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
+        //                , concept.form, isPositive.ToString(), isEmoticon.ToString()));
+        //        else
+        //            Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,NegativeAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
+        //                , concept.form, isPositive.ToString(), isEmoticon.ToString()));
+        //    }
+        //    else
+        //    {
+        //        //Exists word
+        //        DataRow dr = dt.Rows[0];
+        //        long posCount = long.Parse(dr["PositiveAppearanceCount"].ToString()), negCount = long.Parse(dr["NegativeAppearanceCount"].ToString());
+        //        if (isPositive)
+        //        {
+        //            isPositive = posCount + 1 > negCount;
+        //            Update(string.Format("UPDATE DictionaryPositiveNegative SET PositiveAppearanceCount = CAST(PositiveAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
+        //        }
+        //        else
+        //        {
+        //            isPositive = posCount > negCount + 1;
+        //            Update(string.Format("UPDATE DictionaryPositiveNegative SET NegativeAppearanceCount = CAST(NegativeAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
+        //        }
+        //    }
+        //}
+
+        public void LearnNewPosNegWord(object obj)
+        {
+            string word = null;
+            bool isPositive = false;
+
+            if (obj is PolarityTerm)
+            {
+                word = ((PolarityTerm)obj).text;
+                isPositive = ((PolarityTerm)obj).In("P+", "P");
+            }
+            else if (obj is Concept)
+            {
+                word = ((Concept)obj).form;
+                isPositive = ((Concept)obj).In("P+", "P");
+            }
+
+            bool isEmoticon = Global.IsEmoticon(word);
+            DataTable dt = Select(string.Format("SELECT * FROM DictionaryPositiveNegative WHERE Word = '{0}'", word));          
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                //New word
+                if (isPositive)
+                    Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,PositiveAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
+                        , word, isPositive.ToString(), isEmoticon.ToString()));
+                else
+                    Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,NegativeAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
+                        , word, isPositive.ToString(), isEmoticon.ToString()));
+            }
+            else
+            {
+                //Exists word
+                DataRow dr = dt.Rows[0];
+                long posCount = long.Parse(dr["PositiveAppearanceCount"].ToString()), negCount = long.Parse(dr["NegativeAppearanceCount"].ToString());
+                if (isPositive)
+                {
+                    isPositive = posCount + 1 > negCount;
+                    Update(string.Format("UPDATE DictionaryPositiveNegative SET PositiveAppearanceCount = CAST(PositiveAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
+                }
+                else
+                {
+                    isPositive = posCount > negCount + 1;
+                    Update(string.Format("UPDATE DictionaryPositiveNegative SET NegativeAppearanceCount = CAST(NegativeAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
+                }
+            }
+        }
+        
+        #endregion
+
+        #region TweetsPosNeg
+
+        public void SaveTweetPosNegRank(PosNegTweet pnt)
+        {
+            DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", pnt.ID));
+            string[] ids = dt.AsEnumerable()
+                            .Select(row => row["ID"].ToString())
+                            .ToArray();
+            Update(string.Format("UPDATE Tweets SET PositiveWords = {0}, NegativeWords = {1}, Rank = {2} WHERE ID IN ({3})", pnt.GetPositive(), pnt.GetNegative(), pnt.LocalRank, string.Join(",", ids)));
         }
 
         #endregion
