@@ -40,6 +40,7 @@ namespace TwitterCollector.Threading
                 }
             }
         }
+
         private void StartToCollect()
         {
             List<long> usersID = db.GetTopUncheckedUsers();

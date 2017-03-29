@@ -61,7 +61,6 @@ namespace TwitterCollector.Threading
                         db.SaveTweetPosNegRank(posNegTweet);
 
                     }
-
                 }
                 catch (Exception e)
                 {
