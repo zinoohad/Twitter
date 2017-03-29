@@ -1,0 +1,538 @@
+﻿<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>Receptiviti.Client</name>
+  </assembly>
+  <members>
+    <member name="T:Receptiviti.Client.Model.Many`1">
+      <summary>
+            Represents an enumeration of multiple items.
+            </summary>
+      <typeparam name="TElement" />
+    </member>
+    <member name="M:Receptiviti.Client.Model.Many`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="items" />
+      <param name="totalCount" />
+    </member>
+    <member name="P:Receptiviti.Client.Model.Many`1.TotalCount">
+      <summary>
+            Total amount of items that exist.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdateContentTagsRequest.Tags">
+      <summary>
+            Tags.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdatePersonTagsRequest.Tags">
+      <summary>
+            Tags.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdatePersonRequest.Name">
+      <summary>
+            Name of Person to be analyzed.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdatePersonRequest.Tags">
+      <summary>
+            Tags.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdatePersonRequest.Gender">
+      <summary>
+            Gender.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdatePersonRequest.Handle">
+      <summary>
+            A reference for the person. Contact/Customer ID from calling software.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.UpdatePersonRequest.CustomFields">
+      <summary>
+            Custom Fields.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.CreatePersonRequest.Name">
+      <summary>
+            Name of Person to be analyzed.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.CreatePersonRequest.Tags">
+      <summary>
+            Tags.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.CreatePersonRequest.Gender">
+      <summary>
+            Gender.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.CreatePersonRequest.Handle">
+      <summary>
+            A handle for the person. Contact/Customer ID from calling software.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.CreatePersonRequest.Content">
+      <summary>
+            Initial content to create.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.Model.CreatePersonRequest.CustomFields">
+      <summary>
+            Custom Fields.
+            </summary>
+    </member>
+    <member name="T:Receptiviti.Client.ReceptivitiClient">
+      <summary>
+            Provides access to the Receptiviti API.
+            </summary>
+    </member>
+    <member name="F:Receptiviti.Client.ReceptivitiClient.DEFAULT_URI">
+      <summary>
+            Default public URI of the Receptiviti service.
+            </summary>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.#ctor">
+      <summary>
+            Initializes a new instance.
+            </summary>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.#ctor(System.Net.Http.HttpClient,System.Uri,System.String,System.String)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="http" />
+      <param name="uri" />
+      <param name="apiKey" />
+      <param name="apiSecretKey" />
+      <requires exception="T:System.ArgumentNullException" csharp="http != null" vb="http &lt;&gt; Nothing">http != null</requires>
+      <exception cref="T:System.ArgumentNullException">http == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="uri != (System.Uri)null" vb="uri &lt;&gt; ((System.Uri)Nothing) ">uri != (System.Uri)null</requires>
+      <exception cref="T:System.ArgumentNullException">uri == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiKey != null" vb="apiKey &lt;&gt; Nothing">apiKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiKey == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiSecretKey != null" vb="apiSecretKey &lt;&gt; Nothing">apiSecretKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiSecretKey == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.#ctor(System.Uri,System.String,System.String)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="uri" />
+      <param name="apiKey" />
+      <param name="apiSecretKey" />
+      <requires exception="T:System.ArgumentNullException" csharp="uri != (System.Uri)null" vb="uri &lt;&gt; ((System.Uri)Nothing) ">uri != (System.Uri)null</requires>
+      <exception cref="T:System.ArgumentNullException">uri == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiKey != null" vb="apiKey &lt;&gt; Nothing">apiKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiKey == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiSecretKey != null" vb="apiSecretKey &lt;&gt; Nothing">apiSecretKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiSecretKey == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.#ctor(System.Net.Http.HttpClient,System.String,System.String)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="http" />
+      <param name="apiKey" />
+      <param name="apiSecretKey" />
+      <requires exception="T:System.ArgumentNullException" csharp="http != null" vb="http &lt;&gt; Nothing">http != null</requires>
+      <exception cref="T:System.ArgumentNullException">http == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiKey != null" vb="apiKey &lt;&gt; Nothing">apiKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiKey == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiSecretKey != null" vb="apiSecretKey &lt;&gt; Nothing">apiSecretKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiSecretKey == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.#ctor(System.String,System.String)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="apiKey" />
+      <param name="apiSecretKey" />
+      <requires exception="T:System.ArgumentNullException" csharp="apiKey != null" vb="apiKey &lt;&gt; Nothing">apiKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiKey == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="apiSecretKey != null" vb="apiSecretKey &lt;&gt; Nothing">apiSecretKey != null</requires>
+      <exception cref="T:System.ArgumentNullException">apiSecretKey == null</exception>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiClient.Uri">
+      <summary>
+            Gets the URI prefix of the Receptiviti API.
+            </summary>
+      <setter>
+        <requires exception="T:System.ArgumentNullException" csharp="value != (System.Uri)null" vb="value &lt;&gt; ((System.Uri)Nothing) ">value != (System.Uri)null</requires>
+      </setter>
+      <exception cref="T:System.ArgumentNullException">value == null</exception>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiClient.ApiKey">
+      <summary>
+            Gets the configured authentication key.
+            </summary>
+      <setter>
+        <requires exception="T:System.ArgumentNullException" csharp="value != null" vb="value &lt;&gt; Nothing">value != null</requires>
+      </setter>
+      <exception cref="T:System.ArgumentNullException">value == null</exception>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiClient.ApiSecretKey">
+      <summary>
+            Gets the configured authentication secret key.
+            </summary>
+      <setter>
+        <requires exception="T:System.ArgumentNullException" csharp="value != null" vb="value &lt;&gt; Nothing">value != null</requires>
+      </setter>
+      <exception cref="T:System.ArgumentNullException">value == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.CreateMessage(System.Net.Http.HttpMethod,System.Uri)">
+      <summary>
+            Creates a new <see cref="T:System.Net.Http.HttpRequestMessage" />.
+            </summary>
+      <param name="method" />
+      <param name="requestUri" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="requestUri != (System.Uri)null" vb="requestUri &lt;&gt; ((System.Uri)Nothing) ">requestUri != (System.Uri)null</requires>
+      <exception cref="T:System.ArgumentNullException">requestUri == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.CreateMessage``1(System.Net.Http.HttpMethod,System.Uri,``0)">
+      <summary>
+            Creates a new <see cref="T:System.Net.Http.HttpRequestMessage" />.
+            </summary>
+      <typeparam name="TContent" />
+      <param name="method" />
+      <param name="requestUri" />
+      <param name="content" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="requestUri != (System.Uri)null" vb="requestUri &lt;&gt; ((System.Uri)Nothing) ">requestUri != (System.Uri)null</requires>
+      <exception cref="T:System.ArgumentNullException">requestUri == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.ParseResponseBody``1(System.Net.Http.HttpResponseMessage)">
+      <summary>
+            Parses the given response body into the given object type.
+            </summary>
+      <typeparam name="TResult" />
+      <param name="response" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.HandleResponse``1(System.Net.Http.HttpResponseMessage)">
+      <summary>
+            Handles the response message, extracting the proper result and throwing exceptions where required.
+            </summary>
+      <param name="response" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.SendAsync``1(System.Net.Http.HttpRequestMessage)">
+      <summary>
+            Sends the <paramref name="request" /> and handles the result.
+            </summary>
+      <typeparam name="TResult" />
+      <param name="request" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetTotalCount(System.Net.Http.HttpResponseMessage)">
+      <summary>
+            Extracts the X-Total-Count header from a response.
+            </summary>
+      <param name="response" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="response != null" vb="response &lt;&gt; Nothing">response != null</requires>
+      <exception cref="T:System.ArgumentNullException">response == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.SendWithManyAsync``1(System.Net.Http.HttpRequestMessage)">
+      <summary>
+            Sends the <paramref name="request" /> and returns many of the results.
+            </summary>
+      <typeparam name="TResult" />
+      <param name="request" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetLsmScore(System.String,System.String,System.Nullable{Receptiviti.Client.Model.Language},System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+      <summary>
+            Analyze LSM Score between 2 people.
+            </summary>
+      <param name="person1" />
+      <param name="person2" />
+      <param name="language" />
+      <param name="tags" />
+      <param name="fromDate" />
+      <param name="toDate" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetPersons(System.String,System.String[],System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+      <summary>
+            Get Person List
+            </summary>
+      <param name="name" />
+      <param name="tags" />
+      <param name="gender" />
+      <param name="handle" />
+      <param name="limit" />
+      <param name="offset" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.CreatePerson(Receptiviti.Client.Model.CreatePersonRequest)">
+      <summary>
+            Create Person.
+            </summary>
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetPerson(System.String)">
+      <summary>
+            Get Person.
+            </summary>
+      <param name="id" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.UpdatePerson(System.String,Receptiviti.Client.Model.UpdatePersonRequest)">
+      <summary>
+            Update Person.
+            </summary>
+      <param name="id" />
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetPersonProfile(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String[])">
+      <summary>
+            Analyze content for a Person.
+            </summary>
+      <param name="id" />
+      <param name="contentFromDate" />
+      <param name="contentToDate" />
+      <param name="contentTags" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.DeletePersonTags(System.String,Receptiviti.Client.Model.UpdatePersonTagsRequest)">
+      <summary>
+            Append tags to a Person's tag list.
+            </summary>
+      <param name="id" />
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.UpdatePersonTags(System.String,Receptiviti.Client.Model.UpdatePersonTagsRequest)">
+      <summary>
+            Append tags to a Person's tag list.
+            </summary>
+      <param name="id" />
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetPersonContents(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String[])">
+      <summary>
+            Get contents.
+            </summary>
+      <param name="id" />
+      <param name="fromDate" />
+      <param name="toDate" />
+      <param name="tags" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.CreatePersonContent(System.String,Receptiviti.Client.Model.ContentRequest)">
+      <summary>
+            Post content.
+            </summary>
+      <param name="id" />
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetPing">
+      <summary>
+            Pings the service.
+            </summary>
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.GetContent(System.String)">
+      <summary>
+            Get Content.
+            </summary>
+      <param name="id" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.DeleteContentTags(System.String,Receptiviti.Client.Model.UpdateContentTagsRequest)">
+      <summary>
+            Delete tags from a Content's tag list.
+            </summary>
+      <param name="id" />
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.UpdateContentTags(System.String,Receptiviti.Client.Model.UpdateContentTagsRequest)">
+      <summary>
+            Append tags to a Content's tag list.
+            </summary>
+      <param name="id" />
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiClient.CreateContent(Receptiviti.Client.Model.ContentRequest)">
+      <summary>
+            Creates a new content.
+            </summary>
+      <param name="payload" />
+      <returns />
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiError.Message">
+      <summary>
+            Error message.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiError.Resolution">
+      <summary>
+            Suggested resolution.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiError.Errors">
+      <summary>
+            Specific errors.
+            </summary>
+    </member>
+    <member name="T:Receptiviti.Client.ReceptivitiException">
+      <summary>
+            Describes an exception interacting with the Receptiviti service.
+            </summary>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiException.#ctor">
+      <summary>
+            Initializes a new instance.
+            </summary>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiException.#ctor(System.Exception)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="innerException" />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiException.#ctor(System.Net.HttpStatusCode,System.String)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="statusCode" />
+      <param name="message" />
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiException.#ctor(System.Net.HttpStatusCode,Receptiviti.Client.ReceptivitiError)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="statusCode" />
+      <param name="error" />
+      <requires exception="T:System.ArgumentNullException" csharp="error != null" vb="error &lt;&gt; Nothing">error != null</requires>
+      <exception cref="T:System.ArgumentNullException">error == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.ReceptivitiException.#ctor(System.Net.HttpStatusCode,Receptiviti.Client.ReceptivitiError,System.Exception)">
+      <summary>
+            Initializes a new instance.
+            </summary>
+      <param name="statusCode" />
+      <param name="error" />
+      <param name="innerException" />
+      <requires exception="T:System.ArgumentNullException" csharp="error != null" vb="error &lt;&gt; Nothing">error != null</requires>
+      <exception cref="T:System.ArgumentNullException">error == null</exception>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiException.StatusCode">
+      <summary>
+            Status code of failed request.
+            </summary>
+    </member>
+    <member name="P:Receptiviti.Client.ReceptivitiException.Error">
+      <summary>
+            Error from Receptiviti.
+            </summary>
+    </member>
+    <member name="M:Receptiviti.Client.Util.EnumUtil.ToEnumString``1(``0)">
+      <summary>
+            Gets the string value specified by the <see cref="T:System.Runtime.Serialization.EnumMemberAttribute" />.
+            </summary>
+      <typeparam name="T" />
+      <param name="instance" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="(object)instance != null" vb="((Object)instance) &lt;&gt; Nothing">(object)instance != null</requires>
+      <exception cref="T:System.ArgumentNullException">instance == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.Util.EnumUtil.ToEnum``1(System.String)">
+      <summary>
+            Gets the enum value assigned by the <see cref="T:System.Runtime.Serialization.EnumMemberAttribute" /> to the given value.
+            </summary>
+      <typeparam name="T" />
+      <param name="value" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="new Receptiviti.Client.Util.EnumUtil.&lt;&gt;c__DisplayClass1_0&lt;T&gt;(){
+    value = value, 
+}.value != null" vb="(() =&gt; {
+    Receptiviti.Client.Util.EnumUtil.&lt;&gt;c__DisplayClass1_0&lt;T&gt; local_0_prime = New Receptiviti.Client.Util.EnumUtil.&lt;&gt;c__DisplayClass1_0(Of T)();
+    (local_0_prime.value = value)
+    return local_0_prime; })().value &lt;&gt; Nothing">new Receptiviti.Client.Util.EnumUtil.&lt;&gt;c__DisplayClass1_0&lt;T&gt;(){
+    value = value, 
+}.value != null</requires>
+      <exception cref="T:System.ArgumentNullException">value == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.Util.UriBuilderExtensions.AppendQuery(System.UriBuilder,System.String,System.String)">
+      <summary>
+            Appends the given name and value as query arguments to the <see cref="T:System.UriBuilder" />.
+            </summary>
+      <param name="self" />
+      <param name="name" />
+      <param name="value" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="self != null" vb="self &lt;&gt; Nothing">self != null</requires>
+      <exception cref="T:System.ArgumentNullException">self == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="name != null" vb="name &lt;&gt; Nothing">name != null</requires>
+      <exception cref="T:System.ArgumentNullException">name == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.Util.UriBuilderExtensions.AppendQuery(System.UriBuilder,System.String,System.Object)">
+      <summary>
+            Appends the given name and value query arguments to the <see cref="T:System.UriBuilder" />.
+            </summary>
+      <param name="self" />
+      <param name="name" />
+      <param name="value" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="self != null" vb="self &lt;&gt; Nothing">self != null</requires>
+      <exception cref="T:System.ArgumentNullException">self == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="name != null" vb="name &lt;&gt; Nothing">name != null</requires>
+      <exception cref="T:System.ArgumentNullException">name == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.Util.UriBuilderExtensions.AppendQueryIfNotNull(System.UriBuilder,System.String,System.Object)">
+      <summary>
+            Appends the given name and value query arguments to the <see cref="T:System.UriBuilder" /> if the value is not null.
+            </summary>
+      <param name="self" />
+      <param name="name" />
+      <param name="value" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="self != null" vb="self &lt;&gt; Nothing">self != null</requires>
+      <exception cref="T:System.ArgumentNullException">self == null</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="name != null" vb="name &lt;&gt; Nothing">name != null</requires>
+      <exception cref="T:System.ArgumentNullException">name == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.Util.UriExtensions.Combine(System.Uri,System.String)">
+      <summary>
+            Combines the given path with the URI.
+            </summary>
+      <param name="self" />
+      <param name="path" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="self != (System.Uri)null" vb="self &lt;&gt; ((System.Uri)Nothing) ">self != (System.Uri)null</requires>
+      <exception cref="T:System.ArgumentNullException">self == null</exception>
+      <requires exception="T:System.ArgumentOutOfRangeException" csharp="self.IsAbsoluteUri" vb="self.IsAbsoluteUri">self.IsAbsoluteUri</requires>
+      <exception cref="T:System.ArgumentOutOfRangeException">!(self.IsAbsoluteUri)</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="path != null" vb="path &lt;&gt; Nothing">path != null</requires>
+      <exception cref="T:System.ArgumentNullException">path == null</exception>
+    </member>
+    <member name="M:Receptiviti.Client.Util.UriExtensions.Combine(System.Uri,System.String[])">
+      <summary>
+            Combines the given paths with the URI.
+            </summary>
+      <param name="self" />
+      <param name="paths" />
+      <returns />
+      <requires exception="T:System.ArgumentNullException" csharp="self != (System.Uri)null" vb="self &lt;&gt; ((System.Uri)Nothing) ">self != (System.Uri)null</requires>
+      <exception cref="T:System.ArgumentNullException">self == null</exception>
+      <requires exception="T:System.ArgumentOutOfRangeException" csharp="self.IsAbsoluteUri" vb="self.IsAbsoluteUri">self.IsAbsoluteUri</requires>
+      <exception cref="T:System.ArgumentOutOfRangeException">!(self.IsAbsoluteUri)</exception>
+      <requires exception="T:System.ArgumentNullException" csharp="paths != null" vb="paths &lt;&gt; Nothing">paths != null</requires>
+      <exception cref="T:System.ArgumentNullException">paths == null</exception>
+    </member>
+  </members>
+</doc>

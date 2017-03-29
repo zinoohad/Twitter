@@ -107,7 +107,7 @@ namespace Twitter.Forms
                     string lang = t5LangCB.SelectedItem.Equals("Hebrew") ? "he" : "en";
                     string resultType = t5ResultCB.SelectedItem.Equals("Recent") ? "recent" : t5ResultCB.SelectedItem.Equals("Popular") ? "popular" : "mixed";                    
                     SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number","Like Number", "Hashtags" });    // Set headers
-                    dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    //dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, resultType, (int)t5TweetsPerPageUD.Value, lang, t5IncEntCB.Checked, this))).Start();
                     break;
                 case "t6GoB":
@@ -148,7 +148,7 @@ namespace Twitter.Forms
         }
         #endregion
         #region Updates
-        public void Update(object obj)
+        public void Update(object obj, ApiAction action = ApiAction.SEARCH_TWEETS)
         {       
             if(obj is List<Tweet>)
                 dgv.Invoke(new MethodInvoker(() => { UpdateTweets((List<Tweet>)obj); }));
@@ -171,7 +171,7 @@ namespace Twitter.Forms
             foreach (Tweet t in tweets)
             {
                 hashtags = t.entities != null && t.entities.hashtags != null ? t.entities.hashtagsToString() : "";
-                dgv.Rows.Add(t.id, t.created_at, t.text, t.user.lang, t.retweet_count,t.favorite_count, hashtags);
+                dgv.Rows.Add(t.ID, t.Date, t.Text, t.user.Language, t.RetweetCount,t.FavoritesCount, hashtags);
                 AddRecord();
             }
         }
@@ -205,6 +205,10 @@ namespace Twitter.Forms
                 recordNumber++;
             recordL.Text = string.Format("Record Number: {0}", recordNumber);
         }
+        public void ExternalShow()
+        {
+            this.BeginInvoke(new MethodInvoker(() => { this.Show(); }));
+        }
         #endregion
         #region DataGridView
         public void SetDGV(string[] headers)
@@ -220,7 +224,6 @@ namespace Twitter.Forms
         }
         #endregion
 
-        
 
     }
 }

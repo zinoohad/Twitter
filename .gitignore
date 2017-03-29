@@ -155,3 +155,21 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /TwitterCollector
+/TwitterCollector/bin/Debug
+/TwitterCollector/obj
+/TwitterCollector/bin/Debug/DataBaseConnections.dll
+/TwitterCollector/bin/Debug/DataBaseConnections.pdb
+/TwitterCollector/bin/Debug/ToggleSwitch.dll
+/TwitterCollector/bin/Debug/ToggleSwitch.pdb
+/TwitterCollector/bin/Debug/TopicSentimentAnalysis.dll
+/TwitterCollector/bin/Debug/TopicSentimentAnalysis.pdb
+/TwitterCollector/bin/Debug/Twitter.exe
+/TwitterCollector/bin/Debug/Twitter.pdb
+/TwitterCollector/bin/Debug/TwitterCollector.exe
+/TwitterCollector/bin/Debug/TwitterCollector.pdb
+/TwitterCollector/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/TwitterCollector/obj/Debug/TwitterCollector.csproj.GenerateResource.Cache
+/TwitterCollector/obj/Debug/TwitterCollector.csprojResolveAssemblyReference.cache
+/TwitterCollector/obj/Debug/TwitterCollector.exe
+/TwitterCollector/obj/Debug/TwitterCollector.pdb
+/TwitterCollector/bin/Debug/TwitterCollector.vshost.exe

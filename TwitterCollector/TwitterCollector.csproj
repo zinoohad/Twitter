@@ -48,10 +48,19 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Receptiviti.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Receptiviti.Client.1.0.13\lib\net451\Receptiviti.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,8 +68,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\CustomMessageBox.cs" />
     <Compile Include="Common\DBHandler.cs" />
+    <Compile Include="Common\Emuns.cs" />
     <Compile Include="Common\FileHandler.cs" />
+    <Compile Include="Common\Global.cs" />
+    <Compile Include="Common\SentenceHandler.cs" />
     <Compile Include="Common\TwitterException.cs" />
     <Compile Include="Common\WebHandler.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -75,6 +88,13 @@
     <Compile Include="Forms\DictionaryManager.Designer.cs">
       <DependentUpon>DictionaryManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ExternalForms\MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExternalForms\MessageForm.designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormBase.cs" />
     <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,8 +119,23 @@
     <Compile Include="Forms\SubjectResult.Designer.cs">
       <DependentUpon>SubjectResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Objects\ApiKeys.cs" />
+    <Compile Include="Objects\GeneralThreadParams.cs" />
+    <Compile Include="Objects\PosNegTweet.cs" />
+    <Compile Include="Objects\SubjectO.cs" />
+    <Compile Include="Objects\SubjectResultUI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Threading\BaseThread.cs" />
     <Compile Include="Threading\NewWordsCollector.cs" />
     <Compile Include="Threading\SentimentAnalysis.cs" />
@@ -109,8 +144,17 @@
     <Compile Include="Threading\TweetsPosNeg.cs" />
     <Compile Include="Threading\UserClassification.cs" />
     <Compile Include="Threading\UsersCollector.cs" />
+    <Compile Include="TwitterDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TwitterDataSet.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Google Drive\c# good code\ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj">
+      <Project>{49b88ffa-f02c-4709-ba65-9f8996444ecd}</Project>
+      <Name>ToggleSwitch</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataBaseConnections\DataBaseConnections.csproj">
       <Project>{344dcbd4-9283-4790-b0df-4407002806cf}</Project>
       <Name>DataBaseConnections</Name>
@@ -124,7 +168,30 @@
       <Name>Twitter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\DictionaryManager.resx">
+      <DependentUpon>DictionaryManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExternalForms\MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SubjectManager.resx">
+      <DependentUpon>SubjectManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SubjectResult.resx">
+      <DependentUpon>SubjectResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -136,6 +203,50 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interface\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Pictures\X.png" />
+    <None Include="TwitterDataSet.xsc">
+      <DependentUpon>TwitterDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="TwitterDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>TwitterDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="TwitterDataSet.xss">
+      <DependentUpon>TwitterDataSet.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pictures\blue pencil.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pictures\pie chart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\twitter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pictures\twitter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pictures\dictionary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pictures\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Question.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

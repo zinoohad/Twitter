@@ -35,8 +35,6 @@ namespace Twitter
             this.OAuthConsumerSecret = OAuthConsumerSecret;
             this.OAuthConsumerKey = OAuthConsumerKey;
         }
-
-
         #region Global Functions
         /// <summary>
         /// Account Authorization.
@@ -94,28 +92,30 @@ namespace Twitter
             List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userName);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=0&exclude_replies=1&contributor_details=1", countPerPage, userName);
             else
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userID);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=0&exclude_replies=1&contributor_details=1", countPerPage, userID);
             try
             {
                 jsonStr = GetRequest(requestUri);
-                t = serializer.Deserialize<List<Tweet>>(jsonStr);
-                t = t.OrderBy(x => x.id).ToList();
+                //t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
+                t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.Update(t);
-                long SinceID = t[0].id;
+                    updater.Update(t, ApiAction.GET_TWEETS);
+                long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    //List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    List<Tweet> tmp = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                     t.AddRange(tmp);
-                    tmp = tmp.OrderBy(x => x.id).ToList();
+                    tmp = tmp.OrderBy(x => x.ID).ToList();
                     if (updater != null) // Add new tweets to UI
-                        updater.Update(tmp);
+                        updater.Update(tmp, ApiAction.GET_TWEETS);
                     //t = t.OrderBy(x => x.id).ToList();
-                    SinceID = tmp[0].id;
+                    SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
                     {
                         if (updater != null) updater.EndRequest();
@@ -151,9 +151,10 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    //f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    f = JsonConvert.DeserializeObject<FriendsNavigator>(jsonStr);                    
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(f.ids);
+                        updater.Update(f.ids, ApiAction.GET_FRIENDS_ID);
                     friendsIDs.AddRange(f.ids);
                     cursor = f.next_cursor;
                 }
@@ -188,13 +189,14 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    //u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    u = JsonConvert.DeserializeObject<UsersNavigator>(jsonStr);
                     if (cursor == u.next_cursor)
                         break;
                     else
                         cursor = u.next_cursor;
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(u.users);
+                        updater.Update(u.users, ApiAction.GET_FRIENDS);
                     users.AddRange(u.users);
                 }
                 catch { cursor = 0; }
@@ -219,9 +221,10 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    //f = serializer.Deserialize<FriendsNavigator>(jsonStr);
+                    f = JsonConvert.DeserializeObject<FriendsNavigator>(jsonStr);
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(f.ids);
+                        updater.Update(f.ids, ApiAction.GET_FOLLOWERS_ID);
                     friendsIDs.AddRange(f.ids);
                     cursor = f.next_cursor;
                 }
@@ -257,13 +260,14 @@ namespace Twitter
                 try
                 {
                     u = null;
-                    u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    //u = serializer.Deserialize<UsersNavigator>(jsonStr);
+                    u = JsonConvert.DeserializeObject<UsersNavigator>(jsonStr);                    
                     if (cursor == u.next_cursor)
                         break;
                     else
                         cursor = u.next_cursor;
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(u.users);
+                        updater.Update(u.users, ApiAction.GET_FOLLOWERS);
                     users.AddRange(u.users);
                 }
                 catch { cursor = 0; }
@@ -293,23 +297,25 @@ namespace Twitter
                 keywords = keywords.Replace(' ', '+').Replace("#", "%23").Replace("“", "%22");
                 requestUri = string.Format(serviceAddress + "/search/tweets.json?q={0}&count={1}&lang={2}&result_type={3}&include_entities={4}&include_my_retweet=1", keywords, countPerPage, language, resultType, includeEntities);
                 jsonStr = GetRequest(requestUri);
-                stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                //stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                stn = JsonConvert.DeserializeObject<SearchTweetsNavigator>(jsonStr);
                 t.AddRange(stn.statuses);
-                t = t.OrderBy(x => x.id).ToList();
+                t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.Update(t);
-                long SinceID = t[0].id;
+                    updater.Update(t, ApiAction.SEARCH_TWEETS);
+                long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
-                    List<Tweet> tmp = stn.statuses.OrderBy(x => x.id).ToList();
+                    //stn = serializer.Deserialize<SearchTweetsNavigator>(jsonStr);
+                    stn = JsonConvert.DeserializeObject<SearchTweetsNavigator>(jsonStr);                    
+                    List<Tweet> tmp = stn.statuses.OrderBy(x => x.ID).ToList();
                     t.AddRange(tmp);
                     if (updater != null)    // Add new tweets to UI
-                        updater.Update(tmp);
+                        updater.Update(tmp, ApiAction.SEARCH_TWEETS);
                     //t = t.OrderBy(x => x.id).ToList();
-                    SinceID = tmp[0].id;
+                    SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
                     {
                         if (updater != null) updater.EndRequest();
@@ -333,7 +339,7 @@ namespace Twitter
             long cursor = -1;
             RetweetNavigator r = new RetweetNavigator();
             string requestUriWithCursor, jsonStr;
-            string requestUri = string.Format(serviceAddress + "/statuses/retweeters/ids.json?id={0}", tweetID);
+            string requestUri = string.Format(serviceAddress + "/statuses/retweeters/ids.json?id={0}&count=100&stringify_ids=true", tweetID);
 
             while (cursor != 0)
             {
@@ -342,9 +348,10 @@ namespace Twitter
                 //JObject jsonDat = JObject.Parse(jsonStr);                
                 try
                 {
-                    r = serializer.Deserialize<RetweetNavigator>(jsonStr);
+                    //r = serializer.Deserialize<RetweetNavigator>(jsonStr);
+                    r = JsonConvert.DeserializeObject<RetweetNavigator>(jsonStr);
                     if (updater != null) // Add new IDs to UI
-                        updater.Update(r.ids);
+                        updater.Update(r.ids, ApiAction.GET_RETWEET_ID);
                     friendsIDs.AddRange(r.ids);
                     cursor = r.next_cursor;
                 }
@@ -363,7 +370,7 @@ namespace Twitter
         /// <param name="includeEntities">The entities node will be omitted when set to false .</param>
         /// <param name="updater">Update interface</param>
         /// <returns>List of tweets.</returns>
-        public List<Tweet> GetUserFavoritesTweets(string userName, long? userID = null, int maxTweets = 4000, int countPerPage = 200, bool includeEntities = false, Update updater = null, string accessToken = null)
+        public List<Tweet> GetUserFavoritesTweets(string userName, long? userID = null, int maxTweets = 4000, int countPerPage = 200, bool includeEntities = true, Update updater = null, string accessToken = null)
         {
             List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
@@ -374,22 +381,24 @@ namespace Twitter
             try
             {
                 jsonStr = GetRequest(requestUri);
-                t = serializer.Deserialize<List<Tweet>>(jsonStr);
-                t = t.OrderBy(x => x.id).ToList();
+                //t = serializer.Deserialize<List<Tweet>>(jsonStr);
+                t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
+                t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
-                    updater.Update(t);
-                long SinceID = t[0].id;
+                    updater.Update(t, ApiAction.GET_USER_FAVORITES_TWEETS);
+                long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {
                     requestUriWithCursor = string.Format(requestUri + "&max_id={0}", SinceID);
                     jsonStr = GetRequest(requestUriWithCursor);
-                    List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    //List<Tweet> tmp = serializer.Deserialize<List<Tweet>>(jsonStr);
+                    List<Tweet> tmp = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);                   
                     t.AddRange(tmp);
-                    tmp = tmp.OrderBy(x => x.id).ToList();
+                    tmp = tmp.OrderBy(x => x.ID).ToList();
                     if (updater != null) // Add new tweets to UI
-                        updater.Update(tmp);
+                        updater.Update(tmp, ApiAction.GET_USER_FAVORITES_TWEETS);
                     //t = t.OrderBy(x => x.id).ToList();
-                    SinceID = tmp[0].id;
+                    SinceID = tmp[0].ID;
                     if (tmp.Count <= 5)
                     {
                         if (updater != null) updater.EndRequest();
@@ -400,33 +409,34 @@ namespace Twitter
                 return t;
             }
             catch { if (updater != null)updater.EndRequest(); return t; }
-        }     
+        }
+        public User GetUserProfile(string userName, long? userID = null, bool includeEntities = true)
+        {
+            string requestUri, jsonStr;
+            if (userID == null)
+                requestUri = string.Format(serviceAddress + "/users/show.json?screen_name={0}&include_entities={1}", userName, includeEntities);
+            else
+                requestUri = string.Format(serviceAddress + "/users/show.json?user_id={0}&include_entities={1}", userID, includeEntities);
+            try
+            {
+                jsonStr = GetRequest(requestUri);
+                return JsonConvert.DeserializeObject<User>(jsonStr);
+            }
+            catch { return null; }
+        }
         #endregion
     }
-}
-#region Comments
-/**
-public async Task<Friends> GetFriends(string userName, string accessToken = null)
-        {
-            string requestUri = string.Format("https://api.twitter.com/1.1/friends/ids.json?screen_name={0}", userName);
-            string jsonStr = await GetRequest(requestUri);
-            Friends f = serializer.Deserialize<Friends>(jsonStr);
-            return f;
-            if (accessToken == null)
-            {
-                accessToken = await GetAccessToken();
-            }
 
-            var requestUserTimeline = new HttpRequestMessage(HttpMethod.Get, string.Format("https://api.twitter.com/1.1/friends/ids.json?screen_name={0}", userName));
-            requestUserTimeline.Headers.Add("Authorization", "Bearer " + accessToken);
-            var httpClient = new HttpClient();
-            HttpResponseMessage responseUserTimeLine = await httpClient.SendAsync(requestUserTimeline);
-            //var serializer = new JavaScriptSerializer();
-            string jsonStr = await responseUserTimeLine.Content.ReadAsStringAsync();
-            Friends f1 = serializer.Deserialize<Friends>(jsonStr);
-            //JObject jsonDat = JObject.Parse(jsonStr);
-            //Friends f = jsonDat.ToObject<Friends>();
-            return f1;
-        }
- **/
-#endregion
+    public enum ApiAction
+    {
+        GET_TWEETS,
+        GET_FRIENDS_ID,
+        GET_FRIENDS,
+        GET_FOLLOWERS_ID,
+        GET_FOLLOWERS,
+        SEARCH_TWEETS,
+        GET_USER_FAVORITES_TWEETS,
+        GET_RETWEET_ID
+    }
+
+}
