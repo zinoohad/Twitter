@@ -17,6 +17,8 @@ namespace TwitterCollector.Threading
         public override void RunThread()
         {
             DataTable subjectsDT = db.GetActiveSubjects(true);
+
+            // Threads for specific subject
             foreach (DataRow subject in subjectsDT.Rows)
             {
                 // Start TweetsCollector thread
@@ -26,10 +28,20 @@ namespace TwitterCollector.Threading
                 
                 // Start User Collector thread
                 AddThread(subjectID, new UsersCollector(), subjectID);
+
                 //TODO: Add the rest threads
 
             }
-            while (true) System.Threading.Thread.Sleep(1000000);
+
+            // Threads that common to all subjects
+
+            // Start User TweetsPosNeg thread
+            AddThread(0, new TweetsPosNeg());
+
+            // Start User SentimentAnalysis thread
+            AddThread(0, new SentimentAnalysis());
+
+            while (true) System.Threading.Thread.Sleep(1000000);    //TODO: Remove this line
         }
         #endregion
         #region Functions

@@ -293,6 +293,18 @@ namespace TwitterCollector.Common
             return result.ToString().Trim();
         }
 
+        public List<KeywordO> GetSubjectKeywordsList(int subjectID)
+        {
+            List<KeywordO> keywordsList = new List<KeywordO>();
+            DataTable dt = GetSubjectKeywordsDT(subjectID) ;
+            if (dt != null)
+            {
+                foreach (DataRow dr in dt.Rows)
+                    keywordsList.Add(new KeywordO(dr));
+            }
+            return keywordsList;
+        }
+
         #endregion
 
         #region Subject Manager
@@ -375,13 +387,17 @@ namespace TwitterCollector.Common
         /// <returns>DataTable with all the results.</returns>
         public DataTable FindEmoticons(string[] splitSentence)
         {
-            string orJoin = string.Join("', '", splitSentence);
-            string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 1 AND Word IN ('{0}')", orJoin);
+            splitSentence = splitSentence.Select(r => string.Format("Word LIKE '%{0}'", r)).ToArray();
+            string orJoin = string.Join(" OR ", splitSentence);
+            string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 1 AND ({0})", orJoin);
             return Select(sqlQuery);
         }
 
         public DataTable FindPositiveNegativeWords(string[] splitSentence)
         {
+            //TODO: Need to upgrade this function. 
+            // We need to count the number of times the word appears in a sentence.
+            // Need to check if two close words are a person name, and remove them.
             string orJoin = string.Join("', '", splitSentence);
             string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 0 AND Word IN ('{0}')", orJoin);
             return Select(sqlQuery);
@@ -401,12 +417,12 @@ namespace TwitterCollector.Common
             }
 
             if(threadType == ThreadType.SENTIMENT_ANALYSIS)
-                query = "SELECT TOP {0} * FROM Tweets WHERE SentementAnalysisRank IS NULL AND RetweetID IS NULL";
+                query = string.Format("SELECT TOP {0} * FROM Tweets WHERE SentementAnalysisRank IS NULL AND RetweetID IS NULL AND Language = 'en'",top);
             else
-                query = "SELECT TOP {0} * FROM Tweets WHERE Rank IS NULL AND RetweetID IS NULL";
+                query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NULL AND RetweetID IS NULL AND Language = 'en'", top);
 
             DataTable dt = Select(query);
-            if (dt != null)
+            if (dt != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -756,15 +772,18 @@ namespace TwitterCollector.Common
             }
 
             bool isEmoticon = Global.IsEmoticon(word);
+
+            //TODO: Split the word and check it => '(very) interesting'
+
             DataTable dt = Select(string.Format("SELECT * FROM DictionaryPositiveNegative WHERE Word = '{0}'", word));          
             if (dt == null || dt.Rows.Count == 0)
             {
                 //New word
                 if (isPositive)
-                    Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,PositiveAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
+                    Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,PositiveAppearanceCount,IsEmoticon) VALUES('{0}','{1}',1,'{2}')"
                         , word, isPositive.ToString(), isEmoticon.ToString()));
                 else
-                    Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,NegativeAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
+                    Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,NegativeAppearanceCount,IsEmoticon) VALUES('{0}','{1}',1,'{2}')"
                         , word, isPositive.ToString(), isEmoticon.ToString()));
             }
             else
@@ -775,12 +794,12 @@ namespace TwitterCollector.Common
                 if (isPositive)
                 {
                     isPositive = posCount + 1 > negCount;
-                    Update(string.Format("UPDATE DictionaryPositiveNegative SET PositiveAppearanceCount = CAST(PositiveAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
+                    Update(string.Format("UPDATE DictionaryPositiveNegative SET PositiveAppearanceCount = CAST(PositiveAppearanceCount AS BIGINT) + 1, IsPositive = '{0}' WHERE ID = {1}", isPositive, dr["ID"]));
                 }
                 else
                 {
                     isPositive = posCount > negCount + 1;
-                    Update(string.Format("UPDATE DictionaryPositiveNegative SET NegativeAppearanceCount = CAST(NegativeAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
+                    Update(string.Format("UPDATE DictionaryPositiveNegative SET NegativeAppearanceCount = CAST(NegativeAppearanceCount AS BIGINT) + 1, IsPositive = '{0}' WHERE ID = {1}", isPositive, dr["ID"]));
                 }
             }
         }
