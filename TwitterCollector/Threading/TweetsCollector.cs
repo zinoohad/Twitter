@@ -8,27 +8,32 @@ using Twitter;
 using Twitter.Classes;
 using Twitter.Interface;
 using System.Threading;
+using TwitterCollector.Objects;
 
 namespace TwitterCollector.Threading
 {
     public class TweetsCollector : BaseThread, Update
     {
         #region Params
-        private Dictionary<int, string> keywords = new Dictionary<int, string>();
+
         private int subjectID;
+
         private bool newSubject;
+
+        private List<KeywordO> keywords = new List<KeywordO>();
         
         private List<Tweet> globalTweetList = new List<Tweet>();
+
         private static readonly object locker = new object();
+
         #endregion
+
         public override void RunThread()
         {
             while (ThreadOn)
             {
                 try
                 {
-                    keywords = db.GetSubjectKeywords(subjectID);
-
                     // Run stream thread
                     if (streamThread == null || !streamThread.IsAlive) (streamThread = new Thread(new ThreadStart(this.ManageOnStream))).Start();
 
@@ -41,10 +46,12 @@ namespace TwitterCollector.Threading
                 }
             }
         }
+
         public override void SetInitialParams(params object[] Params)
         {
             subjectID = (int)Params[0];
             newSubject = (bool)Params[1];
+            keywords = db.GetSubjectKeywordsList(subjectID);
         }
 
         #region Collector Main Functions
@@ -54,15 +61,20 @@ namespace TwitterCollector.Threading
         /// </summary>
         private void StartNewSearch()
         {
-            foreach (KeyValuePair<int, string> keyword in keywords)
+            foreach (KeywordO keyword in keywords)
             {
-                List<Tweet> tweets = GetTweetsByKeyword(keyword.Value, keyword.Key);
-                //CheckSubjectRelevantTweetAndSave(tweets);
-            }
+                List<Tweet> tweets = GetTweetsByKeyword(keyword.Name, keyword.ID);
+            }   
+            //foreach (KeyValuePair<int, string> keyword in keywordss)
+            //{
+            //    List<Tweet> tweets = GetTweetsByKeyword(keyword.Value, keyword.Key);
+            //    //CheckSubjectRelevantTweetAndSave(tweets);
+            //}
             db.UpdateSubjectStatus(subjectID, false); //  Set flag to false
             ContinueToSearch();
 
         }
+
         private void ContinueToSearch()
         {
             while (ThreadOn)
@@ -72,6 +84,7 @@ namespace TwitterCollector.Threading
                 else ExploreTweets(topTweets);
             }
         }
+
         /// <summary>
         /// There no more tweets in the DB that hasn't checked already.
         /// </summary>
@@ -81,6 +94,7 @@ namespace TwitterCollector.Threading
             List<Tweet> tweets = db.TopRatedNotRelatedSubjectTweet(subjectID, topRatedUsersIDs.ToArray());  //Get users top rated, but not related to subject, tweet.
             ExploreTweets(tweets);
         }
+
         /// <summary>
         /// Collect all relevant information about given tweet
         /// </summary>
@@ -102,6 +116,7 @@ namespace TwitterCollector.Threading
                 db.SetSingleValue("Tweets", "CheckedByTweetCollector", t.ID, 1);    // Tweet was checked
             }
         }
+
         private void ManageOnStream()
         {
             while(ThreadOn)
@@ -120,8 +135,11 @@ namespace TwitterCollector.Threading
                 catch (Exception e) { new TwitterException(e); }
             }
         }
+
         #endregion
+
         #region Functions
+
         /// <summary>
         /// Get tweet referance and put the subject keyword id, if contains one, else set zero.
         /// </summary>
@@ -130,17 +148,18 @@ namespace TwitterCollector.Threading
         private bool IsTweetRelevantToSubject(ref Tweet tweet)
         {
             List<int> keyword = new List<int>();
-            foreach (KeyValuePair<int, string> key in keywords)
+            foreach (KeywordO key in keywords)
             {
-                if (tweet.Text.Contains(key.Value))
+                if (tweet.Text.Contains(key.Name))
                 {
-                    keyword.Add(key.Key);
+                    keyword.Add(key.ID);
                 }
-            }
+            }           
             tweet.keywordID = keyword;
             if (keyword.Count == 0) return false;
             return true;
         }
+
         /// <summary>
         /// Check if tweets relevant to subject and save them in DB.
         /// The tweets must contains all the parameters as them pulled from Twitter API.
@@ -151,10 +170,17 @@ namespace TwitterCollector.Threading
             foreach (Tweet tweet in tweets)
             {
                 Tweet tweetPointer = tweet;
-                IsTweetRelevantToSubject(ref tweetPointer); //Add all keywords id that relevant to subject in the tweet text
+                if (IsTweetRelevantToSubject(ref tweetPointer)) //Add all keywords id that relevant to subject in the tweet text
+                {
+                    //TODO: Check if it's work. (Added: 1/4/17)
+                    KeywordO k = (from key in keywords where key.ID == tweetPointer.keywordID[0] select key).SingleOrDefault();
+                    if (tweetPointer.Language != k.LanguageCode) continue;  // This is not language that we need
+                }
                 db.SaveTweet(tweetPointer);
+                
             }
         }
+
         /// <summary>
         /// Return tweets searched by keyword, distinct by tweet id.
         /// </summary>
