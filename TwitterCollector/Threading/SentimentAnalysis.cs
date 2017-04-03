@@ -46,18 +46,8 @@ namespace TwitterCollector.Threading
         {
             Analysis a;
 
-            if (apiKey == null || apiKey.RemainingCredits == 0)
-            {
-                db.UpdateRemainingCredits(ref apiKey);
-                apiKey = db.GetApiKey(ExternalAPI.MeaningCloud);
-                if (apiKey != null)
-                    sentementAnalysis = new APIConnection(apiKey.Key1);
-                else
-                {
-                    new TwitterException("The sentement analysis keys bucket is empty.");
-                    return;
-                }
-            }
+            if (!SetApiConnection()) 
+                return;            
 
             try
             {
@@ -74,10 +64,10 @@ namespace TwitterCollector.Threading
                 return;
 
             db.SaveTweetScore(tweet, a.score_tag, a.confidence);
-            if (a.sentimented_concept_list != null)
-                LearnNewWords(a.sentimented_concept_list);
-            else
-                LearnNewWords(a.sentence_list);
+            //if (a.sentimented_concept_list != null && a.sentimented_concept_list.Count > 0)
+            //    LearnNewWords(a.sentimented_concept_list);
+            //else
+            LearnNewWords(a.sentence_list);
         }
 
         public void LearnNewWords(IList<Concept> concept)
@@ -110,7 +100,23 @@ namespace TwitterCollector.Threading
             }
         }
 
-        
+        private bool SetApiConnection()
+        {
+            if (apiKey == null || apiKey.RemainingCredits == 0)
+            {
+                if (apiKey != null)
+                    db.UpdateRemainingCredits(ref apiKey);
+                apiKey = db.GetApiKey(ExternalAPI.MeaningCloud);
+                if (apiKey != null)
+                    sentementAnalysis = new APIConnection(apiKey.Key1);
+                else
+                {
+                    new TwitterException("The sentement analysis keys bucket is empty.");
+                    return false;
+                }
+            }
+            return true;
+        }
         
 
     }
