@@ -42,7 +42,7 @@ namespace TwitterCollector
             //new CMain();
             //Application.Run();
 
-            DBHandler dbh = new DBHandler();
+            DBHandler dbh = Global.DB;
             dbh.UpdateDictionaryAge();
             //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
             //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");

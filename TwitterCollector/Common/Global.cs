@@ -23,7 +23,13 @@ namespace TwitterCollector.Common
         private static CSubjectManager subjectManager;
         private static CSubjectResult subjectResult;
         #endregion
-        
+
+        #region Global Params
+
+        public static DBHandler DB { get { return new DBHandler(); } }
+
+        #endregion
+
         public static void OpenTwitterRestAPI()
         {
             if (trd == null)
@@ -266,6 +272,10 @@ namespace TwitterCollector.Common
             return subSentenceList;
         }
 
+        public static void LearnNewWordsToAgeDictionary(string sentence)
+        {
+            List<string> splitSentence = SplitSentenceToSubSentences(sentence, 3);
+        }
         
     }
 }

@@ -10,7 +10,7 @@ namespace TwitterCollector.Controllers
 {
     public abstract class BaseController 
     {
-        protected DBHandler db = new DBHandler();
+        protected DBHandler db = Global.DB;
         public abstract Form GetUI();
         public abstract void ToolStripAction(string buttonName);
     }

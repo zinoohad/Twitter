@@ -13,9 +13,9 @@ namespace TwitterCollector.Threading
     {
         private Thread _thread;
         //Local
-        //protected DBHandler db = new DBHandler();
+        protected DBHandler db = Global.DB;
         //Remote 
-        protected DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
+        //protected DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
 
         protected TwitterAPI twitter;
 

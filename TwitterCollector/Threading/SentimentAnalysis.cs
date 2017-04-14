@@ -117,6 +117,11 @@ namespace TwitterCollector.Threading
             }
             return true;
         }
+
+        private void LearnNewWordsToAgeDictionary(string sentence)
+        {
+
+        }
         
 
     }
