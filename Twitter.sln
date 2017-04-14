@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twitter", "Twitter\Twitter.csproj", "{944CD58E-ECB7-43FA-A6F6-B962CDF96676}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicSentimentAnalysis", "TopicSentimentAnalysis\TopicSentimentAnalysis.csproj", "{E7A7638B-7DDF-4488-A4E8-6ED58B5FAA09}"
@@ -8,8 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBaseConnections", "DataBaseConnections\DataBaseConnections.csproj", "{344DCBD4-9283-4790-B0DF-4407002806CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterCollector", "TwitterCollector\TwitterCollector.csproj", "{7F342281-23A8-4260-AAD6-657AFDD868C2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{49B88FFA-F02C-4709-BA65-9F8996444ECD} = {49B88FFA-F02C-4709-BA65-9F8996444ECD}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToggleSwitch", "..\..\..\Google Drive\c# good code\ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj", "{49B88FFA-F02C-4709-BA65-9F8996444ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToggleSwitch", "ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj", "{49B88FFA-F02C-4709-BA65-9F8996444ECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
