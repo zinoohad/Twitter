@@ -27,4 +27,26 @@ namespace Twitter.Classes
         public IList<IList<IList<float>>> coordinates { get; set; }
         public string type { get; set; }
     }
+
+    public class GeoParams
+    {
+        public decimal Latitude;
+
+        public decimal Longitude;
+
+        public float Radius;
+
+        public RadiusUnits radiusUnits = RadiusUnits.km;
+
+        public enum RadiusUnits
+        {
+            km, // kilometers
+            mi  // miles
+        }
+
+        public string GetLocationForSearchAPI()
+        {
+            return string.Format("{0},{1},{3}" + radiusUnits.ToString(),Latitude,Longitude,Radius);
+        }
+    }
 }

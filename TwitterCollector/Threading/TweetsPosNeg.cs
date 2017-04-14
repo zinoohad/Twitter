@@ -55,7 +55,7 @@ namespace TwitterCollector.Threading
                             posNegTweet.Clear();    // Clear the positive and negative object
                             posNegTweet.ID = t.id_str;
                             FindEmoticons(t.Text);   // Find the emoticons in the text
-                            string textWithoutPunctuation = GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
+                            string textWithoutPunctuation = Global.GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
                             FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
                             posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
                             db.SaveTweetPosNegRank(posNegTweet);
@@ -94,19 +94,6 @@ namespace TwitterCollector.Threading
                 else
                     posNegTweet.NegativeEmoticons++;
             }
-        }
-
-        private string GetStringWithoutPunctuation(string oldString)
-        {
-            var newString = new StringBuilder();
-            for (int i = 0 ; i < oldString.Length ; i++)
-            {
-                char c = oldString[i];
-                if (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)
-                    || (i != 0 && i != oldString.Length - 1 && char.IsLetter(oldString[i-1]) && char.IsLetter(oldString[i+1]) && c.In('-','\'')))
-                    newString.Append(c);
-            }
-            return newString.ToString();
         }
 
         private void FindPositiveAndNegativeWords(string sentence)
