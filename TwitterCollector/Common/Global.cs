@@ -251,7 +251,7 @@ namespace TwitterCollector.Common
 
         public static List<string> SplitSentenceToSubSentences(string sentence, int maxWordInSubSentence)
         {
-            string[] spliteSentence = sentence.Split(' ');
+            string[] spliteSentence = sentence.Split(new string[]{" "}, StringSplitOptions.RemoveEmptyEntries);
             int wordNumber = spliteSentence.Length;
             List<string> subSentenceList = new List<string>();
             int subSentenceLength, i;
@@ -266,5 +266,6 @@ namespace TwitterCollector.Common
             return subSentenceList;
         }
 
+        
     }
 }

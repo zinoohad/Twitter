@@ -140,6 +140,7 @@
     <Compile Include="Threading\NewWordsCollector.cs" />
     <Compile Include="Threading\SentimentAnalysis.cs" />
     <Compile Include="Threading\Supervisor.cs" />
+    <Compile Include="Threading\TweetAge.cs" />
     <Compile Include="Threading\TweetsCollector.cs" />
     <Compile Include="Threading\TweetsPosNeg.cs" />
     <Compile Include="Threading\UserClassification.cs" />

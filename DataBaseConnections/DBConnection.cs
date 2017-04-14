@@ -39,7 +39,7 @@ namespace DataBaseConnections
         public ConnectionState State { get { return _DBConnection.State; } }
         public string ConnectionString { get { return _DBConnection.ConnectionString; } }        
 
-        public DBConnection(DBTypes DBType, string Server, string Port, string UserID, string Password, string Database,bool onLocalHost = false)
+        public DBConnection(DBTypes DBType, string Server, string Port, string UserID, string Password, string Database, bool onLocalHost = false)
         {
             this._DBType = DBType;
             this.Server = Server;

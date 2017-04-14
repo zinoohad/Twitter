@@ -27,7 +27,6 @@ namespace TwitterCollector.Common
         public DBHandler() { db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); }
         public DBHandler(DBConnection db) { this.db = db; }
         #endregion
-
         
         #region General
 
@@ -137,14 +136,16 @@ namespace TwitterCollector.Common
                 if (wordAgeList.Count == 0) 
                     continue;
                 WordAge oneValue = wordAgeList[0];
-                Update(string.Format(@"UPDATE DictionaryAge SET Age13To18 = {0}, Age19To22 = {1}, Age23To29 = {2}, Age30Plus = {3}
-                    , MostPositiveAgeGroup = {4}, MostNegativeAgeGroup = {5}, LastUpdate = '{6}' WHERE ID = {7}", oneValue.Age13To18, oneValue.Age19To22,
-                              oneValue.Age23To29, oneValue.Age30Plus, oneValue.MostPositiveAgeGroup, oneValue.MostNegativeAgeGroup,DateTime.Now.ToString(SqlServerDateTimeFormat), dr["ID"].ToString()));
+            Update(string.Format(@"UPDATE DictionaryAge SET Age13To18 = {0}, Age19To22 = {1}, Age23To29 = {2}, Age30Plus = {3}
+                , MostPositiveAgeGroup = {4}, MostNegativeAgeGroup = {5}, LastUpdate = '{6}' WHERE ID = {7}", oneValue.Age13To18, oneValue.Age19To22,
+                            oneValue.Age23To29, oneValue.Age30Plus, oneValue.MostPositiveAgeGroup, oneValue.MostNegativeAgeGroup,DateTime.Now.ToString(SqlServerDateTimeFormat), dr["ID"].ToString()));
             }
         }
 
-        #endregion      
-  
+        #endregion        
+
+        #region Common Functions
+
         public bool IncTweetsKeywordCounter(List<int> keywordIDs)
         {
             try
@@ -179,6 +180,30 @@ namespace TwitterCollector.Common
 
         private long Delete(string query, bool returnDeletedID = false, string columnName = "ID") { return db.Delete(query, returnDeletedID, columnName); }
 
+        private DataTable Select(string query, params object[] args) 
+        {
+            query = string.Format(query, args);
+            return db.Select(query); 
+        }
+
+        private long Update(string query, params object[] args) 
+        {
+            query = string.Format(query, args);
+            return db.Update(query); 
+        }
+
+        private long Insert(string query, params object[] args)
+        {
+            query = string.Format(query, args);
+            return db.Insert(query);
+        }
+
+        private long Delete(string query, params object[] args)
+        {
+            query = string.Format(query, args);
+            return db.Delete(query);
+        }
+        
         public string ReplaceQuote(string text) { return string.IsNullOrEmpty(text) ? "NULL" : "'" + text.Replace("'", "''") + "'"; }
 
         public object GetSingleValue(string tableName, string columnName, string where)
@@ -210,6 +235,8 @@ namespace TwitterCollector.Common
             }
         }
 
+        #endregion
+        
         #endregion
 
         #region Select
@@ -729,7 +756,11 @@ namespace TwitterCollector.Common
                     IsNewTweet = false;
                 }
                 else IncTweetsCount();
-                if (tweet.keywordID != null) IncTweetsKeywordCounter(tweet.keywordID);
+                if (tweet.keywordID != null)
+                {
+                    IncTweetsKeywordCounter(tweet.keywordID);
+                    IncrementUserRelevantTweetsCounter(tweet.keywordID, userID);
+                }
             }
             catch(Exception e) { new TwitterException(e); tweetID = tweet.ID; }
             return tweetID;
@@ -755,12 +786,37 @@ namespace TwitterCollector.Common
                 }
             }
         }
-        
+
+        public void IncrementUserRelevantTweetsCounter(List<int> keywordsID, long userID)
+        {
+            string keywordIDs = string.Join(",",keywordsID.ToArray());
+            DataTable dt = Select(string.Format("SELECT ID FROM ViewActiveSubjects WHERE KeywordID IN ({0})", keywordIDs));
+            int[] subjectIDs = dt.AsEnumerable().Select(r => r.Field<int>("ID")).Distinct().ToArray();
+
+            foreach (int subject in subjectIDs)
+            {
+                string sqlQuery = string.Format("SELECT ID FROM UserProperties WHERE UserID = {0} AND SubjectID = {1}", userID, subject);
+                dt = Select(sqlQuery);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    // The record already exists
+                    int recordID = int.Parse(dt.Rows[0]["ID"].ToString());
+                    Update(string.Format("UPDATE UserProperties SET RelevantTweetsCount = CAST(RelevantTweetsCount AS INT) + 1 WHERE ID = {0}", recordID));
+                }
+                else
+                {
+                    //Need to insert new record
+                    Insert("INSERT INTO UserProperties (UserID, SubjectID, RelevantTweetsCount) VALUES ({0},{1},{2})", userID, subject, 1);
+                }
+            }
+        }
+
         public void ConnectTweetToKeywords(long tweetID, List<int> keywords)
         {
             foreach(int key in keywords)
                 Insert(string.Format("INSERT INTO TweetToKeyword (TweetID,KeywordID) VALUES ({0},{1})",tweetID,key));
         }
+
         public void SaveUsers(List<User> users)
         {
 
@@ -825,39 +881,6 @@ namespace TwitterCollector.Common
             Update(string.Format("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID IN ({2})", score, confidence, string.Join(",", ids)));
         }
 
-        //public void LearnNewPosNegWord(Concept concept)
-        //{
-        //    DataTable dt = Select(string.Format("SELECT * FROM DictionaryPositiveNegative WHERE Word = '{0}'", concept.form));
-        //    bool isPositive = concept.In("P+", "P");
-        //    bool isEmoticon = Global.IsEmoticon(concept.form);
-        //    if (dt == null || dt.Rows.Count == 0)
-        //    {
-        //        //New word
-        //        if (isPositive)
-        //            Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,PositiveAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
-        //                , concept.form, isPositive.ToString(), isEmoticon.ToString()));
-        //        else
-        //            Insert(string.Format("INSERT INTO DictionaryPositiveNegative (Word,IsPositive,NegativeAppearanceCount,IsEmoticon) VALUES('{0}',{1},1,{2})"
-        //                , concept.form, isPositive.ToString(), isEmoticon.ToString()));
-        //    }
-        //    else
-        //    {
-        //        //Exists word
-        //        DataRow dr = dt.Rows[0];
-        //        long posCount = long.Parse(dr["PositiveAppearanceCount"].ToString()), negCount = long.Parse(dr["NegativeAppearanceCount"].ToString());
-        //        if (isPositive)
-        //        {
-        //            isPositive = posCount + 1 > negCount;
-        //            Update(string.Format("UPDATE DictionaryPositiveNegative SET PositiveAppearanceCount = CAST(PositiveAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
-        //        }
-        //        else
-        //        {
-        //            isPositive = posCount > negCount + 1;
-        //            Update(string.Format("UPDATE DictionaryPositiveNegative SET NegativeAppearanceCount = CAST(NegativeAppearanceCount AS BIGINT) + 1, IsPositive = {0} WHERE ID = {1}", isPositive, dr["ID"]));
-        //        }
-        //    }
-        //}
-
         public void LearnNewPosNegWord(object obj)
         {
             string word = null;
@@ -919,6 +942,30 @@ namespace TwitterCollector.Common
                             .Select(row => row["ID"].ToString())
                             .ToArray();
             Update(string.Format("UPDATE Tweets SET PositiveWords = {0}, NegativeWords = {1}, Rank = {2} WHERE ID IN ({3})", pnt.GetPositive(), pnt.GetNegative(), pnt.LocalRank, string.Join(",", ids)));
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Upsert
+
+        #region Common
+
+        public void UpsertWordToAgeDictionaryAfterUsingAPI(List<WordAge> wordAgeList)
+        {
+            DataTable dt;
+            foreach(WordAge wordAge in wordAgeList)
+            {            
+                dt = Select("SELECT ID FROM DictionaryAge WHERE Word = '{0}'", wordAge.Word);
+                if (dt != null && dt.Rows.Count == 0)
+                {
+                    // New word
+                    Insert(@"INSERT INTO DictionaryAge (Word,Age13To18,Age19To22,Age23To29,Age30Plus,MostPositiveAgeGroup,MostNegativeAgeGroup,LastUpdate) 
+                    VALUES ('{0}',{1},{2},{3},{4},{5},{6},'{7}')", wordAge, wordAge.Age13To18, wordAge.Age19To22,
+                              wordAge.Age23To29, wordAge.Age30Plus, wordAge.MostPositiveAgeGroup, wordAge.MostNegativeAgeGroup, DateTime.Now.ToString(SqlServerDateTimeFormat));
+                }
+            }
         }
 
         #endregion

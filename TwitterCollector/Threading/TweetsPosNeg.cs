@@ -99,8 +99,9 @@ namespace TwitterCollector.Threading
         private void FindPositiveAndNegativeWords(string sentence)
         {
             sentence = sentence.Replace("'", "''");
-            string[] splitSentence = SplitByDelimiters(sentence, " ");
-            DataTable dt = db.FindPositiveNegativeWords(splitSentence);
+            //string[] splitSentence = SplitByDelimiters(sentence, " ");
+            List<string> splitSentence = Global.SplitSentenceToSubSentences(sentence, int.Parse(db.GetValueByKey("MaxWordInSubSentence").ToString()));
+            DataTable dt = db.FindPositiveNegativeWords(splitSentence.ToArray());
 
             if (dt == null || dt.Rows.Count == 0) return;
             foreach (DataRow dr in dt.Rows)
