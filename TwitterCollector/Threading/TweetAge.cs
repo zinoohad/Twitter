@@ -23,7 +23,6 @@ namespace TwitterCollector.Threading
 
         #region Params
 
-        private AgeTweets ageTweet = new AgeTweets();
         private int[] ageHash =new int[4];
         private string[] emoticonsArraySymbole;
         private string tweetWithoutPunctuation;
@@ -93,14 +92,14 @@ namespace TwitterCollector.Threading
 
 
 
-            foreach (string word in splitSentence)
-            { 
-                wordValue = db.GetAgeValueByWord(word);
-                if (wordValue.HasValue)
-                {
-                    UpdateHashAge(wordValue.Value);
-                }
-            }
+            //foreach (string word in splitSentence)
+            //{ 
+            //    wordValue = db.GetAgeValueByWord(word);
+            //    if (wordValue.HasValue)
+            //    {
+            //        UpdateHashAge(wordValue.Value);
+            //    }
+            //}
 
         }
         /// <summary>
@@ -116,9 +115,9 @@ namespace TwitterCollector.Threading
             if (dt == null || dt.Rows.Count == 0) return;
             foreach (DataRow dr in dt.Rows)
             {
-                //Update HashTable By Normal Values
-                emoticonsArraySymbole[index]; //?
-                emoticonsArrayValue[index];//?
+                ////Update HashTable By Normal Values
+                //emoticonsArraySymbole[index]; //?
+                //emoticonsArrayValue[index];//?
             }
            
 

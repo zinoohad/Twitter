@@ -140,6 +140,7 @@
     <Compile Include="Threading\NewWordsCollector.cs" />
     <Compile Include="Threading\SentimentAnalysis.cs" />
     <Compile Include="Threading\Supervisor.cs" />
+    <Compile Include="Threading\TweetAge.cs" />
     <Compile Include="Threading\TweetsCollector.cs" />
     <Compile Include="Threading\TweetsPosNeg.cs" />
     <Compile Include="Threading\UserClassification.cs" />
@@ -151,7 +152,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Google Drive\c# good code\ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj">
+    <ProjectReference Include="..\ToggleSwitch\ToggleSwitch\ToggleSwitch.csproj">
       <Project>{49b88ffa-f02c-4709-ba65-9f8996444ecd}</Project>
       <Name>ToggleSwitch</Name>
     </ProjectReference>

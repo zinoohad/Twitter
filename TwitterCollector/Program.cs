@@ -29,10 +29,12 @@ namespace TwitterCollector
             //(new SentimentAnalysis()).Start();
 
             //(new Supervisor()).Start();
+            //Remote 
+         DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.12", "1433", "Avi", "1234", "Twitter"));
+        var r=    db.GetSingleValue("ExternalApiKeys", "Key1", "ID = 1");
 
-            
 
-            List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 3);
+        List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 3);
             var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
 
             //Application.EnableVisualStyles();
