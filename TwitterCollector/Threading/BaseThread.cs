@@ -12,8 +12,10 @@ namespace TwitterCollector.Threading
     public abstract class BaseThread
     {
         private Thread _thread;
-
-        protected DBHandler db = new DBHandler();
+        //Local
+        //protected DBHandler db = new DBHandler();
+        //Remote 
+        protected DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
 
         protected TwitterAPI twitter;
 

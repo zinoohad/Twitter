@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using TwitterCollector.Common;
 using System.Collections.Generic;
+using TopicSentimentAnalysis.Classes;
 
 namespace TwitterCollector.Threading
 {
@@ -23,48 +24,47 @@ namespace TwitterCollector.Threading
 
         #region Params
 
-        private AgeTweets ageTweet = new AgeTweets();
-        private int[] ageHash =new int[4];
-        private string[] emoticonsArraySymbole;
-        private string tweetWithoutPunctuation;
-        private int[] emoticonsArrayValue;
+        private List<double> ageHash = new List<double>(4);
+        private int maxWordInSubSentence;
+        private List<WordAge> emoticonsArrayValue;
         private List<Tweet> usertweethistory;
-        private List<User> users;
-        private int? wordValue;
+        private List<long> usersIDs;
+        private string tweetWithoutPunctuation;
 
         #endregion
         public override void RunThread()
             {
 
-            ///get Emoticons from DB to array
-            GetEmoticonsFromDB();
+            emoticonsArrayValue = db.FindEmoticonsForAges();
+            maxWordInSubSentence= int.Parse(db.GetValueByKey("MaxWordInSubSentence").ToString());
             while (ThreadOn)
                 {
                     try
                     {
-                    users = db.GetUserToCheckSentementAnalysis(ThreadType.TWEET_AGE);
+                    usersIDs = db.GetUserIDToCheckAnalysisByAge(ThreadType.TWEET_AGE);
 
-                        if (users.Count == 0)
+                        if (usersIDs.Count == 0)
                         {
                             Global.Sleep(60);
                         }
                         else
                         {
-                            foreach (User user in users)
+                            foreach (long userID in usersIDs)
                             {
                                 ClearAgeHash();
-                                usertweethistory = db.GetUserTweet(user);
+                                usertweethistory = db.GetUserTweetByUserID(userID);
                                 foreach (Tweet tweet in usertweethistory)
                                 {
-                                    CompareSentenceEmoticonsArray(tweet.Text);
+                                CompareSentenceEmoticonsArray(tweet.Text);
+
                                 tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
                                 tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "");
-                                //string[] splitSentence = SplitByDelimiters(tweet.Text, " ");
-                                    CompareSentenceToAgeDictionary(tweetWithoutPunctuation);
-
+                                // breack the sentence to combinations of maxWordInSubSentence and compare to db dictionary
+                                CompareSentenceToAgeDictionary(Global.SplitSentenceToSubSentences(tweetWithoutPunctuation, maxWordInSubSentence));
+                                
 
                                 }
-                                SaveUserAgeScoreToDB();
+                                SaveUserAgeScoreToDB( userID);
                             }
                         }
                     }
@@ -75,62 +75,51 @@ namespace TwitterCollector.Threading
                 }
             }
 
-        private void SaveUserAgeScoreToDB()
+        private void SaveUserAgeScoreToDB(long userID)
         {
+            double max = ageHash.Max();
+            //find max value
+            ageHash.IndexOf(max);
+            db.updateUserPropertiesByUserID( "AgeGroupID", ageHash.IndexOf(max) + 1, userID);
+
             //Save User Age score to database
             //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         }
 
         /// <summary>
-        /// This function compare each word from sentence to dictionary Age Value
+        /// This function compare each word or words combination from
+        /// the original sentence to dictionary Age Value
         /// </summary>
         /// <param name="splitSentence"></param>
-        private void CompareSentenceToAgeDictionary(string splitSentence)
+        private void CompareSentenceToAgeDictionary(List<string> splitSentences)
         {
-
-
-
-
-
-            foreach (string word in splitSentence)
-            { 
-                wordValue = db.GetAgeValueByWord(word);
-                if (wordValue.HasValue)
-                {
-                    UpdateHashAge(wordValue.Value);
-                }
-            }
-
-        }
-        /// <summary>
-        /// This function get Emoticons from DB
-        /// Update the emoticons array by symbole and value
-        /// </summary>
-        private void GetEmoticonsFromDB()
-        {
-            DataTable dt = db.FindEmoticonsForAges();
-            emoticonsArraySymbole = new string[dt.Rows.Count];
-            emoticonsArrayValue = new int[dt.Rows.Count];
-            int index = 0;
-            if (dt == null || dt.Rows.Count == 0) return;
-            foreach (DataRow dr in dt.Rows)
+            foreach (string word in splitSentences)
             {
-                //Update HashTable By Normal Values
-                emoticonsArraySymbole[index]; //?
-                emoticonsArrayValue[index];//?
-            }
-           
-
+                WordAge returnValue = null;
+                returnValue = db.GetAgeValueByWord(word);
+                if (returnValue.Word != null) //need to check empty  
+                {
+                    switch (returnValue.MostPositiveAgeGroup)
+                    {
+                        case 1:
+                            ageHash[0] += returnValue.Age13To18;
+                            break;
+                        case 2:
+                            ageHash[1] += returnValue.Age19To22;
+                            break;
+                        case 3:
+                            ageHash[2] += returnValue.Age23To29;
+                            break;
+                        case 4:
+                            ageHash[3] += returnValue.Age30Plus;
+                            break;
+                    }//switch
+                }//if
+            }//foreach
         }
+  
 
-        private void UpdateHashAge(int value)
-        {
-            //Update HashTable By Normal Values
-            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-        }
 
         /// <summary>
         /// This function check if sentence conatin emoticons,
@@ -139,18 +128,32 @@ namespace TwitterCollector.Threading
         /// <param name="Sentence"></param>
         private void CompareSentenceEmoticonsArray(string Sentence)
         {
-            for (int index=0;index<emoticonsArraySymbole.Length;index++)
+            foreach (WordAge Emoticon in emoticonsArrayValue)
             {
-                if(Sentence.Contains (emoticonsArraySymbole[index]))
+                if(Sentence.Contains( Emoticon.Word) )
                 {
-                    UpdateHashAge(emoticonsArrayValue[index]);
-                }
-            }
+                    switch(Emoticon.MostPositiveAgeGroup)
+                    {
+                        case 1:
+                            ageHash[0] += Emoticon.Age13To18;
+                            break;
+                        case 2:
+                            ageHash[1] += Emoticon.Age19To22;
+                            break;
+                        case 3:
+                            ageHash[2] += Emoticon.Age23To29;
+                            break;
+                        case 4:
+                            ageHash[3] += Emoticon.Age30Plus;
+                            break;
+                    }//switch
+                }//if
+            }//foreach
         }
 
         private void ClearAgeHash()
         {
-            for (int i= 1; i< ageHash.Length;i++)
+            for (int i= 1; i< ageHash.Count;i++)
             {
                 ageHash[i] = 0;
             }
