@@ -12,6 +12,7 @@ using TwitterCollector.Controllers;
 using Receptiviti.Client;
 using TopicSentimentAnalysis;
 using TwitterCollector.Threading;
+using System.IO;
 
 namespace TwitterCollector
 {
@@ -25,18 +26,27 @@ namespace TwitterCollector
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
 
-            (new SentimentAnalysis()).Start();
+            //(new SentimentAnalysis()).Start();
 
             //(new Supervisor()).Start();
+            //Remote 
+         DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
+        var r=    db.GetSingleValue("ExternalApiKeys", "Key1", "ID = 1");
+
+
+        List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 3);
+            var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //new CMain();
             //Application.Run();
 
-            //DBHandler dbh = new DBHandler();
+            DBHandler dbh = new DBHandler();
+            dbh.UpdateDictionaryAge();
             //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
             //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
+
 
 
             //CMain controller = new CMain();
