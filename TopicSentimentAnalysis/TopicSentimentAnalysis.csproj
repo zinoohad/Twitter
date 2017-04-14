@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APIConnection.cs" />
+    <Compile Include="Classes\AgeResult.cs" />
     <Compile Include="Classes\Analysis.cs" />
     <Compile Include="Classes\Concept.cs" />
     <Compile Include="Classes\Entity.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Classes\Topic.cs" />
     <Compile Include="ImageAnalysis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WordSentimentAnalysis.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

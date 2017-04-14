@@ -108,7 +108,7 @@ namespace Twitter.Forms
                     string resultType = t5ResultCB.SelectedItem.Equals("Recent") ? "recent" : t5ResultCB.SelectedItem.Equals("Popular") ? "popular" : "mixed";                    
                     SetDGV(new string[] { "ID", "Create Date", "Tweet", "Language", "Retweet Number","Like Number", "Hashtags" });    // Set headers
                     //dgv.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, resultType, (int)t5TweetsPerPageUD.Value, lang, t5IncEntCB.Checked, this))).Start();
+                    (new Thread(() => twitter.SearchTweets(t5KeywordsTB.Text, (int)t5MaxTweetsUD.Value, resultType, (int)t5TweetsPerPageUD.Value, lang,null, t5IncEntCB.Checked, this))).Start();
                     break;
                 case "t6GoB":
                     try

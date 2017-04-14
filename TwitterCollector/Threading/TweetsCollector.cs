@@ -189,14 +189,15 @@ namespace TwitterCollector.Threading
         private List<Tweet> GetTweetsByKeyword(string keyword, int keywordID)
         {
             string lang = db.GetLanguageCodeFromKeyword(keywordID);
-            List<Tweet> t1 = twitter.SearchTweets(keyword, 50000, "recent", 100, lang, true, this);
-            List<Tweet> t2 = twitter.SearchTweets(keyword, 10000, "popular", 100, lang, true, this);
+            List<Tweet> t1 = twitter.SearchTweets(keyword, 50000, "recent", 100, lang, null, true, this);
+            List<Tweet> t2 = twitter.SearchTweets(keyword, 10000, "popular", 100, lang, null, true, this);
             t1.AddRange(t2);
             List<Tweet> t = t1.GroupBy(x => x.ID).Select(x => x.First()).ToList<Tweet>();
             return t;
         }
        
         #endregion
+
         #region Synchronized Functions
         public void AddSafeData(List<Tweet> tweets)
         {
@@ -216,6 +217,7 @@ namespace TwitterCollector.Threading
             return tweets;
         }
         #endregion
+
         #region Implement Methods
         /// <summary>
         /// Data update with paging

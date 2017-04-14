@@ -15,13 +15,17 @@ namespace TwitterCollector.Threading
 
         protected DBHandler db = new DBHandler();
 
-        protected TwitterAPI twitter = new TwitterAPI();
-
-        protected BaseThread() { _thread = new Thread(new ThreadStart(this.RunThread)); }
+        protected TwitterAPI twitter;
 
         protected bool ThreadOn = false;
 
         protected Thread streamThread;
+
+        protected BaseThread() 
+        { 
+            _thread = new Thread(new ThreadStart(this.RunThread));
+            twitter = new TwitterAPI(db.GetTwitterKey());
+        }
 
         // Thread methods / properties
         public void Start() { ThreadOn = true;  _thread.Start(); }
@@ -34,6 +38,7 @@ namespace TwitterCollector.Threading
 
         // Override in base class
         public abstract void RunThread();
+
         public virtual void SetInitialParams(params object[] Params) { }
 
         #region Extension methods

@@ -76,6 +76,7 @@
     <Compile Include="Classes\Tweet.cs" />
     <Compile Include="Classes\Navigators\TwitterNavigator.cs" />
     <Compile Include="Classes\User.cs" />
+    <Compile Include="Common\TwitterKeys.cs" />
     <Compile Include="Common\Global.cs" />
     <Compile Include="Controllers\CTwitterResultDisplay.cs" />
     <Compile Include="Forms\TwitterResultDisplay.cs">
@@ -87,7 +88,7 @@
     <Compile Include="Interface\Update.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\Twitter.cs" />
+    <Compile Include="Twitter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
