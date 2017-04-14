@@ -26,3 +26,31 @@ C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\Receptivi
 C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.DictionaryManager.resources
 C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.Settings.resources
 C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.ExternalForms.MessageForm.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TwitterCollector.exe.config
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.exe
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TwitterCollector.exe
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TwitterCollector.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\DataBaseConnections.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Receptiviti.Client.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ToggleSwitch.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TopicSentimentAnalysis.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Twitter.exe
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Oracle.ManagedDataAccess.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Npgsql.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ToggleSwitch.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\DataBaseConnections.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TopicSentimentAnalysis.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Twitter.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Receptiviti.Client.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csprojResolveAssemblyReference.cache
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.DictionaryManager.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.ExternalForms.MessageForm.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.Main.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.Settings.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.SubjectManager.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.SubjectResult.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Properties.Resources.resources
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csproj.GenerateResource.Cache
