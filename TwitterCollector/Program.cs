@@ -30,7 +30,7 @@ namespace TwitterCollector
 
             //(new Supervisor()).Start();
             //Remote 
-         DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.12", "1433", "Avi", "1234", "Twitter"));
+         DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
         var r=    db.GetSingleValue("ExternalApiKeys", "Key1", "ID = 1");
 
 

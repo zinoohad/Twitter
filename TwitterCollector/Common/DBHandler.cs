@@ -208,6 +208,7 @@ namespace TwitterCollector.Common
             {
                 return false;
             }
+
         }
 
         #endregion
@@ -491,23 +492,40 @@ namespace TwitterCollector.Common
         /// </summary>
         /// <param name="word"></param>
         /// <returns>Value of word weight</returns>
-        public int? GetAgeValueByWord(string word)
+        public WordAge GetAgeValueByWord(string word)
         {
-            int? Value = null;
-            // FindPositiveNegativeWords
-            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            return Value;
+            WordAge wordage = null;
+            string query = string.Format("SELECT * FROM DictionaryAge WHERE Word = '{0}' ",word);
+            DataTable dt = Select(query);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                   wordage = Global.FillClassFromDataRow<WordAge>(dr);
+                }
+            }
+            return wordage;
         }
 
         /// <summary>
         /// Search for emoticons for ages 
         /// </summary>
         /// <returns>DataTable with emoticons and value</returns>
-        public DataTable FindEmoticonsForAges()
-        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        public List<WordAge> FindEmoticonsForAges()
         {
-            //TODO For Ohad
-            return new DataTable();
+            List<WordAge> EmoticonsForAges = new List<WordAge>();
+            string query = string.Format("SELECT * FROM DictionaryAge WHERE IsEmoticon = 1 ");
+            DataTable dt = Select(query);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    WordAge wordage = Global.FillClassFromDataRow<WordAge>(dr);
+                    EmoticonsForAges.Add(wordage);
+                }
+            }
+            return EmoticonsForAges;
+
         }
         /// <summary>
         /// This function get all users that need to analyze age
@@ -517,21 +535,106 @@ namespace TwitterCollector.Common
         /// <param name="threadType"></param>
         /// <param name="topNumber"> </param>
         /// <returns></returns>
-        public List<User> GetUserToCheckSentementAnalysis(ThreadType threadType, int? topNumber = null)
+        public List<long> GetUserIDToCheckAnalysisByAge(ThreadType threadType, int? topNumber = null)
         {
-            List<User> topUsers = new List<User>();
-            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            List<long> topUsers = new List<long>();
+
+            int top;
+            if (topNumber != null) top = (int)topNumber;
+            else
+            {
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                if (tmpTop == null) top = 100;
+                else top = int.Parse(tmpTop.ToString());
+            }
+            string query = string.Format("SELECT TOP {0} * FROM UserProperties WHERE AgeGroupID IS NULL ORDER BY [RelevantTweetsCount] DESC", top);
+            DataTable dt = Select(query);
+            if (dt != null)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    long UserID = long.Parse(dr["UserID"].ToString());
+                    topUsers.Add(UserID);
+                }
+            }
             return topUsers;
+       
+        }
+        /// <summary>
+        /// This function get all users that need to analyze Gender
+        /// TODO ADD Key TOP User 
+        /// 
+        /// </summary>
+        /// <param name="threadType"></param>
+        /// <param name="topNumber"> </param>
+        /// <returns></returns>
+        public List<long> GetUserIDToCheckAnalysisByGender(ThreadType threadType, int? topNumber = null)
+        {
+            List<long> topUsers = new List<long>();
+
+            int top;
+            if (topNumber != null) top = (int)topNumber;
+            else
+            {
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                if (tmpTop == null) top = 100;
+                else top = int.Parse(tmpTop.ToString());
+            }
+            string query = string.Format("SELECT TOP {0} * FROM UserProperties WHERE GenderID IS NULL ORDER BY [RelevantTweetsCount] DESC", top);
+            DataTable dt = Select(query);
+            if (dt != null)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    long UserID = long.Parse(dr["UserID"].ToString());
+                    topUsers.Add(UserID);
+                }
+            }
+            return topUsers;
+
+        }
+        public bool updateUserPropertiesByUserID( string columnName, int value, long userID)
+        {
+            try
+            {
+                string sqlQuery = string.Format("UPDATE UserProperties SET {1} = {2} WHERE UserID = {3}", columnName, value, userID);
+                db.Update(sqlQuery);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
         }
         /// <summary>
         /// This function get all user's tweets by userID
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public List<Tweet> GetUserTweet(User user)
+        public List<Tweet> GetUserTweetByUserID(long userID, int? topNumber = null)
         {
             List<Tweet> UserTweets = new List<Tweet>();
-            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            List<long> topUsers = new List<long>();
+
+            int top;
+            if (topNumber != null) top = (int)topNumber;
+            else
+            {
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                if (tmpTop == null) top = 100;
+                else top = int.Parse(tmpTop.ToString());
+            }
+            string query = string.Format("SELECT TOP {0} * FROM Tweets WHERE UserID = {1} ORDER BY [RetweetCount]+[FavoritesCount] DESC", top, userID);
+            DataTable dt = Select(query);
+            if (dt != null)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    UserTweets.Add(new Tweet(dr));      
+                }
+            }     
             return UserTweets;
         }
 
