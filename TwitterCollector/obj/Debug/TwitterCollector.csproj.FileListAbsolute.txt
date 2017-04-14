@@ -26,3 +26,6 @@ C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\bin\Debug\Receptivi
 C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.DictionaryManager.resources
 C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.Settings.resources
 C:\Users\zinoo\Desktop\FinalProject\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.ExternalForms.MessageForm.resources
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\TwitterCollector.exe.config
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\obj\Debug\TwitterCollector.exe
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\obj\Debug\TwitterCollector.pdb
