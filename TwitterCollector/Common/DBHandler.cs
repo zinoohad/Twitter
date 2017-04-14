@@ -380,19 +380,6 @@ namespace TwitterCollector.Common
 
         #region TweetPosNeg
 
-        /// <summary>
-        /// Search for emoticons in split sentence
-        /// </summary>
-        /// <param name="splitSentence">Split sentence</param>
-        /// <returns>DataTable with all the results.</returns>
-        public DataTable FindEmoticons(string[] splitSentence)
-        {
-            splitSentence = splitSentence.Select(r => string.Format("Word LIKE '%{0}'", r)).ToArray();
-            string orJoin = string.Join(" OR ", splitSentence);
-            string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 1 AND ({0})", orJoin);
-            return Select(sqlQuery);
-        }
-
         public DataTable FindPositiveNegativeWords(string[] splitSentence)
         {
             //TODO: Need to upgrade this function. 
@@ -430,6 +417,72 @@ namespace TwitterCollector.Common
                 }
             }
             return topTweets;
+        }
+
+        /// <summary>
+        /// Search for emoticons in split sentence
+        /// </summary>
+        /// <param name="splitSentence">Split sentence</param>
+        /// <returns>DataTable with all the results.</returns>
+        public DataTable FindEmoticons(string[] splitSentence)
+        {
+            splitSentence = splitSentence.Select(r => string.Format("Word LIKE '%{0}'", r)).ToArray();
+            string orJoin = string.Join(" OR ", splitSentence);
+            string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 1 AND ({0})", orJoin);
+            return Select(sqlQuery);
+        }
+
+        #endregion
+
+        #region Tweet Age
+
+        /// <summary>
+        /// This function compare word to Age Dictionary
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns>Value of word weight</returns>
+        public int? GetAgeValueByWord(string word)
+        {
+            int? Value = null;
+            // FindPositiveNegativeWords
+            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            return Value;
+        }
+
+        /// <summary>
+        /// Search for emoticons for ages 
+        /// </summary>
+        /// <returns>DataTable with emoticons and value</returns>
+        public DataTable FindEmoticonsForAges()
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        {
+            //TODO For Ohad
+            return new DataTable();
+        }
+        /// <summary>
+        /// This function get all users that need to analyze age
+        /// TODO ADD Key TOP User 
+        /// 
+        /// </summary>
+        /// <param name="threadType"></param>
+        /// <param name="topNumber"> </param>
+        /// <returns></returns>
+        public List<User> GetUserToCheckSentementAnalysis(ThreadType threadType, int? topNumber = null)
+        {
+            List<User> topUsers = new List<User>();
+            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            return topUsers;
+        }
+        /// <summary>
+        /// This function get all user's tweets by userID
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public List<Tweet> GetUserTweet(User user)
+        {
+            List<Tweet> UserTweets = new List<Tweet>();
+            //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            return UserTweets;
         }
 
         #endregion
