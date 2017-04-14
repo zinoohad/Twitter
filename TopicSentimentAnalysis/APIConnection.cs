@@ -64,28 +64,6 @@ namespace TopicSentimentAnalysis
             if(string.IsNullOrEmpty(jsonStr)) return null;
             a = serializer.Deserialize<Analysis>(jsonStr);
             return a;
-
-            //if (SentenceResponse.status.code == "0")
-            //{
-            //    string sentenceValue = SentenceResponse.score_tag;
-            //    switch (sentenceValue)
-            //    {
-            //        case "P +":
-            //            return "strong positive";
-            //        case "P":
-            //            return "positive";
-            //        case "NEU":
-            //            return "neutral";
-            //        case "N":
-            //            return "negative";
-            //        case "N +":
-            //            return "strong negative";
-            //        default:
-            //            return "neutral";
-            //    } //switch                  
-            //}//if
-            ///*--- http request not Succeeded ---*/
-            //return "error code:" + SentenceResponse.status.code;
         }
 
         public Topic GetTopicAnalysis(string Text)
@@ -95,18 +73,6 @@ namespace TopicSentimentAnalysis
             if (string.IsNullOrEmpty(jsonStr)) return null;
             t = serializer.Deserialize<Topic>(jsonStr);
             return t;
-
-            //if (TopicResponse.status.code == "0")
-            //{
-            //    string Topics = "";
-            //    for (int i = 0; i < TopicResponse.sentimented_concept_list.Count; i++)
-            //        Topics = Topics + "Concept " + i + ": " + TopicResponse.sentimented_concept_list[i].form + " | ";
-            //    for (int i = 0; i < TopicResponse.sentimented_entity_list.Count; i++)
-            //        Topics = Topics + "Entity " + i + ": " + TopicResponse.sentimented_entity_list[i].form + " |  ";
-            //    return Topics;
-            //}//if
-            ///*--- http request not Succeeded ---*/
-            //return "error code:" + TopicResponse.status.code;
         }
 
     }

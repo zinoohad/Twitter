@@ -235,5 +235,36 @@ namespace TwitterCollector.Common
         {
             return args.Contains(obj);
         }
+
+        public static string GetStringWithoutPunctuation(string oldString)
+        {
+            var newString = new StringBuilder();
+            for (int i = 0; i < oldString.Length; i++)
+            {
+                char c = oldString[i];
+                if (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)
+                    || (i != 0 && i != oldString.Length - 1 && char.IsLetter(oldString[i - 1]) && char.IsLetter(oldString[i + 1]) && c.In('-', '\'')))
+                    newString.Append(c);
+            }
+            return newString.ToString();
+        }
+
+        public static List<string> SplitSentenceToSubSentences(string sentence, int maxWordInSubSentence)
+        {
+            string[] spliteSentence = sentence.Split(' ');
+            int wordNumber = spliteSentence.Length;
+            List<string> subSentenceList = new List<string>();
+            int subSentenceLength, i;
+
+            for (subSentenceLength = 1; subSentenceLength <= maxWordInSubSentence; subSentenceLength++)
+            {
+                for (i = 0; i < wordNumber - subSentenceLength + 1; i++)
+                {
+                    subSentenceList.Add(string.Join(" ", spliteSentence, i, subSentenceLength));
+                }
+            }
+            return subSentenceList;
+        }
+
     }
 }

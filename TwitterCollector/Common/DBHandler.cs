@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using  DataBaseConnections;
+using DataBaseConnections;
 using System.Data;
 using Twitter.Classes;
 using TwitterCollector.Objects;
 using TopicSentimentAnalysis.Classes;
+using Twitter.Common;
+using TopicSentimentAnalysis;
 
 namespace TwitterCollector.Common
 {
@@ -16,6 +18,9 @@ namespace TwitterCollector.Common
         #region Params
         private DBConnection db;
         public const string TwitterDateTemplate = "ddd MMM dd HH:mm:ss +ffff yyyy";
+
+        public const string SqlServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
         #endregion
 
         #region Constructors
@@ -23,6 +28,7 @@ namespace TwitterCollector.Common
         public DBHandler(DBConnection db) { this.db = db; }
         #endregion
 
+        
         #region General
 
         #region System Functions
@@ -116,6 +122,27 @@ namespace TwitterCollector.Common
             SetSingleValue("ExternalApiKeys", "RemainingCredits", key.ID, key.externalApi);
         }
 
+        public void UpdateDictionaryAge()
+        {
+            string query = "SELECT ID,Word FROM DictionaryAge WHERE MostPositiveAgeGroup IS NULL OR MostNegativeAgeGroup IS NULL";
+            DataTable dt = Select(query);
+
+            if (dt == null || dt.Rows.Count == 0) return;
+            string word;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                word = dr["Word"].ToString();
+                List<WordAge> wordAgeList = WordSentimentAnalysis.CheckWordAge(word);
+                if (wordAgeList.Count == 0) 
+                    continue;
+                WordAge oneValue = wordAgeList[0];
+                Update(string.Format(@"UPDATE DictionaryAge SET Age13To18 = {0}, Age19To22 = {1}, Age23To29 = {2}, Age30Plus = {3}
+                    , MostPositiveAgeGroup = {4}, MostNegativeAgeGroup = {5}, LastUpdate = '{6}' WHERE ID = {7}", oneValue.Age13To18, oneValue.Age19To22,
+                              oneValue.Age23To29, oneValue.Age30Plus, oneValue.MostPositiveAgeGroup, oneValue.MostNegativeAgeGroup,DateTime.Now.ToString(SqlServerDateTimeFormat), dr["ID"].ToString()));
+            }
+        }
+
         #endregion      
   
         public bool IncTweetsKeywordCounter(List<int> keywordIDs)
@@ -152,7 +179,7 @@ namespace TwitterCollector.Common
 
         private long Delete(string query, bool returnDeletedID = false, string columnName = "ID") { return db.Delete(query, returnDeletedID, columnName); }
 
-        public string ReplaceQuote(string text) { return string.IsNullOrEmpty(text) ? "NULL" : "'"+text.Replace("'", "''")+"'"; }
+        public string ReplaceQuote(string text) { return string.IsNullOrEmpty(text) ? "NULL" : "'" + text.Replace("'", "''") + "'"; }
 
         public object GetSingleValue(string tableName, string columnName, string where)
         {
@@ -186,6 +213,29 @@ namespace TwitterCollector.Common
         #endregion
 
         #region Select
+
+        #region Twitter
+
+        public TwitterKeys GetTwitterKey()
+        {
+            string sqlQuery = "SELECT TOP 1 * FROM ExternalApiKeys WHERE AccountName = 'TwitterAPI' ORDER BY UpdateDate ASC";
+            DataTable dt = Select(sqlQuery);
+            if (dt == null || dt.Rows.Count == 0) return null;
+            DataRow dr = dt.Rows[0];
+            TwitterKeys twitterKeys = new TwitterKeys(
+                int.Parse(dr["ID"].ToString())
+                ,dr["Key1"].ToString()
+                ,dr["Key2"].ToString()
+                ,dr["Key3"].ToString()
+                ,dr["Key4"].ToString()
+                );
+            // Update use date
+            sqlQuery = string.Format("UPDATE ExternalApiKeys SET UpdateDate = getdate() WHERE ID = {0}", twitterKeys.ID);
+            Update(sqlQuery);
+            return twitterKeys;
+        }
+
+        #endregion
 
         #region Tweets Collector
 
@@ -827,6 +877,7 @@ namespace TwitterCollector.Common
             bool isEmoticon = Global.IsEmoticon(word);
 
             //TODO: Split the word and check it => '(very) interesting'
+            word = Global.GetStringWithoutPunctuation(word);
 
             DataTable dt = Select(string.Format("SELECT * FROM DictionaryPositiveNegative WHERE Word = '{0}'", word));          
             if (dt == null || dt.Rows.Count == 0)
