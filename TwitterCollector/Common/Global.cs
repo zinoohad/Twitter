@@ -8,25 +8,36 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TopicSentimentAnalysis;
+using TopicSentimentAnalysis.Classes;
 using Twitter.Forms;
 using TwitterCollector.Controllers;
 using TwitterCollector.Forms;
+using TwitterCollector.Timers;
 
 namespace TwitterCollector.Common
 {
     public static class Global
     {
         #region Forms
+
         public static CMain main;
+
         private static TwitterResultDisplay trd;
+
         private static CDictionaryManager dictionaryManager;
+
         private static CSubjectManager subjectManager;
+
         private static CSubjectResult subjectResult;
+
         #endregion
 
         #region Global Params
 
         public static DBHandler DB { get { return new DBHandler(); } }
+
+        private static NewAgeWordsTimer ageWordsTimer;
 
         #endregion
 
@@ -226,6 +237,11 @@ namespace TwitterCollector.Common
             Thread.Sleep(seconds * 1000);
         }
 
+        public static bool In<T>(this T obj, params T[] args)
+        {
+            return args.Contains(obj);
+        }
+
         public static bool IsEmoticon(string s)
         {
             if (s.Length < 2) return false;
@@ -235,11 +251,6 @@ namespace TwitterCollector.Common
                     return false;
             }
             return true;
-        }
-
-        public static bool In<T>(this T obj, params T[] args)
-        {
-            return args.Contains(obj);
         }
 
         public static string GetStringWithoutPunctuation(string oldString)
@@ -257,25 +268,76 @@ namespace TwitterCollector.Common
 
         public static List<string> SplitSentenceToSubSentences(string sentence, int maxWordInSubSentence)
         {
+            if (string.IsNullOrEmpty(sentence)) 
+                return null;
+
             string[] spliteSentence = sentence.Split(new string[]{" "}, StringSplitOptions.RemoveEmptyEntries);
             int wordNumber = spliteSentence.Length;
+
+            if (wordNumber < maxWordInSubSentence)
+                maxWordInSubSentence = wordNumber;
+
             List<string> subSentenceList = new List<string>();
             int subSentenceLength, i;
 
-            for (subSentenceLength = 1; subSentenceLength <= maxWordInSubSentence; subSentenceLength++)
+            for (subSentenceLength = 1 ; subSentenceLength <= maxWordInSubSentence ; subSentenceLength++)
             {
-                for (i = 0; i < wordNumber - subSentenceLength + 1; i++)
+                for (i = 0 ; i <= wordNumber - subSentenceLength ; i++)
                 {
                     subSentenceList.Add(string.Join(" ", spliteSentence, i, subSentenceLength));
                 }
             }
-            return subSentenceList;
+            return subSentenceList.Distinct().ToList();
         }
 
-        public static void LearnNewWordsToAgeDictionary(string sentence)
+        #region Age Dictionary Learning
+
+        /// <summary>
+        /// This function get a sentence, split it to sub sentences and send it to external Api.
+        /// The result from the api will save in the db and use to do user analysis.
+        /// </summary>
+        /// <param name="sentence"></param>
+        public static void LearnNewWordsToAgeDictionary(string sentence, int maxWordInSubSentence = 3)
         {
-            List<string> splitSentence = SplitSentenceToSubSentences(sentence, 3);
+            try
+            {
+                List<string> splitSentence = SplitSentenceToSubSentences(sentence, maxWordInSubSentence);
+                List<WordAge> apiResult = WordSentimentAnalysis.CheckWordAge(splitSentence.ToArray());
+                DBHandler db = DB;
+                db.UpsertWordToAgeDictionaryAfterUsingAPI(apiResult);
+            }
+            catch (Exception e)
+            {
+                new TwitterException(e);
+            }
         }
-        
+
+        /// <summary>
+        /// This function get string values, it could be a sentence, sub sentence or word.
+        /// The function works with timer and check all the words in intervals of the given value.
+        /// </summary>
+        /// <param name="values">Sentence, sub sentence or word.</param>
+        public static void AddSentenceToBufferForChecking(params string[] values)
+        {
+            try
+            {
+                if (ageWordsTimer == null)
+                {
+                    DBHandler db = DB;
+                    ageWordsTimer = new NewAgeWordsTimer();
+                    ageWordsTimer.TimerInterval = int.Parse(
+                        db.GetValueByKey("AgeWordsTimerIntervals", 60)
+                        .ToString());
+                }
+                ageWordsTimer.Add(values);
+            }
+            catch (Exception e)
+            {
+                new TwitterException(e);
+            }
+        }
+
+        #endregion
+
     }
 }

@@ -52,6 +52,9 @@ namespace TwitterCollector.Threading
             try
             {
                 a = sentementAnalysis.GetSentimentAnalysis(tweet.Text);
+
+                // Learn new words using Age API
+                Global.AddSentenceToBufferForChecking(tweet.Text);
             }
             catch (InvalidExpressionException e)
             {
@@ -117,12 +120,5 @@ namespace TwitterCollector.Threading
             }
             return true;
         }
-
-        private void LearnNewWordsToAgeDictionary(string sentence)
-        {
-
-        }
-        
-
     }
 }

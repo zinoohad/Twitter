@@ -22,4 +22,19 @@ namespace TopicSentimentAnalysis.Classes
         public string image { get; set; }
         public IList<Tag> tags { get; set; }
     }
+
+
+    public class FImaggaObject
+    {
+        public IList<Tagss> tagss { get; set; }
+        public string image { get; set; }
+        public string aws { get; set; }
+    }
+
+    public class Tagss
+    {
+        public string namee { get; set; }
+        public string confidence { get; set; }
+    }
+    
 }

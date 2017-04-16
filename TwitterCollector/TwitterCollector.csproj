@@ -52,6 +52,10 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ObjectListView, Version=2.9.1.1072, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.9.1\lib\net20\ObjectListView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Receptiviti.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Receptiviti.Client.1.0.13\lib\net451\Receptiviti.Client.dll</HintPath>
       <Private>True</Private>
@@ -145,6 +149,7 @@
     <Compile Include="Threading\TweetsPosNeg.cs" />
     <Compile Include="Threading\UserClassification.cs" />
     <Compile Include="Threading\UsersCollector.cs" />
+    <Compile Include="Timers\NewAgeWordsTimer.cs" />
     <Compile Include="TwitterDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

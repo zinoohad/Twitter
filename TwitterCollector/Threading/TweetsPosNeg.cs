@@ -100,7 +100,7 @@ namespace TwitterCollector.Threading
         {
             sentence = sentence.Replace("'", "''");
             //string[] splitSentence = SplitByDelimiters(sentence, " ");
-            List<string> splitSentence = Global.SplitSentenceToSubSentences(sentence, int.Parse(db.GetValueByKey("MaxWordInSubSentence").ToString()));
+            List<string> splitSentence = Global.SplitSentenceToSubSentences(sentence, int.Parse(db.GetValueByKey("MaxWordInSubSentence",3).ToString()));
             DataTable dt = db.FindPositiveNegativeWords(splitSentence.ToArray());
 
             if (dt == null || dt.Rows.Count == 0) return;

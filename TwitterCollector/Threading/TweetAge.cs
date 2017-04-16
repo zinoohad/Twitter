@@ -36,7 +36,7 @@ namespace TwitterCollector.Threading
             {
 
             emoticonsArrayValue = db.FindEmoticonsForAges();
-            maxWordInSubSentence= int.Parse(db.GetValueByKey("MaxWordInSubSentence").ToString());
+            maxWordInSubSentence= int.Parse(db.GetValueByKey("MaxWordInSubSentence",3).ToString());
             while (ThreadOn)
                 {
                     try

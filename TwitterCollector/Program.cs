@@ -21,20 +21,16 @@ namespace TwitterCollector
         [STAThread]
         static void Main()
         {
-            //ImageAnalysis i = new ImageAnalysis();
-            //i.GetImageAnalysisImagga("http://steezo.com/wp-content/uploads/2012/12/man-in-suit2.jpg");
+            ImageAnalysis i = new ImageAnalysis();
+            var result = i.GetImageAnalysisFreeImagga("http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg");
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
 
             //(new SentimentAnalysis()).Start();
 
             //(new Supervisor()).Start();
-            //Remote 
-         DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
-        var r=    db.GetSingleValue("ExternalApiKeys", "Key1", "ID = 1");
 
-
-        List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 3);
+            List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 30);
             var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
 
             //Application.EnableVisualStyles();

@@ -16,7 +16,9 @@ namespace TwitterCollector.Common
     public class DBHandler
     {
         #region Params
+
         private DBConnection db;
+
         public const string TwitterDateTemplate = "ddd MMM dd HH:mm:ss +ffff yyyy";
 
         public const string SqlServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
@@ -24,19 +26,38 @@ namespace TwitterCollector.Common
         #endregion
 
         #region Constructors
+
         public DBHandler() { db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); }
+
         public DBHandler(DBConnection db) { this.db = db; }
+
         #endregion
         
         #region General
 
         #region System Functions
 
-        public object GetValueByKey(string key)
+        /// <summary>
+        /// Return value from settings table by the given key.
+        /// In case the key not exists and the defaultValue parametere has value, new record will be insert to the settings table with the given key and value.
+        /// </summary>
+        /// <param name="key">The string uniqe key to check in the settings table.</param>
+        /// <param name="defaultValue">Optional: Create new record and return this value.</param>
+        /// <returns>Value for the given key.</returns>
+        public object GetValueByKey(string key, object defaultValue = null)
         {
             string selectQuery = string.Format("SELECT Value FROM Settings WHERE [Key] = '{0}'", key);
             DataTable dt = db.Select(selectQuery);
-            if (dt == null || dt.Rows.Count == 0) return null;
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                if (defaultValue != null)
+                {
+                    SetValueByKey(key, defaultValue);
+                    return defaultValue;
+                }
+                else
+                    return null;
+            }
             DataRow dr = dt.Rows[0];
             return dr.IsNull("Value") ? null : dr["Value"];
         }
@@ -140,6 +161,22 @@ namespace TwitterCollector.Common
                 , MostPositiveAgeGroup = {4}, MostNegativeAgeGroup = {5}, LastUpdate = '{6}' WHERE ID = {7}", oneValue.Age13To18, oneValue.Age19To22,
                             oneValue.Age23To29, oneValue.Age30Plus, oneValue.MostPositiveAgeGroup, oneValue.MostNegativeAgeGroup,DateTime.Now.ToString(SqlServerDateTimeFormat), dr["ID"].ToString()));
             }
+        }
+
+        public void WriteExceptionToDB(string fileName, string functionName, int lineNumber, string message)
+        {
+            string programMode = "Release";
+#if (DEBUG)
+            programMode = "Debug";
+#endif
+            string userAndMachineName = Environment.UserName + " (" + Environment.MachineName + ")";
+            string sqlQuery = string.Format("INSERT INTO TwitterException (ProgramMode,UserAndMachineName,FileName,FunctionName,LineNumber,Message) "+
+                                            "VALUES ('{0}','{1}','{2}','{3}',{4},'{5}')", programMode, userAndMachineName, fileName, functionName, lineNumber, message);
+            try
+            {
+                Update(sqlQuery);
+            }
+            catch { }
         }
 
         #endregion        
@@ -289,7 +326,7 @@ namespace TwitterCollector.Common
             if (topNumber != null) top = (int)topNumber;
             else
             {
-                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull", 20);
                 if (tmpTop == null) top = 100;
                 else top = int.Parse(tmpTop.ToString());
             }
@@ -321,8 +358,7 @@ namespace TwitterCollector.Common
                                 ORDER BY B.UserRelevantTweets DESC ,A.UserAllTweets DESC";
             if (topRecords == null)
             {
-                if ((topRecords = (int)GetValueByKey("TopUsersForZeroPoint")) == null) //Get top from settings table
-                    topRecords = 25;    //Set default value
+                topRecords = int.Parse(GetValueByKey("TopUsersForZeroPoint", 25).ToString()); //Get top from settings table
             }
             sqlQuery = string.Format(sqlQuery, topRecords, subjectID);
             DataTable dt = Select(sqlQuery);
@@ -420,7 +456,7 @@ namespace TwitterCollector.Common
             List<long> topUsers = new List<long>();            
             if (topNumber == 0)
             {
-                object tmpTop = GetValueByKey("TopUsersForUserCollectorThread");
+                object tmpTop = GetValueByKey("TopUsersForUserCollectorThread",25);
                 try
                 {
                     if (tmpTop == null) topNumber = 25;
@@ -476,7 +512,7 @@ namespace TwitterCollector.Common
             if (topNumber != null) top = (int)topNumber;
             else
             {
-                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull",20);
                 if (tmpTop == null) top = 100;
                 else top = int.Parse(tmpTop.ToString());
             }
@@ -570,7 +606,7 @@ namespace TwitterCollector.Common
             if (topNumber != null) top = (int)topNumber;
             else
             {
-                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull",20);
                 if (tmpTop == null) top = 100;
                 else top = int.Parse(tmpTop.ToString());
             }
@@ -603,7 +639,7 @@ namespace TwitterCollector.Common
             if (topNumber != null) top = (int)topNumber;
             else
             {
-                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull",20);
                 if (tmpTop == null) top = 100;
                 else top = int.Parse(tmpTop.ToString());
             }
@@ -649,7 +685,7 @@ namespace TwitterCollector.Common
             if (topNumber != null) top = (int)topNumber;
             else
             {
-                object tmpTop = GetValueByKey("TweetsNumberInOnePull");
+                object tmpTop = GetValueByKey("TweetsNumberInOnePull",20);
                 if (tmpTop == null) top = 100;
                 else top = int.Parse(tmpTop.ToString());
             }
@@ -684,7 +720,7 @@ namespace TwitterCollector.Common
                                                                " VALUES ({0},{1},{2},'{3}','{4}',{5},{6},{7},'{8}',{9},{10},{11},{12},{13})",
                                                                 user.ID, ReplaceQuote(user.Name), ReplaceQuote(user.ScreenName), createdAt.ToString("yyyy-MM-dd HH:mm:ss"), user.Language, user.FollowersCount,
                                                                 user.FriendsCount, ReplaceQuote(user.Location), user.TimeZone, ReplaceQuote(user.Description), accountAgeInMonth,
-                                                                ReplaceQuote(user.BackgroundImage), ReplaceQuote(user.BannerImage), ReplaceQuote(user.ProfileImage)), true);
+                                                                ReplaceQuote(user.BackgroundImage), ReplaceQuote(user.BannerImage), ReplaceQuote(user.ProfileImage.Replace("_normal",""))), true);
                 if (userID == 0)
                 {
                     userID = user.ID;
@@ -1032,6 +1068,9 @@ namespace TwitterCollector.Common
                     Update(string.Format("UPDATE DictionaryPositiveNegative SET NegativeAppearanceCount = CAST(NegativeAppearanceCount AS BIGINT) + 1, IsPositive = '{0}' WHERE ID = {1}", isPositive, dr["ID"]));
                 }
             }
+
+            // Learn new words using Age API
+            Global.AddSentenceToBufferForChecking(word);
         }
         
         #endregion
