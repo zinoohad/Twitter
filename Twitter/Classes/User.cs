@@ -68,7 +68,11 @@ namespace Twitter.Classes
         public string withheld_scope { get; set; }
 
         #region External Params
+
         public int AccountAge { get; set; }
+
+        public int UserPropertiesID { get; set; }
+
         #endregion
 
 

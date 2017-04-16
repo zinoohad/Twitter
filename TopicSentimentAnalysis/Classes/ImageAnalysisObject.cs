@@ -19,6 +19,7 @@ namespace TopicSentimentAnalysis.Classes
         [JsonProperty("class")]
         public string category { get; set; }
         public double score { get; set; }
+        public string type_hierarchy { get; set; }
     }
 
     public class Classifier

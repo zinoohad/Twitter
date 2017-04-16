@@ -37,6 +37,7 @@ namespace Twitter
             OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"];
             OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"];
         }
+
         public TwitterAPI(string OAuthConsumerKey, string OAuthConsumerSecret)
         {
             this.OAuthConsumerSecret = OAuthConsumerSecret;
