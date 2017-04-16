@@ -295,7 +295,7 @@ namespace TwitterCollector.Common
                 ,dr["Key4"].ToString()
                 );
             // Update use date
-            sqlQuery = string.Format("UPDATE ExternalApiKeys SET UpdateDate = getdate() WHERE ID = {0}", twitterKeys.ID);
+            sqlQuery = string.Format("UPDATE ExternalApiKeys SET UpdateDate = '{1}' WHERE ID = {0}", twitterKeys.ID, DateTime.Now.ToString(SqlServerDateTimeFormat));
             Update(sqlQuery);
             return twitterKeys;
         }
@@ -488,7 +488,8 @@ namespace TwitterCollector.Common
         public bool UserAlreadyExists(long userID)
         {
             if (userID == 0) return false;
-            if (GetSingleValue("Users", "ID", string.Format("ID = {0}", userID)) == null) return false;
+            if (GetSingleValue("Users", "ID", string.Format("ID = {0}", userID)) == null) 
+                return false;
             return true;
         }
 
@@ -699,6 +700,31 @@ namespace TwitterCollector.Common
                 }
             }     
             return UserTweets;
+        }
+
+        #endregion
+
+        #region Image Analysis
+
+        public List<User> GetUsersToImageAnalysis()
+        {
+            List<User> users = new List<User>();
+            int topUsersForImageAnalysis = int.Parse(GetValueByKey("TopUsersForImageAnalysis", 30).ToString());
+            DataTable dt = Select(string.Format("SELECT TOP {0} * FROM ViewUsersForImageAnalysis WHERE ImageAnalysisChecked = 0 AND ProfileImage IS NOT NULL", topUsersForImageAnalysis));
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    users.Add(new User() {
+                        ID = long.Parse(dr["UserID"].ToString())
+                        ,ProfileImage = dr["ProfileImage"].ToString()
+                        ,UserPropertiesID = int.Parse(dr["UserPropertiesID"].ToString())
+                    } );
+                }
+            }
+            return users;
+            
         }
 
         #endregion
@@ -1084,6 +1110,48 @@ namespace TwitterCollector.Common
                             .Select(row => row["ID"].ToString())
                             .ToArray();
             Update(string.Format("UPDATE Tweets SET PositiveWords = {0}, NegativeWords = {1}, Rank = {2} WHERE ID IN ({3})", pnt.GetPositive(), pnt.GetNegative(), pnt.LocalRank, string.Join(",", ids)));
+        }
+
+        #endregion
+
+        #region Image Analysis
+
+        public void BadUrlProfileImage(long userProfileID)
+        {
+            try
+            {
+                Update("UPDATE UserProperties SET ImageAnalysisChecked = 1 WHERE ID = {0}", userProfileID);
+            }
+            catch (Exception e)
+            {
+                new TwitterException(e);
+            }
+        }
+
+        public void UpdateUserProfile(User user)
+        {
+            string sqlQuery = string.Format("UPDATE Users SET Description = {0}, BackgroundImage = {1}, BannerImage = {2}, ProfileImage = {3} WHERE ID = {4}", ReplaceQuote(user.Description),
+                                            ReplaceQuote(user.BackgroundImage), ReplaceQuote(user.BannerImage), ReplaceQuote(user.ProfileImage.Replace("_normal", "")), user.ID);
+            Update(sqlQuery);
+        }
+
+        public void UpdateUserPropertiesAnalysisByAPI(long userPropertiesID, string gender, double genderConfidence, int lowAge, int highAge, double ageConfidence)
+        {
+            try
+            {
+                if(lowAge != 0 && highAge != 0)
+                    Update("UPDATE UserProperties SET ImageAnalysisGender = '{0}', ImageAnalysisGenderConfidence = {1}, ImageAnalysisLowAge = {2}, ImageAnalysisHighAge = {3}, ImageAnalysisAgeConfidence = {4}, ImageAnalysisChecked = 1 WHERE ID = {5}", gender, genderConfidence, lowAge, highAge, ageConfidence, userPropertiesID);
+                else if(lowAge == 0 && highAge == 0)
+                    Update("UPDATE UserProperties SET ImageAnalysisGender = '{0}', ImageAnalysisGenderConfidence = {1}, ImageAnalysisChecked = 1 WHERE ID = {2}", gender, genderConfidence, userPropertiesID);
+                else if(lowAge != 0)
+                    Update("UPDATE UserProperties SET ImageAnalysisGender = '{0}', ImageAnalysisGenderConfidence = {1}, ImageAnalysisLowAge = {2}, ImageAnalysisAgeConfidence = {3}, ImageAnalysisChecked = 1 WHERE ID = {4}", gender, genderConfidence, lowAge, ageConfidence, userPropertiesID);
+                else
+                    Update("UPDATE UserProperties SET ImageAnalysisGender = '{0}', ImageAnalysisGenderConfidence = {1}, ImageAnalysisHighAge = {2}, ImageAnalysisAgeConfidence = {3}, ImageAnalysisChecked = 1 WHERE ID = {4}", gender, genderConfidence, highAge, ageConfidence, userPropertiesID);
+            }
+            catch (Exception e)
+            {
+                new TwitterException(e);
+            }
         }
 
         #endregion

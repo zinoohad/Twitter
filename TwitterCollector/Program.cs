@@ -11,7 +11,6 @@ using TwitterCollector.Forms;
 using TwitterCollector.Controllers;
 using Receptiviti.Client;
 using TopicSentimentAnalysis;
-using TwitterCollector.Threading;
 using System.IO;
 
 namespace TwitterCollector
@@ -21,8 +20,13 @@ namespace TwitterCollector
         [STAThread]
         static void Main()
         {
-            ImageAnalysis i = new ImageAnalysis();
-            var result = i.GetImageAnalysisFreeImagga("http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg");
+
+
+
+            TwitterCollector.Threading.ImageAnalysis i = new TwitterCollector.Threading.ImageAnalysis();
+            i.Start();
+            //var r = i.GetFaceDetectAndImageAnalysis("https://pbs.twimg.com/profile_images/845225405711876096/1KHWivUZ.jpg");
+            //var result = i.GetImageAnalysisFreeImagga("https://s-media-cache-ak0.pinimg.com/736x/61/56/13/615613ca825bd973f977b60865a22e2c.jpg");
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
 
@@ -30,16 +34,16 @@ namespace TwitterCollector
 
             //(new Supervisor()).Start();
 
-            List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 30);
-            var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
+            //List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 30);
+            //var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //new CMain();
             //Application.Run();
 
-            DBHandler dbh = Global.DB;
-            dbh.UpdateDictionaryAge();
+            //DBHandler dbh = Global.DB;
+            //dbh.UpdateDictionaryAge();
             //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
             //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
 
