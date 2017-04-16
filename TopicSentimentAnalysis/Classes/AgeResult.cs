@@ -89,4 +89,12 @@ namespace TopicSentimentAnalysis.Classes
         }
 
     }
+
+    public class WordGender
+    {
+        public string Word;
+
+        public double WordRate;
+    }
+
 }

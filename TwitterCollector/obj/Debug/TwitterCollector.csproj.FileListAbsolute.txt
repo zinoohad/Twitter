@@ -91,3 +91,5 @@ C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCo
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csproj.GenerateResource.Cache
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml

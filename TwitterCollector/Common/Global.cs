@@ -35,7 +35,7 @@ namespace TwitterCollector.Common
 
         #region Global Params
 
-        public static DBHandler DB { get { return new DBHandler(); } }
+        public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter")); } }
 
         private static NewAgeWordsTimer ageWordsTimer;
 

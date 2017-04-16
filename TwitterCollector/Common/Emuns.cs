@@ -15,5 +15,6 @@ namespace TwitterCollector.Common
         ,USER_CLASSIFICATION
         ,USERS_COLLECTOR
         ,TWEET_AGE
+        ,TWEET_GENDER
     }
 }                                                                                                                                                                                                                                                                                                                                                                                     
