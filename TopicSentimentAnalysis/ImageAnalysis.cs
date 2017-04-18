@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -40,9 +41,64 @@ namespace TopicSentimentAnalysis
             FaceDetectObject image = JsonConvert.DeserializeObject<FaceDetectObject>(result);
             return image;
         }
+
+        public FaceDetectObject GetFaceDetectAndImageAnalysis(string imageURL)
+        {
+            string json = PostIBM(imageURL);
+            FaceDetectObject f = JsonConvert.DeserializeObject<FaceDetectObject>(json);
+            return f;
+        }
+
+        public string PostIBM(string imageUrl)
+        {
+            // Create a request using a URL that can receive a post.   
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://visual-recognition-demo.mybluemix.net/api/classify");
+            // Set the Method property of the request to POST.  
+            request.Method = "POST";
+            // Create POST data and convert it to a byte array.  
+          
+            string postData = string.Format("classifier_id=&use--example-images=someImage&url={0}&image_data=", imageUrl);
+            byte[] byteArray = Encoding.Default.GetBytes(postData);
+            // Set the ContentType property of the WebRequest.  
+            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            //request.Headers.Add("authorization", "Basic YWNjXzJkYzdkNzNjMmYwODliMToxYzQ3Yzg2ZDg0YjdmYjdjYjZjNzQ1NTQ1MmYwNTgzMQ==");
+            request.Referer = "https://visual-recognition-demo.mybluemix.net/";
+            // Set the ContentLength property of the WebRequest.  
+
+            request.ContentLength = byteArray.Length;
+
+            request.CookieContainer = new CookieContainer();
+            request.CookieContainer.Add(new Cookie("_csrf", "DxU24Nqe4lK-aax5kPymRx0n") { Domain = "visual-recognition-demo.mybluemix.net" }); // { Domain = "imagga.com" }
+            request.CookieContainer.Add(new Cookie("TLTSID", "IsqGOq58Fzww2P1lwvDUzs8bCiR1o3oa") { Domain = "visual-recognition-demo.mybluemix.net" });
+            // Get the request stream.  
+            Stream dataStream = request.GetRequestStream();
+            // Write the data to the request stream.  
+            dataStream.Write(byteArray, 0, byteArray.Length);
+            // Close the Stream object.  
+            dataStream.Close();
+            // Get the response.  
+            WebResponse response = request.GetResponse();
+            // Display the status.  
+            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+            // Get the stream containing content returned by the server.  
+            dataStream = response.GetResponseStream();
+            // Open the stream using a StreamReader for easy access.  
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.  
+            string responseFromServer = reader.ReadToEnd();
+            // Display the content.  
+
+            // Clean up the streams.  
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+
+            return responseFromServer;
+        }
+
         #endregion
 
-        #region Imagga        
+        #region Imagga
         private string ImaggaApiKey = "acc_6d0e280e5388072";
         private string ImaggaApiSecret = "baeba2b0dfde16222a44b3bcb0f58c07";
         private string GetImaggaRequest(string imageUrl)
@@ -80,13 +136,15 @@ namespace TopicSentimentAnalysis
 
         private string GetImaggaFreeRequest(string imageUrl)
         {
+            var cookieContainer = new CookieContainer();
+            string token = GetToken(imageUrl, ref cookieContainer);
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://imagga.com/auto-tagging-demo/query");
             // Set the Method property of the request to POST.  
             request.Method = "POST";
-            
-            // Create POST data and convert it to a byte array.  
-            //string postData = "url=http%3A%2F%2Fwww.slate.com%2Fcontent%2Fdam%2Fslate%2Fblogs%2Fxx_factor%2F2014%2Fsusan.jpg.CROP.promo-mediumlarge.jpg&_token=JWJnROUR4KzZmAxRBniPXJVcXpApby60Nt51sg6k&color_results=0&language=en";
-            string postData = string.Format("url={0}&_token=DK0TlwfmeUsLfQErROMo0vJJLayPmkfdSr24WQIz&color_results=0&language=en", imageUrl);
+            // Create POST data and convert it to a byte array.              
+            //string postData = string.Format("url={0}&_token=DK0TlwfmeUsLfQErROMo0vJJLayPmkfdSr24WQIz&color_results=0&language=en", imageUrl);
+            string postData = string.Format("url={0}&_token={1}&color_results=0&language=en", imageUrl, token);
             byte[] byteArray = Encoding.Default.GetBytes(postData);
             // Set the ContentType property of the WebRequest.  
             request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -95,17 +153,8 @@ namespace TopicSentimentAnalysis
             // Set the ContentLength property of the WebRequest.  
             request.ContentLength = byteArray.Length;
             
-            // Create a cookie
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer.Add(new Cookie("_ga", "GA1.2.672366569.1482924020") { Domain = "imagga.com" });
-            request.CookieContainer.Add(new Cookie("_hjIncludedInSample", "1") { Domain = "imagga.com" });          
-            request.CookieContainer.Add(new Cookie("_hjMinimizedPolls", "\"16756,26447\"") { Domain = "imagga.com" });
-            request.CookieContainer.Add(new Cookie("0bed65303b7e41d6dd5655b89607800c697fa36b","eyJpdiI6InJmUUs1STkwUFJEUWFoNDNwNEd0c2c9PSIsInZhbHVlIjoiUk1nUHpqR1RhZFJwVCs1SjFtR01qVVU3TGdrd2JBdlY0KzJpTlVVMGlZeVBobWdsM1ZWS3lKUzNabm16d1NKKzFVWXQ2aVVvV25MVlZcL0pYSW5qWkNMd1Z3cktvb2wyTE9LaTR3MktOVVJcL1R0VWZTekpFc0tRRTB0XC9USkpWWkFVODRaSTRka0tPWUxxTkNzcTk2YzYxczlrV1FhbEptbTloNmJqQlBPMHQ2YUhVT0YxZ1BlbDZFODBkZktiY0ZrYmEwQW96WE9YbjdrXC9oR1FDYjRCXC9SRVZDczVyam94RWRKckU5OXRKWFdlbTFkWmlsYlRcLzRoaENLeUFWV09lS2ttUE02WFRHQlJMdk01aGZPUFUwcHBOWElocFpwVjZMM2tWemNqTlhGczZRQThMZ0ZhVnJxUDNjckJVZm5ZbjJlK2VtOVpHN2dFNXhyNXNmR0FzM1RoTjk1cFhxU0ZVOGkwNGJwYWRlT2QwVWZTeFpld2Z6QUxtMVQ3R1pZejBqRndDT0ZROHRtUjB3c29UM2dVUzV3NU9mSFwvOWU4NVVnNGQza3JmOTFnZVY5WXpZMEpVZzlcL0dRbjE0YWIxY3lrbkxDTmlsNzlwWFd6dkZKTTBqTE5rYVJZSjFuV1lwckZOdWJEeDdybU1OVmdoU0RVSEtKNlwvWnRaQk44eUJJaGZiSzZcL1JpUHJEOXVQQVNhak5nb0t1aXhPU3h4dGlQTVV0SEtOZlEyb1A1QTR6b0Q3RWJTMEJObEVFTkZ3aVNvOUxXV2RUVmlUYlBSVXJmQVVXQWdSUGxmdFFoWXJjUlc0OU94NWJPQVRcL3A4VmYwejYyYzRcLzNUcFwvUndhZjUxTXUiLCJtYWMiOiJiZTAyYmRhNzU5N2IwMWJlYzk1NmQxMWRhNmMxZmRkZjY2NTQyOTBjM2Y5N2UyYTlmNGI4OWU4OWJlNDQ2NmRhIn0%3D") { Domain = "imagga.com" });
-            request.CookieContainer.Add(new Cookie("imagga_session","eyJpdiI6Im43aXRyWGZCOHBxTzdWQnZDQTVBaHc9PSIsInZhbHVlIjoiSDlFNkNhZ1hcL1dRV29tZUNzN1oxTlBvK1lDNmtEYXRMQmZpVjRVZ1o2Y1czSnoxdkxwMEtCRGkzdjEwd3ptaUFndWVyNXVPVWRxK1wvSmVmUFpieXUrQT09IiwibWFjIjoiY2ZhMGVkMTgxMzU2MTdjZWM5MGNmZDc4YTk2MzM5Njk2OWJkZmUwMmYyYWU3NzMyZThkNjk0MWJlNWM2YmQwYSJ9") { Domain = "imagga.com", Path = "/" });
-            request.CookieContainer.Add(new Cookie("intercom-id-mqpky8d2", "0c11285d-2988-4009-81a5-7f17eac90b42") { Domain = ".imagga.com" });
-            request.CookieContainer.Add(new Cookie("XSRF-TOKEN", "eyJpdiI6InZ6akhENVpGUDQ5NlJaXC9WWlhMQlJBPT0iLCJ2YWx1ZSI6ImVLQ085RnpGS2VmWlFBNWQ4NURhMmtCNkxrTzdsUlJOZjI2NFRjVHhLbVBqWjVwejNOK2t2Z0U1RlwvQTJpXC9LeXlnQ2k2VVcwWXdXM0tNMXRMTGhtSHc9PSIsIm1hYyI6Ijg1M2RmMGVmYjNlMzk3Yzg4YjFjYWRmZjg2Y2Y2YWYzNzg0YzkyMjUwNjk5NTc4YzgyZDQ0ZmY0ODVhYzdmZDIifQ%3D%3D") { Domain = "imagga.com", Path = "/" });
-            //request.CookieContainer.Add(new Cookie("_gat", "1") { Domain = "imagga.com" });
-            
+            // Set cookie
+            request.CookieContainer = cookieContainer;
 
             // Get the request stream.  
             Stream dataStream = request.GetRequestStream();
@@ -130,6 +179,51 @@ namespace TopicSentimentAnalysis
             response.Close();
             return responseFromServer;
         }
+
+        private string GetToken(string imageUrl, ref CookieContainer cookie)
+        {
+            //string responseFromServer = new WebClient().DownloadString(string.Format("https://imagga.com/auto-tagging-demo?url={0}", imageUrl));
+
+            // Try to get cookie
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format("https://imagga.com/auto-tagging-demo?url={0}", imageUrl));
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            // Open the stream using a StreamReader for easy access.  
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.  
+
+            string responseFromServer = reader.ReadToEnd();
+
+            // Get Token
+            string token = ReturnSubStringFromTo(responseFromServer, "<input type=\"hidden\" name=\"_token\" value=\"", "\">");
+
+            // Get Cookie Set from request header
+            string cookieSet = response.Headers.Get("Set-Cookie");
+
+            string XSRFTOKEN = ReturnSubStringFromTo(cookieSet, "XSRF-TOKEN=", "; ");
+            string immagaSession = ReturnSubStringFromTo(cookieSet, "imagga_session=", "; ");
+            string httpOnly = ReturnSubStringFromTo(cookieSet, "; httponly,", "=");
+
+            // Create a cookies
+            cookie.Add(new Cookie("_ga", "GA1.2.672366569.1482924020") { Domain = "imagga.com" });
+            cookie.Add(new Cookie("_hjIncludedInSample", "1") { Domain = "imagga.com" });
+            cookie.Add(new Cookie("_hjMinimizedPolls", "\"16756,26447\"") { Domain = "imagga.com" });
+            cookie.Add(new Cookie(httpOnly, ReturnSubStringFromTo(cookieSet,httpOnly + "=","; ")) { Domain = "imagga.com" });
+            cookie.Add(new Cookie("imagga_session", immagaSession) { Domain = "imagga.com", Path = "/" });
+            cookie.Add(new Cookie("intercom-id-mqpky8d2", "0c11285d-2988-4009-81a5-7f17eac90b42") { Domain = ".imagga.com" });
+            cookie.Add(new Cookie("XSRF-TOKEN", XSRFTOKEN) { Domain = "imagga.com", Path = "/" });
+
+            return token;
+        }
+
+        private string ReturnSubStringFromTo(string input, string From, string To)
+        {
+            int FromInt = input.LastIndexOf(From) + From.Length;
+            int ToInt = input.IndexOf(To, FromInt);
+            string token = input.Substring(FromInt, ToInt - FromInt);
+            return token;
+        }
+
         #endregion
     }
 }

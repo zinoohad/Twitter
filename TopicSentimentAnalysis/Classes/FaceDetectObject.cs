@@ -44,5 +44,13 @@ namespace TopicSentimentAnalysis.Classes
         public IList<Face> faces { get; set; }
         public string resolved_url { get; set; }
         public string source_url { get; set; }
+        public IList<Classifier> classifiers { get; set; }
+        public ApiError error { get; set; }
+    }
+
+    public class ApiError
+    {
+        public string description { get; set; }
+        public string error_id { get; set; }
     }
 }
