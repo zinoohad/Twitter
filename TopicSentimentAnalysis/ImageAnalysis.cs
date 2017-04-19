@@ -15,6 +15,7 @@ namespace TopicSentimentAnalysis
 {
     public class ImageAnalysis
     {
+
         #region IBM
         private string Host = "https://watson-api-explorer.mybluemix.net/";
         private string APIKey = "cebb51c40045337979791dff98e0d24545b3e37a";
@@ -99,8 +100,11 @@ namespace TopicSentimentAnalysis
         #endregion
 
         #region Imagga
+
         private string ImaggaApiKey = "acc_6d0e280e5388072";
+
         private string ImaggaApiSecret = "baeba2b0dfde16222a44b3bcb0f58c07";
+
         private string GetImaggaRequest(string imageUrl)
         {
             string basicAuthValue = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(String.Format("{0}:{1}", ImaggaApiKey, ImaggaApiSecret)));
@@ -119,6 +123,7 @@ namespace TopicSentimentAnalysis
                 return result;
             }
         }
+
         public ImaggaObject GetImageAnalysisImagga(string imageUrl)
         {
             string result = GetImaggaRequest(imageUrl);
@@ -225,5 +230,6 @@ namespace TopicSentimentAnalysis
         }
 
         #endregion
+
     }
 }

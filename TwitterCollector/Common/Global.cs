@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -35,9 +36,38 @@ namespace TwitterCollector.Common
 
         #region Global Params
 
-        public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter")); } }
+        public static DBHandler DB { get { return new DBHandler(); } }
 
         private static NewAgeWordsTimer ageWordsTimer;
+
+        /// <summary>
+        /// Value is true if the space is low.
+        /// </summary>
+        public static bool IsHardDriveSpaceLow
+        {
+            get
+            {
+                DBHandler db = DB;
+                string driveName = db.GetValueByKey("DataBaseDriveNameStorage", "c").ToString();
+                int lowLimitPercentages = int.Parse(db.GetValueByKey("DriveLowLimit", 5).ToString());
+                float afs, ts;
+                try
+                {
+                    DriveInfo di = new DriveInfo(driveName);
+                    afs = (float)di.AvailableFreeSpace;
+                    ts = (float)di.TotalSize;
+                }
+                catch (Exception e)
+                {
+                    throw new TwitterException(e);
+                }
+
+                int freeSpacePercentages = (int)(afs / ts * 100.0);
+                if (freeSpacePercentages < lowLimitPercentages)
+                    return true;
+                return false;
+            }
+        }
 
         #endregion
 
@@ -289,6 +319,8 @@ namespace TwitterCollector.Common
             }
             return subSentenceList.Distinct().ToList();
         }
+
+
 
         #region Age Dictionary Learning
 

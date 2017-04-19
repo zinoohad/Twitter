@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TwitterCollector.Common;
 using TwitterCollector.Objects;
 
 namespace TwitterCollector.Threading
@@ -11,39 +12,73 @@ namespace TwitterCollector.Threading
     public class Supervisor : BaseThread
     {
         #region Params
+
         private Dictionary<int, List<GeneralThreadParams>> subjectThreads = new Dictionary<int, List<GeneralThreadParams>>();
+
         #endregion
+
         #region Overriding
+
         public override void RunThread()
         {
-            DataTable subjectsDT = db.GetActiveSubjects(true);
-
-            // Threads for specific subject
-            foreach (DataRow subject in subjectsDT.Rows)
+            while (ThreadOn)
             {
-                // Start TweetsCollector thread
-                bool newSubject = bool.Parse(subject["StartNewSubject"].ToString());
-                int subjectID = int.Parse(subject["ID"].ToString());
-                AddThread(subjectID, new TweetsCollector(), subjectID, newSubject);
-                
-                // Start User Collector thread
-                AddThread(subjectID, new UsersCollector(), subjectID);
+                try
+                {
+                    DataTable subjectsDT = db.GetActiveSubjects(true);
 
-                //TODO: Add the rest threads
+                    // Threads for specific subject
+                    foreach (DataRow subject in subjectsDT.Rows)
+                    {
+                        // Start TweetsCollector thread
+                        bool newSubject = bool.Parse(subject["StartNewSubject"].ToString());
+                        int subjectID = int.Parse(subject["ID"].ToString());
+                        AddThread(subjectID, new TweetsCollector(), subjectID, newSubject);
 
+                        // Start User Collector thread
+                        AddThread(subjectID, new UsersCollector(), subjectID);
+
+                        //TODO: Add the rest threads
+
+                    }
+
+                    // Threads that common to all subjects
+
+                    // Start User TweetsPosNeg thread
+                    AddThread(0, new TweetsPosNeg());
+
+                    // Start User SentimentAnalysis thread
+                    AddThread(0, new SentimentAnalysis());
+
+                    //Start ImageAnalysis thread
+                    AddThread(0, new ImageAnalysis());
+
+
+
+
+
+                    // Abort all threads if the disk space low.
+                    try
+                    {
+                        if (Global.IsHardDriveSpaceLow)
+                            AbortAllThreads();
+                    }
+                    catch
+                    {
+                        AbortAllThreads();
+                    }
+
+                    while (true) System.Threading.Thread.Sleep(1000000);    //TODO: Remove this line
+                }
+                catch (Exception e)
+                {
+                    new TwitterException(e);
+                }
             }
-
-            // Threads that common to all subjects
-
-            // Start User TweetsPosNeg thread
-            AddThread(0, new TweetsPosNeg());
-
-            // Start User SentimentAnalysis thread
-            AddThread(0, new SentimentAnalysis());
-
-            while (true) System.Threading.Thread.Sleep(1000000);    //TODO: Remove this line
         }
+
         #endregion
+
         #region Functions
 
         private void AddThread(int subjectID, BaseThread thread, params object[] Params)
@@ -85,7 +120,21 @@ namespace TwitterCollector.Threading
                 thread.Start();
             }
         }
+
+        private void AbortAllThreads()
+        {
+            foreach (KeyValuePair<int, List<GeneralThreadParams>> thread in subjectThreads)
+            {
+                foreach (GeneralThreadParams threadParam in thread.Value)
+                {
+                    threadParam.Thread.Abort();
+                }
+            }
+            Abort();
+        }
+
         #endregion
+
         #region Thread Functions
         public override void Abort()
         {

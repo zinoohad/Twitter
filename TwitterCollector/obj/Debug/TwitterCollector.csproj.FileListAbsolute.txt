@@ -93,3 +93,5 @@ C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectLis
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
