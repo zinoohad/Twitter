@@ -171,7 +171,7 @@ namespace TwitterCollector.Common
 #endif
             string userAndMachineName = Environment.UserName + " (" + Environment.MachineName + ")";
             string sqlQuery = string.Format("INSERT INTO TwitterException (ProgramMode,UserAndMachineName,FileName,FunctionName,LineNumber,Message) "+
-                                            "VALUES ('{0}','{1}','{2}','{3}',{4},'{5}')", programMode, userAndMachineName, fileName, functionName, lineNumber, message);
+                                            "VALUES ('{0}','{1}','{2}','{3}',{4},'{5}')", programMode, userAndMachineName, fileName, functionName, lineNumber, message.Replace("'","''"));
             try
             {
                 Update(sqlQuery);
@@ -710,19 +710,31 @@ namespace TwitterCollector.Common
         public double GetGenderValueByWord(string word)
         {
             double wordGender = 0;
-            string query = string.Format("SELECT * FROM DictionaryGender WHERE Word = '{0}' ", word);
+            string query = string.Format("SELECT TOP 1 * FROM DictionaryGender WHERE Word = '{0}' ", word);
             DataTable dt = Select(query);
             if (dt != null && dt.Rows.Count > 0)
             {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    wordGender = (double)dr["WordRate"];
-
-                }
+                    wordGender = double.Parse(dt.Rows[0]["WordRate"].ToString());
+                
             }
+            
             return wordGender;
         }
        
+        public Dictionary<string,double> GetGenderDictionary()
+        {
+            Dictionary<string, double> genderDinctionaryTable = new Dictionary<string, double>();
+            DataTable dt= Select("SELECT Word, WordRate FROM DictionaryGender ");
+            foreach(DataRow dr in dt.Rows)
+            {
+                genderDinctionaryTable.Add(
+                    dr["Word"].ToString(),
+                    double.Parse(dr["WordRate"].ToString())
+                    );
+            }
+            return genderDinctionaryTable;
+        }
+
         #endregion
 
         #region Image Analysis
@@ -1147,7 +1159,7 @@ namespace TwitterCollector.Common
             }
             catch (Exception e)
             {
-
+                new TwitterException(e);
                 return false;
             }
 

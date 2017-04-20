@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TopicSentimentAnalysis.Classes;
 using Twitter.Classes;
@@ -30,13 +31,12 @@ namespace TwitterCollector.Threading
         private List<long> usersIDs;
         private string tweetWithoutPunctuation;
         private WordClassification TestDictionary;
-
+        private List<string> senctence;
+        private StringBuilder UserText;
+        private Dictionary<string, double> GenderDictionary ;
         #endregion
         public override void RunThread()
         {
-
-            emoticonsArrayValue = db.FindEmoticonsForGender();
-            maxWordInSubSentence = int.Parse(db.GetValueByKey("MaxWordInSubSentence", 3).ToString());
             while (ThreadOn)
             {
                 try
@@ -51,26 +51,28 @@ namespace TwitterCollector.Threading
                     {
                         foreach (long userID in usersIDs)
                         {
+                            UserText = new StringBuilder();
                             userWordValueCounter = 0;
                             usertweethistory = db.GetUserTweetByUserID(userID);
-                            TestDictionary = new WordClassification();
                             foreach (Tweet tweet in usertweethistory)
                             {
                                 tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
                                 tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");
-                                CompareSentenceEmoticonsArray(tweetWithoutPunctuation);
-
-                                // breack the sentence to combinations of maxWordInSubSentence and compare to db dictionary
-
-                                CompareSentenceToGenderDictionary(Global.SplitSentenceToSubSentences(tweetWithoutPunctuation, maxWordInSubSentence));
-                                
-                                Console.WriteLine("Counter =" + userWordValueCounter);
+                                UserText.Append(tweetWithoutPunctuation + " ");
                             }
-                            /*Test Dictionary*/
-                            TestDictionary.print();
-
-                            SaveUserAgeScoreToDB(userID);
+                            foreach (KeyValuePair<string, double> entry in GenderDictionary)
+                            {
+                                int count = 0;
+                                count = SplitByDelimiters(UserText.ToString(), entry.Key).Length - 1;
+                                if(count > 0 )
+                                {
+                                    userWordValueCounter += count * entry.Value;
+                                   
+                                }
+                            }
+                            SaveUserGenderScoreToDB(userID);
                         }
+                        
                     }
                 }
                 catch (Exception e)
@@ -80,14 +82,68 @@ namespace TwitterCollector.Threading
             }
         }
 
-        private void SaveUserAgeScoreToDB(long userID)
+        public TweetGender() : base()
         {
- 
-            if(userWordValueCounter > 0)
-                db.UpdateUserPropertiesByUserID("GenderID",1, userID);
-            else
-                db.UpdateUserPropertiesByUserID("GenderID", 0, userID);
-           
+            emoticonsArrayValue = db.FindEmoticonsForGender();
+            maxWordInSubSentence = int.Parse(db.GetValueByKey("MaxWordInSubSentence", 3).ToString());
+            GenderDictionary = db.GetGenderDictionary();
+        }
+
+        private void AnalysisProcessNumberOne(long userID)
+        {
+            userWordValueCounter = 0;
+            usertweethistory = db.GetUserTweetByUserID(userID);
+
+            TestDictionary = new WordClassification();
+            /*Tests*/
+            int index = 0;
+            /*Tests*/
+            foreach (Tweet tweet in usertweethistory)
+            {
+                index++;
+                tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
+                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");
+                CompareSentenceEmoticonsArray(tweetWithoutPunctuation);
+
+                // breack the sentence to combinations of maxWordInSubSentence and compare to db dictionary
+                senctence = Global.SplitSentenceToSubSentences(tweetWithoutPunctuation, maxWordInSubSentence);
+                CompareSentenceToGenderDictionary(senctence);
+                /*Tests*/
+                Console.WriteLine("Tweet number {0} from {1}", index, usertweethistory.Count);
+                /*Tests*/
+                if (index > 200)
+                    break;
+            }
+            /*Tests*/
+            Console.WriteLine("Counter =" + userWordValueCounter);
+            TestDictionary.print();
+            /*Tests*/
+
+            SaveUserGenderScoreToDB(userID);
+        }
+
+        private void SaveUserGenderScoreToDB(long userID)
+        {
+
+            if (userWordValueCounter > 0)
+            {
+                db.UpdateUserPropertiesByUserID("GenderID", (int)Common.Gender.FEMALE, userID);
+                Console.WriteLine("User ID : {0} is Female", userID);
+                Console.WriteLine("Counter =" + userWordValueCounter);
+            }     
+            else if (userWordValueCounter < 0)
+            {
+                db.UpdateUserPropertiesByUserID("GenderID", (int)Common.Gender.MALE, userID);
+                Console.WriteLine("User ID : {0} is Male", userID);
+                Console.WriteLine("Counter =" + userWordValueCounter);
+            }
+
+            else if (userWordValueCounter == 0)
+            {
+                db.UpdateUserPropertiesByUserID("GenderID", (int)Common.Gender.Unknown, userID);
+                return;
+            }
+
         }
 
         /// <summary>
@@ -104,6 +160,7 @@ namespace TwitterCollector.Threading
                 double returnValue = 0;
                 try
                 {
+                    //Console.WriteLine("Word is {0}", word);
                     returnValue = db.GetGenderValueByWord(word.Replace("'", "''"));
                 }
                 catch (Exception e)
