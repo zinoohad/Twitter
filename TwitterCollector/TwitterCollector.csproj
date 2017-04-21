@@ -78,7 +78,7 @@
   <ItemGroup>
     <Compile Include="Common\CustomMessageBox.cs" />
     <Compile Include="Common\DBHandler.cs" />
-    <Compile Include="Common\Emuns.cs" />
+    <Compile Include="Common\Enums.cs" />
     <Compile Include="Common\FileHandler.cs" />
     <Compile Include="Common\Global.cs" />
     <Compile Include="Common\SentenceHandler.cs" />
