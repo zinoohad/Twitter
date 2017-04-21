@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TopicSentimentAnalysis.Classes;
+using TopicSentimentAnalysis.Interfaces;
 
 namespace TopicSentimentAnalysis
 {
@@ -43,10 +44,15 @@ namespace TopicSentimentAnalysis
             return image;
         }
 
-        public FaceDetectObject GetFaceDetectAndImageAnalysis(string imageURL)
+        public FaceDetectObject GetFaceDetectAndImageAnalysis(ImageAnalysisStatus imageStatus, Update updater = null)
         {
-            string json = PostIBM(imageURL);
+            string json = PostIBM(imageStatus.ImageURL);
             FaceDetectObject f = JsonConvert.DeserializeObject<FaceDetectObject>(json);
+            if (updater != null)
+            {
+                imageStatus.FaceDetect = f;
+                updater.Update(imageStatus);
+            }
             return f;
         }
 

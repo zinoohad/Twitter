@@ -16,13 +16,18 @@ namespace TwitterCollector.Forms
     public partial class Main : Form, FormBase
     {
         #region Params
+
         private CMain controller;
+
         #endregion
+
         public Main()
         {
             InitializeComponent();
         }
+
         #region Handlers
+
         private void toolStripAction_Click(object sender, EventArgs e)
         {
             controller.ToolStripAction(((ToolStripButton)sender).Name);
@@ -31,13 +36,17 @@ namespace TwitterCollector.Forms
         {
             Global.ExitApplication(sender, e);
         }
+
         #endregion
+
         #region Interface Implement
+
         public void SetController(BaseController controller)
         {
             this.controller = (CMain)controller;
         }
         #endregion
+
         #region Functions
         public void LoadLastSubjectResults(SubjectResultUI values)
         {

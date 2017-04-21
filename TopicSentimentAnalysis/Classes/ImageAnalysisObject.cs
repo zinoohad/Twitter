@@ -35,4 +35,17 @@ namespace TopicSentimentAnalysis.Classes
         public string resolved_url { get; set; }
         public string source_url { get; set; }
     }
+
+    public class ImageAnalysisStatus
+    {
+
+        public FaceDetectObject FaceDetect;
+
+        public long UserID;
+
+        public int UserPropertiesID;
+
+        public string ImageURL;
+
+    }
 }

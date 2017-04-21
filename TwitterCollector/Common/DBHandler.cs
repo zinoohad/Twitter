@@ -10,6 +10,7 @@ using TwitterCollector.Objects;
 using TopicSentimentAnalysis.Classes;
 using Twitter.Common;
 using TopicSentimentAnalysis;
+using System.Threading;
 
 namespace TwitterCollector.Common
 {
@@ -271,6 +272,14 @@ namespace TwitterCollector.Common
                 return false;
             }
 
+        }
+
+        public DataTable GetTable(string tableName, string where = null)
+        {
+            string sqlQuery = string.Format("SELECT * FROM {0}", tableName);
+            if (where != null)
+                sqlQuery += string.Format(" WHERE {0}", where);
+            return Select(sqlQuery);
         }
 
         #endregion
@@ -1216,6 +1225,27 @@ namespace TwitterCollector.Common
                     VALUES ('{0}',{1},{2},{3},{4},{5},{6},'{7}')", wordAge, wordAge.Age13To18, wordAge.Age19To22,
                               wordAge.Age23To29, wordAge.Age30Plus, wordAge.MostPositiveAgeGroup, wordAge.MostNegativeAgeGroup, DateTime.Now.ToString(SqlServerDateTimeFormat));
                 }
+            }
+        }
+
+        #endregion
+
+        #region Supervisor
+
+        public void UpsertThread(string threadName, int subjectID, int processID, ThreadState threadState = ThreadState.Running, ThreadState threadDesirableState = ThreadState.Running)
+        {
+            DataTable dt = Select("SELECT * FROM ThreadsControl WHERE ThreadName = '{0}' AND SubjectID = {1} AND MachineName = '{2}'", threadName, subjectID, Environment.MachineName);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                // Insert new record
+                Insert("INSERT INTO ThreadsControl (ThreadName,SubjectID,ThreadState,ThreadDesirableStatus,ThreadProcessID,MachineName) "
+                    + "VALUES ('{0}',{1},'{2}','{3}',{4},'{5}')", threadName, subjectID, threadState.ToString(), threadDesirableState.ToString(), processID, Environment.MachineName);
+            }
+            else
+            {
+                // Update exists record
+                int recordID = int.Parse(dt.Rows[0]["ID"].ToString());
+                Update("UPDATE ThreadsControl SET ThreadState = '{0}', ThreadDesirableStatus = '{1}',ThreadProcessID =  = {2} WHERE ID = {3}", threadState.ToString(), threadDesirableState.ToString(), processID, recordID);
             }
         }
 
