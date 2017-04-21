@@ -13,6 +13,7 @@ namespace TwitterCollector.Controllers
     public class CMain : BaseController
     {
         private Main form = new Main();
+
         public CMain()
         {
             form.SetController(this);
@@ -20,23 +21,29 @@ namespace TwitterCollector.Controllers
             Global.main = this;
             form.ShowDialog();
         }
+
         #region UI Functions
         #endregion
+
         #region Functions
         private void LoadSubjectResult()
         {
             form.LoadLastSubjectResults(new SubjectResultUI());
         }
         #endregion
+
         #region Implement Methods
+
         public override Form GetUI()
         {
             return form;
         }
+
         public override void ToolStripAction(string buttonName)
         {
             Global.ToolStripAction(buttonName,this);
         }
+
         #endregion
     }
 }

@@ -21,10 +21,15 @@ namespace TwitterCollector.Threading
 
         protected Thread streamThread;
 
+        public int ThreadProcessID;
+
+        public System.Threading.ThreadState ThreadState { get { return _thread.ThreadState; } }
+
         protected BaseThread() 
         { 
             _thread = new Thread(new ThreadStart(this.RunThread));
             twitter = new TwitterAPI(db.GetTwitterKey());
+            ThreadProcessID = _thread.ManagedThreadId;
         }
 
         // Thread methods / properties
