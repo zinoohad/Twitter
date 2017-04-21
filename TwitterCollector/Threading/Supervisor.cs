@@ -108,9 +108,10 @@ namespace TwitterCollector.Threading
                     if (Params.Length != 0)
                         thread.SetInitialParams(Params);    //Send parameters to thread
                     thread.Start();
+                    db.UpsertThread(threadName, subjectID, thread.ThreadProcessID);
                 }
             }
-            else  // Create subject thread pool
+            else  // Create subject thread pool and rub the given thread
             {
                 List<GeneralThreadParams> localThreads = new List<GeneralThreadParams>();
                 localThreads.Add(new GeneralThreadParams(subjectID, thread));
@@ -118,6 +119,7 @@ namespace TwitterCollector.Threading
                 if (Params.Length != 0)
                     thread.SetInitialParams(Params);    //Send parameters to thread
                 thread.Start();
+                db.UpsertThread(threadName, subjectID, thread.ThreadProcessID);
             }
         }
 
@@ -131,6 +133,19 @@ namespace TwitterCollector.Threading
                 }
             }
             Abort();
+        }
+
+        private void CheckStateChangesInThreadsState()
+        {
+            DataTable dt = db.GetTable("ThreadsControl", string.Format("MachineName = '{0}'", Environment.MachineName));
+            if (dt == null || dt.Rows.Count == 0) 
+                return;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+
+            }
+            //TODO: COMPLETE THIS FUNCTION
         }
 
         #endregion

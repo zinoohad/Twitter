@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="Objects\ApiKeys.cs" />
     <Compile Include="Objects\GeneralThreadParams.cs" />
+    <Compile Include="Objects\ImageAnalysisStatus.cs" />
     <Compile Include="Objects\PosNegTweet.cs" />
     <Compile Include="Objects\SubjectO.cs" />
     <Compile Include="Objects\SubjectResultUI.cs" />

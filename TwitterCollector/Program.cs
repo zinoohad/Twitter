@@ -30,12 +30,13 @@ namespace TwitterCollector
             /*----Age Test---*/
 
             /*----Gender Test---*/
-            TweetGender test2 = new TweetGender();
-            test2.Start();
+            //TweetGender test2 = new TweetGender();
+            //test2.Start();
             /*----Gender Test---*/
 
 
-            //ImageAnalysis i = new ImageAnalysis();
+            TwitterCollector.Threading.ImageAnalysis i = new TwitterCollector.Threading.ImageAnalysis();
+            i.Start();
             //var result = i.GetImageAnalysisFreeImagga("http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg");
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");

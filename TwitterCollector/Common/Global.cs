@@ -32,6 +32,8 @@ namespace TwitterCollector.Common
 
         private static CSubjectResult subjectResult;
 
+        private static CSettings settings;
+
         #endregion
 
         #region Global Params
@@ -319,8 +321,6 @@ namespace TwitterCollector.Common
             }
             return subSentenceList.Distinct().ToList();
         }
-
-
 
         #region Age Dictionary Learning
 

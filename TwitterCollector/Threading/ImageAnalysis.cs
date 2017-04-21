@@ -7,11 +7,21 @@ using TopicSentimentAnalysis.Classes;
 using Twitter.Classes;
 using TwitterCollector.Common;
 using MoreLinq;
+using TopicSentimentAnalysis.Interfaces;
+using TwitterCollector.Objects;
+using System.Threading;
 
 namespace TwitterCollector.Threading
 {
-    public class ImageAnalysis : BaseThread
+    public class ImageAnalysis : BaseThread, Update
     {
+
+        private TopicSentimentAnalysis.ImageAnalysis imageAnalysis = new TopicSentimentAnalysis.ImageAnalysis();
+
+        private static object locker = new object();
+
+        private static int threadNumber = 0;
+
         public override void RunThread()
         {
             while (ThreadOn)
@@ -19,9 +29,10 @@ namespace TwitterCollector.Threading
                 try
                 {
                     int topUsersForImageAnalysis = int.Parse(db.GetValueByKey("TopUsersForImageAnalysis", 30).ToString());
+                    int imageAnalysisMultiRequestLimit = int.Parse(db.GetValueByKey("ImageAnalysisMultiRequestLimit", 5).ToString());
                     List<User> users = db.GetUsersToImageAnalysis();
                     FaceDetectObject faceDetect;
-                    TopicSentimentAnalysis.ImageAnalysis imageAnalysis = new TopicSentimentAnalysis.ImageAnalysis();
+                    ImageAnalysisStatus imageStatus;
                     if(users.Count == 0) 
                     {
                         Global.Sleep(60);
@@ -29,31 +40,36 @@ namespace TwitterCollector.Threading
 
                     foreach (User user in users)
                     {
-                        faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(user.ProfileImage);
-                        if (faceDetect.images[0].error != null)
-                        {
-                            //Update the user was check and the image is corrupted.
-                            User updateUser = twitter.GetUserProfile("", user.ID);
-                            db.UpdateUserProfile(updateUser);
-                            faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(updateUser.ProfileImage.Replace("_normal", ""));
-                            if (faceDetect.images[0].error != null)
-                            {
-                                db.BadUrlProfileImage(user.UserPropertiesID);
-                            }
-                            else
-                            {
-                                UpdateUserGenderAndAge(user.UserPropertiesID, faceDetect);
-                            }
+                        imageStatus = new ImageAnalysisStatus() { UserID = user.ID, ImageURL = user.ProfileImage, UserPropertiesID = user.UserPropertiesID };
+                        faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this);
+                        SafeAddThread(imageAnalysisMultiRequestLimit);
+                        new Thread(new ThreadStart(() => imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this)));
+                        //if (faceDetect.images[0].error != null)
+                        //{
+                        //    //Update the user was check and the image is corrupted.
+                        //    User updateUser = twitter.GetUserProfile("", user.ID);
+                        //    updateUser.ProfileImage = updateUser.ProfileImage.Replace("_normal", "");
+                        //    db.UpdateUserProfile(updateUser);
+                        //    faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(updateUser.ProfileImage);
+                        //    if (faceDetect.images[0].error != null)
+                        //    {
+                        //        db.BadUrlProfileImage(user.UserPropertiesID);
+                        //    }
+                        //    else
+                        //    {
+                        //        UpdateUserGenderAndAge(user.UserPropertiesID, faceDetect);
+                        //    }
                             
-                        }
-                        else
-                        {
-                            UpdateUserGenderAndAge(user.UserPropertiesID, faceDetect);
-                        }
+                        //}
+                        //else
+                        //{
+                        //    UpdateUserGenderAndAge(user.UserPropertiesID, faceDetect);
+                        //}
                     }
                 }
                 catch (Exception e)
                 {
+                    Global.Sleep(10);
                     new TwitterException(e);
                 }
             }   
@@ -71,6 +87,12 @@ namespace TwitterCollector.Threading
             }
             else // Need to use faces.classifiers
             {
+                if (classifiers.Count == 0) // Can't get any result for this image
+                {
+                    db.BadUrlProfileImage(userPropertiesID);
+                    return;
+                }
+
                 string[] Men = { "man", "male", "muscle man", "strong man", "young man" };
                 string[] Women = { "woman", "young lady", "female", "womans portrait photo", "woman at work", "makeup", "cosmetic", "old woman", "uplift bra", "womens shorts",
                                      "skirt", "miniskirt", "" };
@@ -90,6 +112,78 @@ namespace TwitterCollector.Threading
                 {
                     db.UpdateUserPropertiesAnalysisByAPI(userPropertiesID, "FEMALE", Women.Length / (Men.Length + Women.Length), 0, 0, 0);
                 }
+            }
+        }
+
+        public void Update(object obj)
+        {
+            ImageAnalysisStatus ias = (ImageAnalysisStatus)obj;
+
+            try
+            {
+                if (ias.FaceDetect.images[0].error != null)
+                {
+                    //Update the user was check and the image is corrupted.
+                    User user = twitter.GetUserProfile("", ias.UserID);
+                    user.ProfileImage = ias.ImageURL = user.ProfileImage.Replace("_normal", "");
+                    db.UpdateUserProfile(user); // Save user changes
+                    ias.FaceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(ias);    // Try to detect the image again
+                    if (ias.FaceDetect.images[0].error != null)
+                    {
+                        db.BadUrlProfileImage(ias.UserPropertiesID);
+                    }
+                    else
+                    {
+                        UpdateUserGenderAndAge(ias.UserPropertiesID, ias.FaceDetect);
+                    }
+
+                }
+                else
+                {
+                    UpdateUserGenderAndAge(ias.UserPropertiesID, ias.FaceDetect);
+                }
+                SafeSubThread();
+            }
+            catch (Exception e)
+            {
+                new TwitterException(e);
+            }
+        }
+
+        public void EndRequest()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SafeAddThread(int threadLimit)
+        {
+            int currentThreadNumber;
+            lock (locker)   // Get current thread number
+            {
+                currentThreadNumber = threadNumber;
+            }
+
+            while (currentThreadNumber >= threadLimit)  // Wait until thread will finish.
+            {
+                Global.Sleep(2);
+                lock (locker)
+                {
+                    currentThreadNumber = threadNumber;
+                }
+            }
+
+            lock (locker)   // Add new thread
+            {
+                threadNumber++;
+            }
+
+        }
+
+        public void SafeSubThread()
+        {
+            lock (locker)
+            {
+                threadNumber--;
             }
         }
     }
