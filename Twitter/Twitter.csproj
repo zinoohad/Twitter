@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Entities.cs" />
+    <Compile Include="Classes\Error.cs" />
     <Compile Include="Classes\Navigators\FriendsNavigator.cs" />
     <Compile Include="Classes\Navigators\RetweetNavigator.cs" />
     <Compile Include="Classes\Navigators\SearchMetadata.cs" />

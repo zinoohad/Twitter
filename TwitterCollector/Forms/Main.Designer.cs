@@ -53,6 +53,7 @@
             this.toolIcon = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
+            this.settingsIcon = new System.Windows.Forms.ToolStripButton();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
@@ -163,7 +164,8 @@
             this.toolStripSeparator2,
             this.toolIcon,
             this.toolStripSeparator3,
-            this.dictionaryIcon});
+            this.dictionaryIcon,
+            this.settingsIcon});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1017, 27);
@@ -236,6 +238,17 @@
             this.dictionaryIcon.Text = "Dictionary";
             this.dictionaryIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // settingsIcon
+            // 
+            this.settingsIcon.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.settingsIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.settingsIcon.Image = ((System.Drawing.Image)(resources.GetObject("settingsIcon.Image")));
+            this.settingsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsIcon.Name = "settingsIcon";
+            this.settingsIcon.Size = new System.Drawing.Size(23, 24);
+            this.settingsIcon.Text = "Settings";
+            this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -280,5 +293,6 @@
         private System.Windows.Forms.Label lastSubject;
         private System.Windows.Forms.ToolStripButton mainIcon;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton settingsIcon;
     }
 }

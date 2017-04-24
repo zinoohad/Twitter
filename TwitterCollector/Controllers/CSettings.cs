@@ -18,6 +18,20 @@ namespace TwitterCollector.Controllers
             form.SetController(this);
         }
 
+        public void AddThreadToViewTable()
+        {
+
+        }
+
+        #region UI Functions
+
+        public void ChangeThreadState(int id, System.Threading.ThreadState threadState)
+        {
+            d
+        }
+
+        #endregion
+
         #region Implement Methods
 
         public override Form GetUI()

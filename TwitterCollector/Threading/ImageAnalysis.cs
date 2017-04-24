@@ -41,9 +41,9 @@ namespace TwitterCollector.Threading
                     foreach (User user in users)
                     {
                         imageStatus = new ImageAnalysisStatus() { UserID = user.ID, ImageURL = user.ProfileImage, UserPropertiesID = user.UserPropertiesID };
-                        faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this);
+                        //faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this);
                         SafeAddThread(imageAnalysisMultiRequestLimit);
-                        new Thread(new ThreadStart(() => imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this)));
+                        new Thread(new ThreadStart(() => GetFaceDetectAndImageAnalysis(imageStatus))).Start();
                         //if (faceDetect.images[0].error != null)
                         //{
                         //    //Update the user was check and the image is corrupted.
@@ -73,6 +73,20 @@ namespace TwitterCollector.Threading
                     new TwitterException(e);
                 }
             }   
+        }
+
+        private void GetFaceDetectAndImageAnalysis(ImageAnalysisStatus imageStatus)
+        {
+            try 
+	        {
+                imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this);
+	        }
+	        catch (Exception e)
+	        {
+                if (!e.Message.Equals("The remote server returned an error: (429) Too Many Requests."))
+                    new TwitterException(e);
+                SafeSubThread();
+	        }
         }
 
         private void UpdateUserGenderAndAge(long userPropertiesID, FaceDetectObject faceDetect)
@@ -118,13 +132,26 @@ namespace TwitterCollector.Threading
         public void Update(object obj)
         {
             ImageAnalysisStatus ias = (ImageAnalysisStatus)obj;
-
+            DBHandler db = Global.DB;
             try
             {
                 if (ias.FaceDetect.images[0].error != null)
                 {
                     //Update the user was check and the image is corrupted.
                     User user = twitter.GetUserProfile("", ias.UserID);
+
+                    if (user.errors != null)
+                    {
+                        new TwitterException(string.Format("While trying to get UserID '{0}', error was return from server: '{1}'", ias.UserID, user.errors[0].message));
+                        if (user.errors.Count(item => item.code == 50) > 0)
+                        {
+                            // User not exists
+                            db.BadUrlProfileImage(ias.UserPropertiesID);
+                        }
+                        SafeSubThread();
+                        return;
+                    }
+
                     user.ProfileImage = ias.ImageURL = user.ProfileImage.Replace("_normal", "");
                     db.UpdateUserProfile(user); // Save user changes
                     ias.FaceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(ias);    // Try to detect the image again
@@ -146,7 +173,9 @@ namespace TwitterCollector.Threading
             }
             catch (Exception e)
             {
-                new TwitterException(e);
+                if (!e.Message.Equals("The remote server returned an error: (429) Too Many Requests."))
+                    new TwitterException(e);
+                SafeSubThread();
             }
         }
 
