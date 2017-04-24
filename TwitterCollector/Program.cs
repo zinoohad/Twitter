@@ -34,9 +34,6 @@ namespace TwitterCollector
             //test2.Start();
             /*----Gender Test---*/
 
-
-            TwitterCollector.Threading.ImageAnalysis i = new TwitterCollector.Threading.ImageAnalysis();
-            i.Start();
             //var result = i.GetImageAnalysisFreeImagga("http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg");
             //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
             //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
@@ -48,10 +45,10 @@ namespace TwitterCollector
             //List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 30);
             //var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
 
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //new CMain();
-            //Application.Run();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            new CMain();
+            Application.Run();
 
 
             //DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));

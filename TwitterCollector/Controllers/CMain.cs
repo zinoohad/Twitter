@@ -19,6 +19,7 @@ namespace TwitterCollector.Controllers
             form.SetController(this);
             LoadSubjectResult();
             Global.main = this;
+            Global.CreateSettingController();
             form.ShowDialog();
         }
 

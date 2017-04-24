@@ -32,6 +32,7 @@
             this.topPanel = new System.Windows.Forms.Panel();
             this.tiltleL = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.startOnStartup = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.supervisiorTS = new JCS.ToggleSwitch();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -64,6 +65,8 @@
             // 
             // topPanel
             // 
+            this.topPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.topPanel.BackColor = System.Drawing.Color.LightSkyBlue;
             this.topPanel.Controls.Add(this.tiltleL);
             this.topPanel.Location = new System.Drawing.Point(0, 28);
@@ -88,6 +91,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
+            this.panel1.Controls.Add(this.startOnStartup);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.supervisiorTS);
             this.panel1.Controls.Add(this.numericUpDown1);
@@ -98,10 +102,23 @@
             this.panel1.Size = new System.Drawing.Size(992, 585);
             this.panel1.TabIndex = 5;
             // 
+            // startOnStartup
+            // 
+            this.startOnStartup.AutoSize = true;
+            this.startOnStartup.Checked = true;
+            this.startOnStartup.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.startOnStartup.Location = new System.Drawing.Point(19, 92);
+            this.startOnStartup.Name = "startOnStartup";
+            this.startOnStartup.Size = new System.Drawing.Size(205, 21);
+            this.startOnStartup.TabIndex = 5;
+            this.startOnStartup.Text = "Start Supervisor On Startup";
+            this.startOnStartup.UseVisualStyleBackColor = true;
+            this.startOnStartup.CheckedChanged += new System.EventHandler(this.startOnStartup_CheckedChanged);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 56);
+            this.label1.Location = new System.Drawing.Point(16, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(120, 17);
             this.label1.TabIndex = 4;
@@ -109,18 +126,18 @@
             // 
             // supervisiorTS
             // 
-            this.supervisiorTS.Checked = true;
-            this.supervisiorTS.Location = new System.Drawing.Point(201, 51);
+            this.supervisiorTS.Location = new System.Drawing.Point(201, 36);
             this.supervisiorTS.Name = "supervisiorTS";
             this.supervisiorTS.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.supervisiorTS.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.supervisiorTS.Size = new System.Drawing.Size(65, 22);
             this.supervisiorTS.Style = JCS.ToggleSwitch.ToggleSwitchStyle.IOS5;
             this.supervisiorTS.TabIndex = 3;
+            this.supervisiorTS.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.supervisiorTS_CheckedChanged);
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(201, 79);
+            this.numericUpDown1.Location = new System.Drawing.Point(201, 64);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             60,
             0,
@@ -143,7 +160,7 @@
             // supervisiorIntervalsL
             // 
             this.supervisiorIntervalsL.AutoSize = true;
-            this.supervisiorIntervalsL.Location = new System.Drawing.Point(16, 81);
+            this.supervisiorIntervalsL.Location = new System.Drawing.Point(16, 66);
             this.supervisiorIntervalsL.Name = "supervisiorIntervalsL";
             this.supervisiorIntervalsL.Size = new System.Drawing.Size(176, 17);
             this.supervisiorIntervalsL.TabIndex = 1;
@@ -151,6 +168,11 @@
             // 
             // threadDGV
             // 
+            this.threadDGV.AllowUserToAddRows = false;
+            this.threadDGV.AllowUserToDeleteRows = false;
+            this.threadDGV.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.threadDGV.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.threadDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.threadDGV.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -161,11 +183,14 @@
             this.ThreadDesirableState,
             this.ThreadProcessID,
             this.MachineName});
+            this.threadDGV.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.threadDGV.Location = new System.Drawing.Point(3, 123);
             this.threadDGV.Name = "threadDGV";
             this.threadDGV.RowTemplate.Height = 24;
             this.threadDGV.Size = new System.Drawing.Size(986, 459);
             this.threadDGV.TabIndex = 0;
+            this.threadDGV.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvThreads_CurrentCellDirtyStateChanged);
+            this.threadDGV.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.threadDGV_DataError);
             // 
             // ID
             // 
@@ -196,6 +221,9 @@
             // ThreadDesirableState
             // 
             this.ThreadDesirableState.HeaderText = "Thread Desirable State";
+            this.ThreadDesirableState.Items.AddRange(new object[] {
+            "Start",
+            "Stop"});
             this.ThreadDesirableState.Name = "ThreadDesirableState";
             // 
             // ThreadProcessID
@@ -349,12 +377,12 @@
         private System.Windows.Forms.ToolStripButton toolIcon;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton dictionaryIcon;
-        private System.Windows.Forms.DataGridView threadDGV;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label supervisiorIntervalsL;
         private System.Windows.Forms.Label label1;
         private JCS.ToggleSwitch supervisiorTS;
         private System.Windows.Forms.ToolStripButton settingsIcon;
+        private System.Windows.Forms.CheckBox startOnStartup;
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
         private System.Windows.Forms.DataGridViewTextBoxColumn ThreadName;
         private System.Windows.Forms.DataGridViewTextBoxColumn SubjectName;
@@ -362,5 +390,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn ThreadDesirableState;
         private System.Windows.Forms.DataGridViewTextBoxColumn ThreadProcessID;
         private System.Windows.Forms.DataGridViewTextBoxColumn MachineName;
+        private System.Windows.Forms.DataGridView threadDGV;
     }
 }
