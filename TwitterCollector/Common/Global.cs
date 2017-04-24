@@ -32,7 +32,7 @@ namespace TwitterCollector.Common
 
         private static CSubjectResult subjectResult;
 
-        private static CSettings settings;
+        public static CSettings settings;
 
         #endregion
 
@@ -181,6 +181,16 @@ namespace TwitterCollector.Common
             //sender.GetUI().Hide();
         }
 
+        public static void CreateSettingController()
+        {
+            if (settings != null) 
+                return;
+            else
+            {
+                settings = new CSettings();    //Create Controller
+            }            
+        }
+
         public static void ExitApplication(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -192,6 +202,7 @@ namespace TwitterCollector.Common
                 }
                 else
                 {
+                    settings.AbortSupervisor();
                     Application.Exit();
                 }
                 

@@ -21,7 +21,7 @@ namespace TwitterCollector.Threading
 
         protected Thread streamThread;
 
-        public int ThreadProcessID;
+        public int ThreadProcessID { get { return _thread.ManagedThreadId; } }
 
         public System.Threading.ThreadState ThreadState { get { return _thread.ThreadState; } }
 
@@ -29,11 +29,10 @@ namespace TwitterCollector.Threading
         { 
             _thread = new Thread(new ThreadStart(this.RunThread));
             twitter = new TwitterAPI(db.GetTwitterKey());
-            ThreadProcessID = _thread.ManagedThreadId;
         }
 
         // Thread methods / properties
-        public void Start() { ThreadOn = true;  _thread.Start(); }
+        public void Start() { ThreadOn = true; _thread = new Thread(new ThreadStart(this.RunThread)); _thread.Start(); }
 
         public void Join() { _thread.Join(); }
 

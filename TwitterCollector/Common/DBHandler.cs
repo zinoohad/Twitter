@@ -77,7 +77,7 @@ namespace TwitterCollector.Common
             }
             else
             {
-                query = string.Format("INSERT INTO Settings VALUES ('{0}','{1}')", key, value);
+                query = string.Format("INSERT INTO Settings VALUES ('{0}','{1}',NULL)", key, value);
                 try
                 {
                     return db.Insert(query);
@@ -274,11 +274,13 @@ namespace TwitterCollector.Common
 
         }
 
-        public DataTable GetTable(string tableName, string where = null)
+        public DataTable GetTable(string tableName, string where = null, string orderBy = null)
         {
             string sqlQuery = string.Format("SELECT * FROM {0}", tableName);
             if (where != null)
                 sqlQuery += string.Format(" WHERE {0}", where);
+            if (orderBy != null)
+                sqlQuery += string.Format(" ORDER BY {0}", orderBy);
             return Select(sqlQuery);
         }
 
@@ -858,6 +860,9 @@ namespace TwitterCollector.Common
                 if (subjectID != 0)
                 {
                     subjectID = (int)Delete(string.Format("DELETE FROM Subject WHERE ID = {0}", subjectID), true);
+
+                    // Remove subject threads
+                    Delete("DELETE FROM ThreadsControl WHERE SubjectID = {0}", subjectID);
                 }
             }
             return subjectID;
@@ -1218,6 +1223,24 @@ namespace TwitterCollector.Common
        
         #endregion
 
+        #region Settings Form
+
+        public void UpdateThreadDesirableState(int processID, string threadState)
+        {
+            Update("UPDATE ThreadsControl SET ThreadDesirableState = '{0}' WHERE ThreadProcessID = {1} AND MachineName = '{2}'", threadState, processID, Environment.MachineName);
+        }
+
+        #endregion
+
+        #region Supervisor
+
+        public void ChangeThreadState(int processID, SupervisorThreadState threadState)
+        {
+            Update("UPDATE ThreadsControl SET ThreadState = '{0}' WHERE ThreadProcessID = {1} AND MachineName = '{2}'", threadState, processID, Environment.MachineName);
+        }
+
+        #endregion
+
         #endregion
 
         #region Upsert
@@ -1244,20 +1267,54 @@ namespace TwitterCollector.Common
 
         #region Supervisor
 
-        public void UpsertThread(string threadName, int subjectID, int processID, ThreadState threadState = ThreadState.Running, ThreadState threadDesirableState = ThreadState.Running)
+        public void UpsertThread(string threadName, int subjectID, int processID, SupervisorThreadState threadState = SupervisorThreadState.Stop, SupervisorThreadState threadDesirableState = SupervisorThreadState.Stop)
         {
             DataTable dt = Select("SELECT * FROM ThreadsControl WHERE ThreadName = '{0}' AND SubjectID = {1} AND MachineName = '{2}'", threadName, subjectID, Environment.MachineName);
             if (dt == null || dt.Rows.Count == 0)
             {
                 // Insert new record
-                Insert("INSERT INTO ThreadsControl (ThreadName,SubjectID,ThreadState,ThreadDesirableStatus,ThreadProcessID,MachineName) "
+                Insert("INSERT INTO ThreadsControl (ThreadName,SubjectID,ThreadState,ThreadDesirableState,ThreadProcessID,MachineName) "
                     + "VALUES ('{0}',{1},'{2}','{3}',{4},'{5}')", threadName, subjectID, threadState.ToString(), threadDesirableState.ToString(), processID, Environment.MachineName);
             }
             else
             {
                 // Update exists record
                 int recordID = int.Parse(dt.Rows[0]["ID"].ToString());
-                Update("UPDATE ThreadsControl SET ThreadState = '{0}', ThreadDesirableStatus = '{1}',ThreadProcessID =  = {2} WHERE ID = {3}", threadState.ToString(), threadDesirableState.ToString(), processID, recordID);
+                Update("UPDATE ThreadsControl SET ThreadState = '{0}', ThreadDesirableState = '{1}',ThreadProcessID = {2} WHERE ID = {3}", threadState.ToString(), threadDesirableState.ToString(), processID, recordID);
+            }
+        }
+
+        public SupervisorThreadState UpsertThreadWithLastStateReturn(string threadName, int subjectID, int processID, SupervisorThreadState threadState = SupervisorThreadState.Stop, SupervisorThreadState threadDesirableState = SupervisorThreadState.Stop)
+        {
+            DataTable dt = Select("SELECT * FROM ThreadsControl WHERE ThreadName = '{0}' AND SubjectID = {1} AND MachineName = '{2}'", threadName, subjectID, Environment.MachineName);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                // Insert new record
+                Insert("INSERT INTO ThreadsControl (ThreadName,SubjectID,ThreadState,ThreadDesirableState,ThreadProcessID,MachineName) "
+                    + "VALUES ('{0}',{1},'{2}','{3}',{4},'{5}')", threadName, subjectID, threadState.ToString(), threadDesirableState.ToString(), processID, Environment.MachineName);
+            }
+            else
+            {
+                // Update exists record
+                int recordID = int.Parse(dt.Rows[0]["ID"].ToString());
+                threadDesirableState = dt.Rows[0]["ThreadDesirableState"].ToString().Equals(SupervisorThreadState.Start.ToString()) ? SupervisorThreadState.Running : SupervisorThreadState.Stop;
+                Update("UPDATE ThreadsControl SET ThreadProcessID = {0} WHERE ID = {1}", processID, recordID);
+            }
+            return threadDesirableState;
+        }
+
+        public void UpdateThreadProcessID(string threadName, int subjectID, int processID)
+        {
+            DataTable dt = Select("SELECT * FROM ThreadsControl WHERE ThreadName = '{0}' AND SubjectID = {1} AND MachineName = '{2}'", threadName, subjectID, Environment.MachineName);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                
+            }
+            else
+            {
+                // Update exists record
+                int recordID = int.Parse(dt.Rows[0]["ID"].ToString());                
+                Update("UPDATE ThreadsControl SET ThreadProcessID = {0} WHERE ID = {1}", processID, recordID);
             }
         }
 

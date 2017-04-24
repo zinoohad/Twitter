@@ -17,10 +17,18 @@ namespace TwitterCollector.Common
         ,TWEET_AGE
         ,TWEET_GENDER
     }
+
     public enum Gender
     {
         MALE = 1, 
         FEMALE = 2,
         Unknown = 3
+    }
+
+    public enum SupervisorThreadState
+    {
+        Running        
+        ,Stop
+        ,Start
     }
 }                                                                                                                                                                                                                                                                                                                                                                                     
