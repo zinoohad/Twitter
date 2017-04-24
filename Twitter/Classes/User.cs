@@ -67,6 +67,8 @@ namespace Twitter.Classes
         public string withheld_in_countries { get; set; }
         public string withheld_scope { get; set; }
 
+        public IList<Error> errors { get; set; }
+
         #region External Params
 
         public int AccountAge { get; set; }

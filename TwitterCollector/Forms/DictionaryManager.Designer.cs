@@ -57,15 +57,16 @@
             this.topPanel = new System.Windows.Forms.Panel();
             this.tiltleL = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mainIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.subjectIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.statisticsIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolIcon = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
+            this.settingsIcon = new System.Windows.Forms.ToolStripButton();
             this.panel1.SuspendLayout();
             this.ageGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ageUD)).BeginInit();
@@ -387,32 +388,13 @@
             this.toolStripSeparator2,
             this.toolIcon,
             this.toolStripSeparator3,
-            this.dictionaryIcon});
+            this.dictionaryIcon,
+            this.settingsIcon});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1017, 27);
             this.toolStrip1.TabIndex = 6;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
             // 
             // mainIcon
             // 
@@ -424,6 +406,11 @@
             this.mainIcon.Text = "toolStripButton1";
             this.mainIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
+            // 
             // subjectIcon
             // 
             this.subjectIcon.Image = global::TwitterCollector.Properties.Resources.blue_pencil;
@@ -432,6 +419,11 @@
             this.subjectIcon.Size = new System.Drawing.Size(78, 24);
             this.subjectIcon.Text = "Subject";
             this.subjectIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
             // 
             // statisticsIcon
             // 
@@ -442,6 +434,11 @@
             this.statisticsIcon.Text = "Statistics";
             this.statisticsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
             // toolIcon
             // 
             this.toolIcon.Image = global::TwitterCollector.Properties.Resources.twitter;
@@ -451,6 +448,11 @@
             this.toolIcon.Text = "Twitter Search Tool";
             this.toolIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
+            // 
             // dictionaryIcon
             // 
             this.dictionaryIcon.Image = global::TwitterCollector.Properties.Resources.dictionary;
@@ -459,6 +461,17 @@
             this.dictionaryIcon.Size = new System.Drawing.Size(97, 24);
             this.dictionaryIcon.Text = "Dictionary";
             this.dictionaryIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // settingsIcon
+            // 
+            this.settingsIcon.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.settingsIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.settingsIcon.Image = ((System.Drawing.Image)(resources.GetObject("settingsIcon.Image")));
+            this.settingsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsIcon.Name = "settingsIcon";
+            this.settingsIcon.Size = new System.Drawing.Size(23, 24);
+            this.settingsIcon.Text = "Settings";
+            this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
             // DictionaryManager
             // 
@@ -535,5 +548,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn posNeg;
         private System.Windows.Forms.DataGridViewTextBoxColumn age;
         private System.Windows.Forms.Button saveB;
+        private System.Windows.Forms.ToolStripButton settingsIcon;
     }
 }

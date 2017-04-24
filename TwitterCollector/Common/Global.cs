@@ -38,8 +38,8 @@ namespace TwitterCollector.Common
 
         #region Global Params
 
-       // public static DBHandler DB { get { return new DBHandler(); } }
-        public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.43.126", "1433", "Avi", "1234", "Twitter")); } }
+        public static DBHandler DB { get { return new DBHandler(); } }
+        //public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.43.126", "1433", "Avi", "1234", "Twitter")); } }
         //new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.12", "1433", "Avi", "1234", "Twitter")
 
 
@@ -152,6 +152,23 @@ namespace TwitterCollector.Common
                     else
                     {
                         form = dictionaryManager.GetUI();
+                        form.Location = sender.GetUI().Location;
+                        form.Show();
+                        sender.GetUI().Hide();
+                    }
+                    break;
+                case "settingsIcon":
+                    if (settings != null && sender == settings) return;
+                    if (settings == null)
+                    {
+                        settings = new CSettings();    //Create Controller
+                        settings.GetUI().Location = sender.GetUI().Location;
+                        sender.GetUI().Hide();
+                        settings.GetUI().ShowDialog();
+                    }
+                    else
+                    {
+                        form = settings.GetUI();
                         form.Location = sender.GetUI().Location;
                         form.Show();
                         sender.GetUI().Hide();

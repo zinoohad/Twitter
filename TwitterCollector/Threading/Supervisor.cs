@@ -61,14 +61,14 @@ namespace TwitterCollector.Threading
                     try
                     {
                         if (Global.IsHardDriveSpaceLow)
-                            AbortAllThreads();
+                            this.Abort();
                     }
                     catch
                     {
-                        AbortAllThreads();
+                        this.Abort();
                     }
 
-                    while (true) System.Threading.Thread.Sleep(1000000);    //TODO: Remove this line
+                    while (true) Global.Sleep(1000);    //TODO: Remove this line
                 }
                 catch (Exception e)
                 {
@@ -132,7 +132,6 @@ namespace TwitterCollector.Threading
                     threadParam.Thread.Abort();
                 }
             }
-            Abort();
         }
 
         private void CheckStateChangesInThreadsState()
@@ -153,7 +152,7 @@ namespace TwitterCollector.Threading
         #region Thread Functions
         public override void Abort()
         {
-            //TODO: STOP ALL THREADS
+            AbortAllThreads();
             base.Abort();
         }
         #endregion

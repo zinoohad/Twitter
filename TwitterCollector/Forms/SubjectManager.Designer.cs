@@ -62,6 +62,7 @@
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.languagesTableAdapter = new TwitterCollector.TwitterDataSetTableAdapters.LanguagesTableAdapter();
+            this.settingsIcon = new System.Windows.Forms.ToolStripButton();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKeyword)).BeginInit();
@@ -299,7 +300,8 @@
             this.toolStripSeparator2,
             this.toolIcon,
             this.toolStripSeparator3,
-            this.dictionaryIcon});
+            this.dictionaryIcon,
+            this.settingsIcon});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1017, 27);
@@ -396,6 +398,17 @@
             // 
             this.languagesTableAdapter.ClearBeforeFill = true;
             // 
+            // settingsIcon
+            // 
+            this.settingsIcon.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.settingsIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.settingsIcon.Image = ((System.Drawing.Image)(resources.GetObject("settingsIcon.Image")));
+            this.settingsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsIcon.Name = "settingsIcon";
+            this.settingsIcon.Size = new System.Drawing.Size(23, 24);
+            this.settingsIcon.Text = "Settings";
+            this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
             // SubjectManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -459,6 +472,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn subecjtName;
         private System.Windows.Forms.DataGridViewComboBoxColumn lang;
         private System.Windows.Forms.DataGridViewImageColumn delete;
+        private System.Windows.Forms.ToolStripButton settingsIcon;
 
     }
 }

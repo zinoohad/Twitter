@@ -142,13 +142,16 @@ namespace TwitterCollector.Forms
             }
         }
         #endregion
+
         #region Interface Implement
         public void SetController(BaseController controller)
         {
             this.controller = (CSubjectManager)controller;
         }
         #endregion
+
         #region Functions
+
         public void LoadSubjects(List<SubjectO> subjects)
         {
             foreach (SubjectO s in subjects)
@@ -156,12 +159,14 @@ namespace TwitterCollector.Forms
                 AddSubjectToGrid(s.Name, s.LanguageName);
             }
         }
+
         public void LoadKeywords(List<KeywordO> keywords)
         {
             dgvKeyword.Rows.Clear();
             foreach (KeywordO k in keywords)
                 AddKeywordToGrid(k.Name, k.LanguageName);
         }
+
         public void AddSubjectToGrid(string subject, string lang = null)
         {
             int row;
@@ -170,6 +175,7 @@ namespace TwitterCollector.Forms
             else
                 row = dgvSubject.Rows.Add(subject, "English");
         }
+
         public void AddKeywordToGrid(string keyword, string lang = null)
         {
             if (lang != null)
@@ -177,14 +183,17 @@ namespace TwitterCollector.Forms
             else
                 dgvKeyword.Rows.Add(keyword, "English");
         }
+
         public void RemoveSubjectFromGrid(int rowNumber)
         {
             dgvSubject.Rows.RemoveAt(rowNumber);
         }
+
         public void RemoveKeywordFromGrid(int rowNumber)
         {
             dgvKeyword.Rows.RemoveAt(rowNumber);
         }
+
         #endregion
 
         
