@@ -66,7 +66,7 @@ namespace DataBaseConnections
 
         private void CloseConnection()
         {
-            _DBConnection.CloseConnection();
+            //_DBConnection.CloseConnection();
         }
 
         private void OpenConnection()
@@ -78,7 +78,15 @@ namespace DataBaseConnections
         {
             DataTable dt;
             OpenConnection();
-            dt = _DBConnection.Select(sqlQuery);
+            try
+            {
+                dt = _DBConnection.Select(sqlQuery);
+            }
+            catch (Exception e)
+            {
+                CloseConnection();
+                throw e;
+            }
             CloseConnection();
             return dt;
         }
@@ -87,7 +95,15 @@ namespace DataBaseConnections
         {
             long recordNum;
             OpenConnection();
-            recordNum = _DBConnection.Insert(sqlQuery, returnInsertedID, columnName);
+            try
+            {
+                recordNum = _DBConnection.Insert(sqlQuery, returnInsertedID, columnName);
+            }
+            catch (Exception e)
+            {
+                CloseConnection();
+                throw e;
+            }
             CloseConnection();
             return recordNum;
         }
@@ -95,15 +111,31 @@ namespace DataBaseConnections
         {
             long recordNum;
             OpenConnection();
-            recordNum = _DBConnection.Update(sqlQuery, returnUpdatedID, columnName);
+            try
+            {
+                recordNum = _DBConnection.Update(sqlQuery, returnUpdatedID, columnName);
+            }
+            catch (Exception e)
+            {
+                CloseConnection();
+                throw e;
+            }
             CloseConnection();
             return recordNum;
         }
         public long Delete(string sqlQuery, bool returnDeletedID = false, string columnName = "ID")
         {
             long recordNum;
-            OpenConnection();
-            recordNum = _DBConnection.Delete(sqlQuery, returnDeletedID, columnName);
+            OpenConnection();            
+            try
+            {
+                recordNum = _DBConnection.Delete(sqlQuery, returnDeletedID, columnName);
+            }
+            catch (Exception e)
+            {
+                CloseConnection();
+                throw e;
+            }
             CloseConnection();
             return recordNum;
         }
@@ -112,7 +144,15 @@ namespace DataBaseConnections
         {
             long recordNum;
             OpenConnection();
-            recordNum = _DBConnection.ExecuteNonQuery(sqlQuery);
+            try
+            {
+                recordNum = _DBConnection.ExecuteNonQuery(sqlQuery);
+            }
+            catch (Exception e)
+            {
+                CloseConnection();
+                throw e;
+            }
             CloseConnection();
             return recordNum;
         }

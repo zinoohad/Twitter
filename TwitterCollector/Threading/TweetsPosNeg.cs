@@ -34,6 +34,8 @@ namespace TwitterCollector.Threading
 
         private List<Tweet> tweets;
 
+        private long _currentUserID = -1;
+
         #endregion
 
         public override void RunThread()
@@ -42,32 +44,95 @@ namespace TwitterCollector.Threading
             {
                 try
                 {
-                    tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
-
-                    if (tweets.Count == 0)
+                    // Get tweets for user
+                    List<long> userIDs = db.GetUsersForPosNegAnalysis(true);    // Get random users to check.
+                    if (userIDs.Count > 0)
                     {
-                        Global.Sleep(60);
+                        foreach (long userID in userIDs)
+                        {
+                            _currentUserID = userID;
+                            tweets = db.GetTweetsByUserID(userID);
+                            foreach (Tweet t in tweets)
+                            {
+                                AnalyzeTweet(t);
+                            }
+                            db.AnalyzeUser(userID);    //Set user pos neg to current subject into UserProperties Table.
+                            db.UnlockUser(userID);
+                            db.SetSingleValue("Users", "AlreadyChecked", userID, 1);
+                        }
                     }
                     else
                     {
-                        foreach (Tweet t in tweets)
-                        {
-                            posNegTweet.Clear();    // Clear the positive and negative object
-                            posNegTweet.ID = t.id_str;
-                            FindEmoticons(t.Text);   // Find the emoticons in the text
-                            string textWithoutPunctuation = Global.GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
-                            FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
-                            posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
-                            db.SaveTweetPosNegRank(posNegTweet);
+                        // Get random tweets
+                        tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
 
+                        if (tweets.Count == 0)
+                        {
+                            Global.Sleep(60);
+                        }
+                        else
+                        {
+                            foreach (Tweet t in tweets)
+                            {
+                                AnalyzeTweet(t);
+                            }
                         }
                     }
                 }
                 catch (Exception e)
                 {
+                    if (_currentUserID != -1)
+                    {
+                        db.UnlockUser(_currentUserID);
+                    }
                     new TwitterException(e);
                 }
             }   
+        }
+
+        //public override void RunThread()
+        //{
+        //    while (ThreadOn)
+        //    {
+        //        try
+        //        {
+        //            tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
+
+        //            if (tweets.Count == 0)
+        //            {
+        //                Global.Sleep(60);
+        //            }
+        //            else
+        //            {
+        //                foreach (Tweet t in tweets)
+        //                {
+        //                    posNegTweet.Clear();    // Clear the positive and negative object
+        //                    posNegTweet.ID = t.id_str;
+        //                    FindEmoticons(t.Text);   // Find the emoticons in the text
+        //                    string textWithoutPunctuation = Global.GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
+        //                    FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
+        //                    posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
+        //                    db.SaveTweetPosNegRank(posNegTweet);
+
+        //                }
+        //            }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            new TwitterException(e);
+        //        }
+        //    }
+        //}
+
+        private void AnalyzeTweet(Tweet tweet)
+        {
+            posNegTweet.Clear();    // Clear the positive and negative object
+            posNegTweet.ID = tweet.id_str;
+            FindEmoticons(tweet.Text);   // Find the emoticons in the text
+            string textWithoutPunctuation = Global.GetStringWithoutPunctuation(tweet.Text);    // Remove punctuation from the text
+            FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
+            posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
+            db.SaveTweetPosNegRank(posNegTweet);
         }
 
         /// <summary>

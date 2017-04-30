@@ -33,6 +33,7 @@ namespace TwitterCollector.Controllers
             {
                 form.SupervisorTS_State(false);
             }
+            form.SetSupervisorIntervalsValue(int.Parse(db.GetValueByKey("SupervisorIntervals",30).ToString()));
         }
 
         public void AddThreadToViewTable()
@@ -61,6 +62,11 @@ namespace TwitterCollector.Controllers
                 supervisor.Start();
             else if (!state && supervisor.IsAlive)
                 supervisor.Abort();
+        }
+
+        public void ChangeSupervisorIntervals(decimal value)
+        {
+            db.SetValueByKey("SupervisorIntervals", (int)value);
         }
 
         #endregion

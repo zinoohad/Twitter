@@ -17,8 +17,8 @@ namespace DataBaseConnections.DataBaseTypes
             string ConnectionString;
             if(!onLocalHost)
                 ConnectionString = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}", serverAddress, dataBase, userName, password);
-            else 
-                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=SSPI", serverAddress, dataBase);
+            else
+                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=SSPI;MultipleActiveResultSets=true", serverAddress, dataBase);
             connection = new SqlConnection(ConnectionString);
 
         }
