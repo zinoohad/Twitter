@@ -27,7 +27,8 @@ namespace TwitterCollector.Threading
                 try
                 {
                     //TODO: Check thread statuses
-                    Global.Sleep(30);
+                    int supervisorIntervals = int.Parse(db.GetValueByKey("SupervisorIntervals", 30).ToString());
+                    Global.Sleep(supervisorIntervals);
 
                     CheckStateChangesInThreadsState();
 
@@ -76,6 +77,12 @@ namespace TwitterCollector.Threading
 
             // Threads that common to all subjects
 
+            // Start Tweet Age analysis thread
+            AddThread(0, new TweetAge());
+
+            // Start Tweet Gender analysis thread.
+            AddThread(0, new TweetGender());
+
             // Start User TweetsPosNeg thread
             AddThread(0, new TweetsPosNeg());
 
@@ -103,11 +110,6 @@ namespace TwitterCollector.Threading
                         if (Params.Length != 0)
                             tmpThread[0].Thread.SetInitialParams(Params); //Send parameters to thread
                         tmpThread[0].SetBaseThread(thread); // Save thread
-                        //if (db.UpsertThreadWithLastStateReturn(threadName, subjectID, thread.ThreadProcessID) == SupervisorThreadState.Running)
-                        //{
-                        //    thread.Start();
-                        //    db.UpdateThreadProcessID(threadName, subjectID, thread.ThreadProcessID);
-                        //}
                     }
                     // The thread already exists.
                     // TODO: Check thread status and update database...
@@ -118,11 +120,6 @@ namespace TwitterCollector.Threading
                     subjectThreads[subjectID].Add(new GeneralThreadParams(subjectID,thread));  // Create the thread for this subject and run it.
                     if (Params.Length != 0)
                         thread.SetInitialParams(Params);    //Send parameters to thread
-                    //if(db.UpsertThreadWithLastStateReturn(threadName, subjectID, thread.ThreadProcessID) == SupervisorThreadState.Running)
-                    //{
-                    //    thread.Start();
-                    //    db.UpdateThreadProcessID(threadName, subjectID, thread.ThreadProcessID);
-                    //}
                 }
             }
             else  // Create subject thread pool and run the given thread
@@ -132,16 +129,12 @@ namespace TwitterCollector.Threading
                 subjectThreads.Add(subjectID, localThreads); //Add the current thread to the new pool
                 if (Params.Length != 0)
                     thread.SetInitialParams(Params);    //Send parameters to thread
-                //if (db.UpsertThreadWithLastStateReturn(threadName, subjectID, thread.ThreadProcessID) == SupervisorThreadState.Running)
-                //{
-                //    thread.Start();
-                //    db.UpdateThreadProcessID(threadName, subjectID, thread.ThreadProcessID);
-                //}
             }
             if (db.UpsertThreadWithLastStateReturn(threadName, subjectID, thread.ThreadProcessID) == SupervisorThreadState.Running)
             {
                 thread.Start();
                 db.UpdateThreadProcessID(threadName, subjectID, thread.ThreadProcessID);
+                db.ChangeThreadState(thread.ThreadProcessID, SupervisorThreadState.Start);
                 //Global.settings.UpdateProcessID(threadName, subjectID, thread.ThreadProcessID);
             }
         }
@@ -180,6 +173,11 @@ namespace TwitterCollector.Threading
                     if (!drs[0]["ThreadProcessID"].ToString().Equals(threadID.ToString()))
                         db.UpdateThreadProcessID(drs[0]["ThreadName"].ToString(), subjectID, threadID);
 
+                    // The current thread state is the same as the user defirable state.
+                    if (drs[0]["ThreadDesirableState"].ToString().Equals(drs[0]["ThreadState"].ToString()))
+                        continue;
+
+                    // Check if neet to start the thread
                     if (drs[0]["ThreadDesirableState"].ToString().Equals("Start") && gtp.Thread.ThreadState != System.Threading.ThreadState.Running)
                     {
                         // Start the thread

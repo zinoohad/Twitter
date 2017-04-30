@@ -44,9 +44,6 @@
             this.addKeywordTB = new System.Windows.Forms.TextBox();
             this.addSubjectB = new System.Windows.Forms.Button();
             this.dgvSubject = new System.Windows.Forms.DataGridView();
-            this.subecjtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lang = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.delete = new System.Windows.Forms.DataGridViewImageColumn();
             this.addSubjectL = new System.Windows.Forms.Label();
             this.addSubjectTB = new System.Windows.Forms.TextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -59,10 +56,13 @@
             this.toolIcon = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
+            this.settingsIcon = new System.Windows.Forms.ToolStripButton();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.languagesTableAdapter = new TwitterCollector.TwitterDataSetTableAdapters.LanguagesTableAdapter();
-            this.settingsIcon = new System.Windows.Forms.ToolStripButton();
+            this.subecjtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lang = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.delete = new System.Windows.Forms.DataGridViewImageColumn();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKeyword)).BeginInit();
@@ -240,36 +240,6 @@
             this.dgvSubject.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvSubject_CurrentCellDirtyStateChanged);
             this.dgvSubject.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvSubject_DataError);
             // 
-            // subecjtName
-            // 
-            this.subecjtName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.subecjtName.HeaderText = "Subject Name";
-            this.subecjtName.Name = "subecjtName";
-            // 
-            // lang
-            // 
-            this.lang.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.lang.DataSource = this.languagesBindingSource;
-            this.lang.DisplayMember = "NAME";
-            this.lang.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.lang.HeaderText = "Language";
-            this.lang.Name = "lang";
-            this.lang.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.lang.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.lang.ValueMember = "NAME";
-            this.lang.Width = 97;
-            // 
-            // delete
-            // 
-            this.delete.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.delete.HeaderText = "";
-            this.delete.Image = global::TwitterCollector.Properties.Resources.X;
-            this.delete.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.delete.Name = "delete";
-            this.delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.delete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.delete.Width = 19;
-            // 
             // addSubjectL
             // 
             this.addSubjectL.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -374,6 +344,17 @@
             this.dictionaryIcon.Text = "Dictionary";
             this.dictionaryIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
+            // settingsIcon
+            // 
+            this.settingsIcon.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.settingsIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.settingsIcon.Image = ((System.Drawing.Image)(resources.GetObject("settingsIcon.Image")));
+            this.settingsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsIcon.Name = "settingsIcon";
+            this.settingsIcon.Size = new System.Drawing.Size(23, 24);
+            this.settingsIcon.Text = "Settings";
+            this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
             // dataGridViewImageColumn1
             // 
             this.dataGridViewImageColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -398,16 +379,36 @@
             // 
             this.languagesTableAdapter.ClearBeforeFill = true;
             // 
-            // settingsIcon
+            // subecjtName
             // 
-            this.settingsIcon.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.settingsIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.settingsIcon.Image = ((System.Drawing.Image)(resources.GetObject("settingsIcon.Image")));
-            this.settingsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.settingsIcon.Name = "settingsIcon";
-            this.settingsIcon.Size = new System.Drawing.Size(23, 24);
-            this.settingsIcon.Text = "Settings";
-            this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            this.subecjtName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.subecjtName.HeaderText = "Subject Name";
+            this.subecjtName.Name = "subecjtName";
+            this.subecjtName.ReadOnly = true;
+            // 
+            // lang
+            // 
+            this.lang.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.lang.DataSource = this.languagesBindingSource;
+            this.lang.DisplayMember = "NAME";
+            this.lang.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.lang.HeaderText = "Language";
+            this.lang.Name = "lang";
+            this.lang.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.lang.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.lang.ValueMember = "NAME";
+            this.lang.Width = 97;
+            // 
+            // delete
+            // 
+            this.delete.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.delete.HeaderText = "";
+            this.delete.Image = global::TwitterCollector.Properties.Resources.X;
+            this.delete.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.delete.Name = "delete";
+            this.delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.delete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.delete.Width = 19;
             // 
             // SubjectManager
             // 
@@ -469,10 +470,10 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn langK;
         private System.Windows.Forms.DataGridViewImageColumn deleteKey;
         public System.Windows.Forms.BindingSource languagesBindingSource;
+        private System.Windows.Forms.ToolStripButton settingsIcon;
         private System.Windows.Forms.DataGridViewTextBoxColumn subecjtName;
         private System.Windows.Forms.DataGridViewComboBoxColumn lang;
         private System.Windows.Forms.DataGridViewImageColumn delete;
-        private System.Windows.Forms.ToolStripButton settingsIcon;
 
     }
 }

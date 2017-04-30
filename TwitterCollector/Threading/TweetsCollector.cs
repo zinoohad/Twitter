@@ -150,7 +150,7 @@ namespace TwitterCollector.Threading
             List<int> keyword = new List<int>();
             foreach (KeywordO key in keywords)
             {
-                if (tweet.Text.Contains(key.Name))
+                if (tweet.Text.ToLower().Contains(key.Name.ToLower()))
                 {
                     keyword.Add(key.ID);
                 }
