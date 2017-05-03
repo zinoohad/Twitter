@@ -33,14 +33,17 @@ namespace TwitterCollector.Threading
                     CheckStateChangesInThreadsState();
 
                     // Abort all threads if the disk space low.
-                    try
+                    if (db.GetValueByKey("DataBaseMachineName", Environment.MachineName).ToString().Equals(Environment.MachineName))
                     {
-                        if (Global.IsHardDriveSpaceLow)
+                        try
+                        {
+                            if (Global.IsHardDriveSpaceLow)
+                                this.Abort();
+                        }
+                        catch
+                        {
                             this.Abort();
-                    }
-                    catch
-                    {
-                        this.Abort();
+                        }
                     }
                 }
                 catch (Exception e)
