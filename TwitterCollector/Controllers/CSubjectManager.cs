@@ -34,7 +34,7 @@ namespace TwitterCollector.Controllers
             else
             {
                 SubjectO s;
-                if (subjectsList.Where(sn => sn.Name.Equals(subject)).ToList().Count > 0) return;    // The subject already exists
+                if (subjectsList.Where(sn => sn.Name.ToLower().Equals(subject.ToLower())).ToList().Count > 0) return;    // The subject already exists
                 int subjectID = db.AddRemoveSubject(Common.Action.ADD, 0, subject); //Save subject in DB
                 subjectsList.Add(s = new SubjectO(subjectID, subject));   //Save subject in global param
                 int keywordID = db.AddRemoveKeyword(Common.Action.ADD, subjectID, 0, subject);  //Save keyword in DB
@@ -57,7 +57,7 @@ namespace TwitterCollector.Controllers
             }
             else
             {
-                if (CurrentSubject.Keywords.Where(k => k.Name.Equals(keyword)).ToList().Count > 0) return;   // The keyword already exists
+                if (CurrentSubject.Keywords.Where(k => k.Name.ToLower().Equals(keyword.ToLower())).ToList().Count > 0) return;   // The keyword already exists
                 int keywordID = db.AddRemoveKeyword(Common.Action.ADD, CurrentSubject.ID, 0, keyword,CurrentSubject.LanguageID); //Save keyword in DB
                 CurrentSubject.Keywords.Add(new KeywordO(keywordID, keyword));
                 form.AddKeywordToGrid(keyword,CurrentSubject.LanguageName);
@@ -95,22 +95,36 @@ namespace TwitterCollector.Controllers
             {
                 if (!Global.ShowDialogMessageYesNo("Are you sure you want delete this subject with all his keywords?")) return;  //Do not delete this subject 
             }
-            foreach (KeywordO keyword in subjectObj.Keywords)  //Delete all keywords
+            try
             {
-                db.AddRemoveKeyword(Common.Action.REMOVE, subjectObj.ID, keyword.ID); //Remove keyword from DB
-                form.RemoveKeywordFromGrid(0);
+                foreach (KeywordO keyword in subjectObj.Keywords)  //Delete all keywords
+                {
+                    db.AddRemoveKeyword(Common.Action.REMOVE, subjectObj.ID, keyword.ID); //Remove keyword from DB
+                    form.RemoveKeywordFromGrid(0);
+                }
+                db.AddRemoveSubject(Common.Action.REMOVE, subjectObj.ID);   //Remove subject from db
+                form.RemoveSubjectFromGrid(rowNumber);    //Remove subject from UI
+                CurrentSubject = null;
+                subjectsList.Remove(subjectObj);
             }
-            db.AddRemoveSubject(Common.Action.REMOVE, subjectObj.ID);   //Remove subject from db
-            form.RemoveSubjectFromGrid(rowNumber);    //Remove subject from UI
-            CurrentSubject = null;
-            subjectsList.Remove(subjectObj);
+            catch (Exception e)
+            {
+                Global.ShowDialogMessageOk(string.Format("Exception was throw while try to delete '{0}' subject: {1}", subject, e.Message));
+            }
         }
         public void RemoveKeyword(string keyword, int rowNumber)
         {
             var key = CurrentSubject.Keywords.Where(k => k.Name.Equals(keyword)).Select(k => k).ToArray()[0]; //Get the key of the keyword
-            db.AddRemoveKeyword(Common.Action.REMOVE, CurrentSubject.ID, key.ID); //Remove keyword from DB
-            CurrentSubject.Keywords.Remove(key);
-            form.RemoveKeywordFromGrid(rowNumber);
+            try
+            {
+                db.AddRemoveKeyword(Common.Action.REMOVE, CurrentSubject.ID, key.ID); //Remove keyword from DB
+                CurrentSubject.Keywords.Remove(key);
+                form.RemoveKeywordFromGrid(rowNumber);
+            }
+            catch (Exception e)
+            {
+                Global.ShowDialogMessageOk(string.Format("Exception was throw while try to delete '{0}' keyword: {1}", keyword, e.Message));
+            }
         }
         private void LoadSubjectsAndKeywords()
         {

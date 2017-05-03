@@ -19,14 +19,14 @@ namespace TopicSentimentAnalysis.Classes
 
         public bool NotIn(params string[] scoreTag)
         {
-            if (score_tag.Contains(this.score_tag))
+            if (scoreTag.Contains(this.score_tag))
                 return false;
             return true;
         }
 
         public bool In(params string[] scoreTag)
         {
-            if (score_tag.Contains(this.score_tag))
+            if (scoreTag.Contains(this.score_tag))
                 return true;
             return false;
         }

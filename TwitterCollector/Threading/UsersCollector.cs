@@ -19,6 +19,8 @@ namespace TwitterCollector.Threading
         private static readonly object locker = new object();
         private int subjectID;
 
+        private long _currentUserID = -1;
+
         #endregion
 
         public override void RunThread()
@@ -37,6 +39,8 @@ namespace TwitterCollector.Threading
                 catch (Exception e)
                 {
                     new TwitterException(e);
+                    if (_currentUserID != -1)
+                        db.UnlockUser(_currentUserID);
                 }
             }
         }
@@ -46,9 +50,14 @@ namespace TwitterCollector.Threading
             List<long> usersID = db.GetTopUncheckedUsers();
             foreach (long id in usersID)
             {
+                //_currentUserID = id;
                 // The API update this class in real time for every request. 
                 // That the reason why we don't need to do nothing.
                 List<Tweet> userTweets = twitter.GetTweets("", id,3200,200,this);
+                //TODO: UPDATE DATABASE THIS USER HAS ALL HIS TWEETS
+                if(userTweets.Count > 0 )
+                    db.SetSingleValue("Users", "HasAllHistory", id, "'True'");
+                //db.UnlockUser(_currentUserID);
             }
         }
 
@@ -67,7 +76,11 @@ namespace TwitterCollector.Threading
                             CheckSubjectRelevantTweetAndSave(tweets);
                     }
                 }
-                catch (Exception e) { new TwitterException(e); }
+                catch (Exception e) 
+                {
+                    if (!e.Message.StartsWith("Violation of PRIMARY KEY"))
+                        new TwitterException(e); 
+                }
             }
         }
 
@@ -87,7 +100,7 @@ namespace TwitterCollector.Threading
             List<int> keyword = new List<int>();
             foreach (KeyValuePair<int, string> key in keywords)
             {
-                if (tweet.Text.Contains(key.Value))
+                if (tweet.Text.ToLower().Contains(key.Value.ToLower()))
                 {
                     keyword.Add(key.Key);
                 }
@@ -140,6 +153,7 @@ namespace TwitterCollector.Threading
         #endregion
 
         #region Synchronized Functions
+
         public void AddSafeData(List<Tweet> tweets)
         {
             lock (locker)

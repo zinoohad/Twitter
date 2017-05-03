@@ -105,6 +105,9 @@ namespace TwitterCollector.Threading
 
         private bool SetApiConnection()
         {
+            if (apiKey != null)
+                db.UpdateRemainingCredits(ref apiKey);
+
             if (apiKey == null || apiKey.RemainingCredits == 0)
             {
                 if (apiKey != null)

@@ -34,40 +34,110 @@ namespace TwitterCollector.Threading
 
         private List<Tweet> tweets;
 
+        private long _currentUserID = -1;
+
+        private List<string> _positiveWords, _negativeWords, _positiveEmoticons, _negativeEmoticons;
+
         #endregion
 
         public override void RunThread()
         {
+            LoadWordLists();    //Save Table content in the RAM
             while (ThreadOn)
             {
                 try
                 {
-                    tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
-
-                    if (tweets.Count == 0)
+                    // Get tweets for user
+                    List<long> userIDs = db.GetUsersForPosNegAnalysis(true);    // Get random users to check.
+                    if (userIDs.Count > 0)
                     {
-                        Global.Sleep(60);
+                        foreach (long userID in userIDs)
+                        {
+                            _currentUserID = userID;
+                            tweets = db.GetTweetsByUserID(userID);
+                            int i = 0;
+                            foreach (Tweet t in tweets)
+                            {
+                                i++;
+                                AnalyzeTweet(t);
+                            }
+                            db.AnalyzeUser(userID);    //Set user pos neg to current subject into UserProperties Table.
+                            db.UnlockUser(userID);
+                            db.SetSingleValue("Users", "AlreadyChecked", userID, 1);
+                        }
                     }
                     else
                     {
-                        foreach (Tweet t in tweets)
-                        {
-                            posNegTweet.Clear();    // Clear the positive and negative object
-                            posNegTweet.ID = t.id_str;
-                            FindEmoticons(t.Text);   // Find the emoticons in the text
-                            string textWithoutPunctuation = Global.GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
-                            FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
-                            posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
-                            db.SaveTweetPosNegRank(posNegTweet);
+                        // Get random tweets
+                        tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
 
+                        if (tweets.Count == 0)
+                        {
+                            Global.Sleep(60);
+                        }
+                        else
+                        {
+                            foreach (Tweet t in tweets)
+                            {
+                                AnalyzeTweet(t);
+                            }
                         }
                     }
                 }
                 catch (Exception e)
                 {
+                    if (_currentUserID != -1)
+                    {
+                        db.UnlockUser(_currentUserID);
+                    }
                     new TwitterException(e);
                 }
             }   
+        }
+
+        //public override void RunThread()
+        //{
+        //    while (ThreadOn)
+        //    {
+        //        try
+        //        {
+        //            tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
+
+        //            if (tweets.Count == 0)
+        //            {
+        //                Global.Sleep(60);
+        //            }
+        //            else
+        //            {
+        //                foreach (Tweet t in tweets)
+        //                {
+        //                    posNegTweet.Clear();    // Clear the positive and negative object
+        //                    posNegTweet.ID = t.id_str;
+        //                    FindEmoticons(t.Text);   // Find the emoticons in the text
+        //                    string textWithoutPunctuation = Global.GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
+        //                    FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
+        //                    posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
+        //                    db.SaveTweetPosNegRank(posNegTweet);
+
+        //                }
+        //            }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            new TwitterException(e);
+        //        }
+        //    }
+        //}
+
+        private void AnalyzeTweet(Tweet tweet)
+        {
+            posNegTweet.Clear();    // Clear the positive and negative object
+            posNegTweet.ID = tweet.id_str;
+            FindEmoticons(tweet.Text);   // Find the emoticons in the text
+            string textWithoutPunctuation = Global.GetStringWithoutPunctuation(tweet.Text);    // Remove punctuation from the text
+            FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
+            posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
+            db.SaveTweetPosNegRank(posNegTweet);
         }
 
         /// <summary>
@@ -85,15 +155,18 @@ namespace TwitterCollector.Threading
         {
             sentence = sentence.Replace("'", "''").Replace("http://", "").Replace("https://", "");
             string[] splitSentence = SplitByDelimiters(sentence, " ").Where(s => s.Length > 1).ToArray();
-            DataTable dt = db.FindEmoticons(splitSentence);
-            if(dt == null || dt.Rows.Count == 0) return;
-            foreach (DataRow dr in dt.Rows)
-            {
-                if (bool.Parse(dr["IsPositive"].ToString()) == true)
-                    posNegTweet.PositiveEmoticons++;
-                else
-                    posNegTweet.NegativeEmoticons++;
-            }
+            //DataTable dt = db.FindEmoticons(splitSentence);
+            //if(dt == null || dt.Rows.Count == 0) return;
+            //foreach (DataRow dr in dt.Rows)
+            //{
+            //    if (bool.Parse(dr["IsPositive"].ToString()) == true)
+            //        posNegTweet.PositiveEmoticons++;
+            //    else
+            //        posNegTweet.NegativeEmoticons++;
+            //}
+
+            posNegTweet.PositiveEmoticons = _positiveEmoticons.FindRepeats(splitSentence);
+            posNegTweet.NegativeEmoticons = _negativeWords.FindRepeats(splitSentence);
         }
 
         private void FindPositiveAndNegativeWords(string sentence)
@@ -101,16 +174,35 @@ namespace TwitterCollector.Threading
             sentence = sentence.Replace("'", "''");
             //string[] splitSentence = SplitByDelimiters(sentence, " ");
             List<string> splitSentence = Global.SplitSentenceToSubSentences(sentence, int.Parse(db.GetValueByKey("MaxWordInSubSentence",3).ToString()));
-            DataTable dt = db.FindPositiveNegativeWords(splitSentence.ToArray());
+            //DataTable dt = db.FindPositiveNegativeWords(splitSentence.ToArray());
 
-            if (dt == null || dt.Rows.Count == 0) return;
-            foreach (DataRow dr in dt.Rows)
-            {
-                if (bool.Parse(dr["IsPositive"].ToString()) == true)
-                    posNegTweet.PositiveWords++;
-                else
-                    posNegTweet.NegativeWords++;
-            }
+            //if (dt == null || dt.Rows.Count == 0) return;
+            //foreach (DataRow dr in dt.Rows)
+            //{
+            //    if (bool.Parse(dr["IsPositive"].ToString()) == true)
+            //        posNegTweet.PositiveWords++;
+            //    else
+            //        posNegTweet.NegativeWords++;
+            //}
+
+            posNegTweet.PositiveWords = _positiveWords.FindRepeats(splitSentence.ToArray());
+            posNegTweet.NegativeWords = _negativeWords.FindRepeats(splitSentence.ToArray());
         }
+
+        private void LoadWordLists()
+        {
+            // Get Emoticons
+            DataTable dt = db.GetTable("DictionaryPositiveNegative", "IsEmoticon = 'True'");
+            _positiveEmoticons = dt.AsEnumerable().Where(r => r.Field<bool>("IsPositive") == true).Select(r => r.Field<string>("Word")).ToList();
+            _negativeEmoticons = dt.AsEnumerable().Where(r => r.Field<bool>("IsPositive") == false).Select(r => r.Field<string>("Word")).ToList();
+
+            // Get Positive Words
+            dt = db.GetTable("DictionaryPositiveNegative", "IsPositive = 'True' AND IsEmoticon = 'False'");
+            _positiveWords = dt.AsEnumerable().Select(r => r.Field<string>("Word")).ToList();
+
+            // Get Negative Words
+            dt = db.GetTable("DictionaryPositiveNegative", "IsPositive = 'False' AND IsEmoticon = 'False'");
+            _negativeWords = dt.AsEnumerable().Select(r => r.Field<string>("Word")).ToList();
+        }        
     }
 }

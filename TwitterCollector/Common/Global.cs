@@ -300,10 +300,25 @@ namespace TwitterCollector.Common
             Thread.Sleep(seconds * 1000);
         }
 
+        #region Extensions
+
         public static bool In<T>(this T obj, params T[] args)
         {
             return args.Contains(obj);
         }
+
+        public static int FindRepeats<T>(this List<T> dict, T[] words)
+        {
+            int count = 0;
+            foreach (T word in words)
+            {
+                if (dict.Contains(word))
+                    count++;
+            }
+            return count;
+        }
+
+        #endregion
 
         public static bool IsEmoticon(string s)
         {

@@ -287,8 +287,6 @@
             // 
             this.subjectCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.subjectCB.FormattingEnabled = true;
-            this.subjectCB.Items.AddRange(new object[] {
-            "Select Item"});
             this.subjectCB.Location = new System.Drawing.Point(90, 17);
             this.subjectCB.Name = "subjectCB";
             this.subjectCB.Size = new System.Drawing.Size(245, 24);

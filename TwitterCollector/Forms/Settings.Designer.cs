@@ -35,7 +35,7 @@
             this.startOnStartup = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.supervisiorTS = new JCS.ToggleSwitch();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.supervisorIntervalUD = new System.Windows.Forms.NumericUpDown();
             this.supervisiorIntervalsL = new System.Windows.Forms.Label();
             this.threadDGV = new System.Windows.Forms.DataGridView();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -58,7 +58,7 @@
             this.settingsIcon = new System.Windows.Forms.ToolStripButton();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supervisorIntervalUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadDGV)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -94,7 +94,7 @@
             this.panel1.Controls.Add(this.startOnStartup);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.supervisiorTS);
-            this.panel1.Controls.Add(this.numericUpDown1);
+            this.panel1.Controls.Add(this.supervisorIntervalUD);
             this.panel1.Controls.Add(this.supervisiorIntervalsL);
             this.panel1.Controls.Add(this.threadDGV);
             this.panel1.Location = new System.Drawing.Point(13, 89);
@@ -135,27 +135,28 @@
             this.supervisiorTS.TabIndex = 3;
             this.supervisiorTS.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.supervisiorTS_CheckedChanged);
             // 
-            // numericUpDown1
+            // supervisorIntervalUD
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(201, 64);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.supervisorIntervalUD.Location = new System.Drawing.Point(201, 64);
+            this.supervisorIntervalUD.Maximum = new decimal(new int[] {
             60,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.supervisorIntervalUD.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(65, 22);
-            this.numericUpDown1.TabIndex = 2;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            10,
+            this.supervisorIntervalUD.Name = "supervisorIntervalUD";
+            this.supervisorIntervalUD.Size = new System.Drawing.Size(65, 22);
+            this.supervisorIntervalUD.TabIndex = 2;
+            this.supervisorIntervalUD.Value = new decimal(new int[] {
+            30,
             0,
             0,
             0});
+            this.supervisorIntervalUD.ValueChanged += new System.EventHandler(this.supervisorIntervalUD_ValueChanged);
             // 
             // supervisiorIntervalsL
             // 
@@ -189,7 +190,7 @@
             this.threadDGV.RowTemplate.Height = 24;
             this.threadDGV.Size = new System.Drawing.Size(986, 459);
             this.threadDGV.TabIndex = 0;
-            this.threadDGV.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvThreads_CurrentCellDirtyStateChanged);
+            this.threadDGV.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             this.threadDGV.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.threadDGV_DataError);
             // 
             // ID
@@ -353,7 +354,7 @@
             this.topPanel.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.supervisorIntervalUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadDGV)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -377,7 +378,7 @@
         private System.Windows.Forms.ToolStripButton toolIcon;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton dictionaryIcon;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown supervisorIntervalUD;
         private System.Windows.Forms.Label supervisiorIntervalsL;
         private System.Windows.Forms.Label label1;
         private JCS.ToggleSwitch supervisiorTS;

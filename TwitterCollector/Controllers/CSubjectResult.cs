@@ -34,7 +34,7 @@ namespace TwitterCollector.Controllers
         private void LoadSubjects()
         {
             List<string> subjects = new List<string>();
-            var subjectsDT = db.GetActiveSubjects(true);
+            var subjectsDT = db.GetActiveSubjects();
             foreach(DataRow dt in subjectsDT.Rows)
                 subjects.Add(dt["Subject"].ToString());
             form.LoadSubjectComboBox(subjects);

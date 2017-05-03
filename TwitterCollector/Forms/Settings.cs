@@ -40,35 +40,37 @@ namespace TwitterCollector.Forms
             Global.ExitApplication(sender, e);
         }
 
-        private void dgvThreads_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView ldgv = (DataGridView)sender;
+            
+            DataGridView ldgv = threadDGV;
             Point CellAddress = ldgv.CurrentCellAddress;
 
-            if (!ldgv.IsCurrentCellDirty)
+            if (CellAddress.X == 4 && CellAddress.Y != -1)
             {
-                if (CellAddress.X == 4 && CellAddress.Y != -1)
-                {
-                    DataGridViewRow selectedRow = ldgv.Rows[CellAddress.Y];
-                    string desirableState = (string)selectedRow.Cells["ThreadDesirableState"].Value;
-                    //Console.WriteLine(desirableState + "-" + ldgv.IsCurrentCellDirty);
-                    int processID = int.Parse(selectedRow.Cells["ThreadProcessID"].EditedFormattedValue.ToString());
+                DataGridViewRow selectedRow = ldgv.Rows[CellAddress.Y];
+                string desirableState = (string)selectedRow.Cells["ThreadDesirableState"].Value;
+                //Console.WriteLine(desirableState + "-" + ldgv.IsCurrentCellDirty);
+                int processID = int.Parse(selectedRow.Cells["ThreadProcessID"].EditedFormattedValue.ToString());
 
-                    switch (desirableState)
-                    {
-                        case "Start":
-                            selectedRow.Cells["ThreadState"].Value = "Starting";
-                            selectedRow.Cells["ThreadState"].Style = Orange;
-                            controller.ChangeThreadState(processID, desirableState);
-                            break;
-                        case "Stop":
-                            selectedRow.Cells["ThreadState"].Value = "Aborting";
-                            selectedRow.Cells["ThreadState"].Style = Orange;
-                            controller.ChangeThreadState(processID, SupervisorThreadState.Stop.ToString());
-                            break;
-                    }
+                switch (desirableState)
+                {
+                    case "Start":
+                        if (selectedRow.Cells["ThreadState"].Value.Equals("Start"))
+                            return;
+                        selectedRow.Cells["ThreadState"].Value = "Starting";
+                        selectedRow.Cells["ThreadState"].Style = Orange;
+                        controller.ChangeThreadState(processID, desirableState);
+                        break;
+                    case "Stop":
+                        if (selectedRow.Cells["ThreadState"].Value.Equals("Stop"))
+                            return;
+                        selectedRow.Cells["ThreadState"].Value = "Aborting";
+                        selectedRow.Cells["ThreadState"].Style = Orange;
+                        controller.ChangeThreadState(processID, SupervisorThreadState.Stop.ToString());
+                        break;
                 }
-            }
+            }            
         }
 
         private void startOnStartup_CheckedChanged(object sender, EventArgs e)
@@ -79,6 +81,34 @@ namespace TwitterCollector.Forms
         private void supervisiorTS_CheckedChanged(object sender, EventArgs e)
         {
             controller.supervisiorTS_CheckedChanged(supervisiorTS.Checked);
+        }
+
+        public void StopAllProcess()
+        {
+            int rowNumber = 0;
+            
+            if (threadDGV.InvokeRequired)            
+                threadDGV.Invoke(new MethodInvoker(() => { rowNumber = threadDGV.Rows.Count; }));            
+            else
+                rowNumber = threadDGV.Rows.Count;
+
+            for (int i = 0; i < rowNumber; i++)
+            {
+                if (threadDGV.InvokeRequired)  
+                {
+                    threadDGV.Invoke(new MethodInvoker(() =>
+                    {
+                        threadDGV.Rows[i].Cells["ThreadState"].Value = "Stoped";
+                        threadDGV.Rows[i].Cells["ThreadState"].Style = Red;
+                    }));   
+                }
+
+                else
+                {
+                    threadDGV.Rows[i].Cells["ThreadState"].Value = "Stoped";
+                    threadDGV.Rows[i].Cells["ThreadState"].Style = Red;
+                }
+            }
         }
 
         private void threadDGV_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -223,6 +253,12 @@ namespace TwitterCollector.Forms
             if (dr["ThreadDesirableState"].ToString().Equals("Stop"))
             {
                 selectedRow.Cells["ThreadState"].Style = Red;
+                selectedRow.Cells["ThreadState"].Value = "Stop";
+            }
+            else if (dr["ThreadDesirableState"].ToString().Equals("Start") && dr["ThreadState"].ToString().Equals("Start"))
+            {
+                selectedRow.Cells["ThreadState"].Style = Green;
+                selectedRow.Cells["ThreadState"].Value = "Running";
             }
             else
             {
@@ -233,7 +269,23 @@ namespace TwitterCollector.Forms
 
         public void SupervisorTS_State(bool state)
         {
-            startOnStartup.Checked = supervisiorTS.Checked = state;
+            if (startOnStartup.InvokeRequired)            
+                startOnStartup.Invoke(new MethodInvoker(() => { startOnStartup.Checked = state; }));     // Not work on startup, load in another thread.            
+            else
+                startOnStartup.Checked = state;
+
+            if (supervisiorTS.InvokeRequired)
+                supervisiorTS.Invoke(new MethodInvoker(() => { supervisiorTS.Checked = state; }));     // Not work on startup, load in another thread.
+            else
+                supervisiorTS.Checked = state;
+        }
+
+        public void SetSupervisorIntervalsValue(decimal value)
+        {
+            if(supervisorIntervalUD.InvokeRequired)
+                supervisorIntervalUD.Invoke(new MethodInvoker(() => { supervisorIntervalUD.Value = value; }));     // Not work on startup, load in another thread.
+            else
+                supervisorIntervalUD.Value = value;
         }
 
         public void UpdateProcessID(string threadName, int processID, string machineName)
@@ -253,6 +305,11 @@ namespace TwitterCollector.Forms
         }
 
         #endregion
+
+        private void supervisorIntervalUD_ValueChanged(object sender, EventArgs e)
+        {
+            controller.ChangeSupervisorIntervals(supervisorIntervalUD.Value);
+        }
 
         
 

@@ -8,6 +8,8 @@ namespace DataBaseConnections.DataBaseTypes
 {
     class SQLServerConnection : SQLMethods
     {
+        private int _connectionTimeout = 15;
+        private int _commandTimeout = 600;
         public SQLServerConnection(string serverAddress, string dataBase, string userName, string password, bool onLocalHost = false)
         {
             server = serverAddress;
@@ -16,15 +18,16 @@ namespace DataBaseConnections.DataBaseTypes
             this.password = password;
             string ConnectionString;
             if(!onLocalHost)
-                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}", serverAddress, dataBase, userName, password);
-            else 
-                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=SSPI", serverAddress, dataBase);
+                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3};Connection Timeout={4}", serverAddress, dataBase, userName, password, _connectionTimeout);
+            else
+                ConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=SSPI;MultipleActiveResultSets=true;Connection Timeout={2}", serverAddress, dataBase, _connectionTimeout);
             connection = new SqlConnection(ConnectionString);
 
         }
         public override DataTable Select(string sqlQuery)
         {
             SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection);
+            cmd.CommandTimeout = _commandTimeout;
             DataTable dt = new DataTable();           
             dt.Load(cmd.ExecuteReader());
             return dt;
@@ -63,7 +66,8 @@ namespace DataBaseConnections.DataBaseTypes
         {
             long rowsUpdated = 0;
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
-            {     
+            {
+                cmd.CommandTimeout = _commandTimeout;
                 OpenConnection();
                 rowsUpdated = (long)cmd.ExecuteNonQuery();
                 return rowsUpdated;                
@@ -74,6 +78,7 @@ namespace DataBaseConnections.DataBaseTypes
             long rowsUpdated = 0;
             using (SqlCommand cmd = new SqlCommand(sqlQuery, (SqlConnection)connection))
             {
+                cmd.CommandTimeout = _commandTimeout;
                 OpenConnection();
                 if (sqlQuery.Contains("OUTPUT"))
                 {
