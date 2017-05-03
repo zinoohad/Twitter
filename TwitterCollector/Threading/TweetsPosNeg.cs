@@ -55,10 +55,8 @@ namespace TwitterCollector.Threading
                         {
                             _currentUserID = userID;
                             tweets = db.GetTweetsByUserID(userID);
-                            int i = 0;
                             foreach (Tweet t in tweets)
                             {
-                                i++;
                                 AnalyzeTweet(t);
                             }
                             db.AnalyzeUser(userID);    //Set user pos neg to current subject into UserProperties Table.
