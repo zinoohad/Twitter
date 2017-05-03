@@ -139,8 +139,8 @@ namespace TwitterCollector.Common
 
         public void UpdateRemainingCredits(ref ApiKeys key)
         {
-            key.RemainingCredits--;
-            SetSingleValue("ExternalApiKeys", "RemainingCredits", key.ID, key.externalApi);
+            //key.RemainingCredits--;
+            SetSingleValue("ExternalApiKeys", "RemainingCredits", key.ID, key.RemainingCredits);
         }
 
         public void UpdateDictionaryAge()
@@ -548,7 +548,8 @@ namespace TwitterCollector.Common
         public List<Tweet> GetTweetsByUserID(long userID, bool lockRecords = false)
         {
             List<Tweet> tweets = new List<Tweet>();            
-            DataTable dt = Select("SELECT * FROM Tweets WHERE Rank IS NULL AND Language = 'en' AND UserID = {0}", userID);
+            //DataTable dt = Select("SELECT * FROM Tweets WHERE Rank IS NULL AND Language = 'en' AND UserID = {0}", userID);
+            DataTable dt = Select("SELECT * FROM ViewTweetsConnectToSubject WHERE Rank IS NULL AND Language = 'en' AND UserID = {0}", userID);
             if (dt != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
@@ -569,11 +570,12 @@ namespace TwitterCollector.Common
             //int selectQueryPercent = int.Parse(GetValueByKey("SelectQueryPercent", 5).ToString());
             int topUsers = int.Parse(GetValueByKey("TopUsersForPosNegAnalysis", 25).ToString());
 
-            string query = string.Format("SELECT TOP {0} ID FROM Users WHERE Language = 'en' AND HasAllHistory = 'True' AND AlreadyChecked = 'False' AND IsLocked = 'False' ORDER BY newid()", topUsers);
+            //string query = string.Format("SELECT TOP {0} ID FROM Users WHERE Language = 'en' AND HasAllHistory = 'True' AND AlreadyChecked = 'False' AND IsLocked = 'False' ORDER BY newid()", topUsers);
+            string query = string.Format("SELECT TOP {0} UserID FROM ViewTweetsConnectToSubject WHERE UserLanguage = 'en' AND UserHasAllHistory = 'True' AND UserAlreadyChecked = 'False' AND UserIsLocked = 'False' ORDER BY newid()", topUsers);
             DataTable dt = Select(query);
             foreach (DataRow dr in dt.Rows)
             {
-                users.Add((long)dr["ID"]);
+                users.Add((long)dr["UserID"]);
             }
 
             if (lockRecords)
@@ -983,7 +985,7 @@ namespace TwitterCollector.Common
                     if (tmpResult == null)
                     {
                         placeID = Insert(string.Format(@"INSERT INTO Places (PlaceID, Country, CountryCode, FullCountryName, Name, PlaceType, Url) " +
-                                                    "VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", place.id, place.country, place.country_code, place.full_name, place.name, place.place_type, place.url), true);
+                                                    "VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", place.id, place.country.Replace("'", "''"), place.country_code, place.full_name.Replace("'", "''"), place.name.Replace("'", "''"), place.place_type, place.url), true);
                         if (placeID == 0) placeID = 0;
                     }
                     else placeID = (int)tmpResult;
@@ -1153,12 +1155,15 @@ namespace TwitterCollector.Common
 
         public void SaveTweetScore(Tweet tweet, string score, int confidence)
         {
+            Update("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID = {2} OR RetweetID = {2}", score, confidence, tweet.id_str);
+            return;
+            // TODO: Delete all other rows
             // TODO: Save score for all the retweets 
             DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", tweet.id_str));
             string[] ids = dt.AsEnumerable()
                             .Select(row => row["ID"].ToString())
                             .ToArray();
-            Update(string.Format("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID IN ({2})", score, confidence, string.Join(",", ids)));
+            Update(string.Format("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID IN ({2})", score, confidence, string.Join(",", ids)));           
         }
 
         public void LearnNewPosNegWord(object obj)
@@ -1220,11 +1225,12 @@ namespace TwitterCollector.Common
 
         public void SaveTweetPosNegRank(PosNegTweet pnt)
         {
-            DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", pnt.ID));
-            string[] ids = dt.AsEnumerable()
-                            .Select(row => row["ID"].ToString())
-                            .ToArray();
-            Update(string.Format("UPDATE Tweets SET PositiveWords = {0}, NegativeWords = {1}, Rank = {2} WHERE ID IN ({3})", pnt.GetPositive(), pnt.GetNegative(), pnt.LocalRank, string.Join(",", ids)));
+            Update("UPDATE Tweets SET PositiveWords = {0}, NegativeWords = {1}, Rank = {2} WHERE ID = {3} OR RetweetID = {3}", pnt.GetPositive(), pnt.GetNegative(), pnt.LocalRank, pnt.ID);
+            //DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", pnt.ID));
+            //string[] ids = dt.AsEnumerable()
+            //                .Select(row => row["ID"].ToString())
+            //                .ToArray();
+            //Update(string.Format("UPDATE Tweets SET PositiveWords = {0}, NegativeWords = {1}, Rank = {2} WHERE ID IN ({3})", pnt.GetPositive(), pnt.GetNegative(), pnt.LocalRank, string.Join(",", ids)));
         }
 
         #endregion
@@ -1305,6 +1311,11 @@ namespace TwitterCollector.Common
         public void ChangeThreadState(int processID, SupervisorThreadState threadState)
         {
             Update("UPDATE ThreadsControl SET ThreadState = '{0}' WHERE ThreadProcessID = {1} AND MachineName = '{2}'", threadState, processID, Environment.MachineName);
+        }
+
+        public void StopAllThreads(SupervisorThreadState threadState)
+        {
+            Update("UPDATE ThreadsControl SET ThreadState = '{0}' WHERE MachineName = '{1}'", threadState, Environment.MachineName);
         }
 
         #endregion

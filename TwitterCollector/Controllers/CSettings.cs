@@ -61,7 +61,11 @@ namespace TwitterCollector.Controllers
             if (state && !supervisor.IsAlive)
                 supervisor.Start();
             else if (!state && supervisor.IsAlive)
+            {
                 supervisor.Abort();
+                form.StopAllProcess();
+                db.StopAllThreads(SupervisorThreadState.Stop);
+            }
         }
 
         public void ChangeSupervisorIntervals(decimal value)

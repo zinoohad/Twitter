@@ -73,11 +73,6 @@ namespace TwitterCollector.Forms
             }            
         }
 
-        private void dgvThreads_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void startOnStartup_CheckedChanged(object sender, EventArgs e)
         {
             controller.ChangeStartSupervisorAutomaticallyState(startOnStartup.Checked);
@@ -86,6 +81,34 @@ namespace TwitterCollector.Forms
         private void supervisiorTS_CheckedChanged(object sender, EventArgs e)
         {
             controller.supervisiorTS_CheckedChanged(supervisiorTS.Checked);
+        }
+
+        public void StopAllProcess()
+        {
+            int rowNumber = 0;
+            
+            if (threadDGV.InvokeRequired)            
+                threadDGV.Invoke(new MethodInvoker(() => { rowNumber = threadDGV.Rows.Count; }));            
+            else
+                rowNumber = threadDGV.Rows.Count;
+
+            for (int i = 0; i < rowNumber; i++)
+            {
+                if (threadDGV.InvokeRequired)  
+                {
+                    threadDGV.Invoke(new MethodInvoker(() =>
+                    {
+                        threadDGV.Rows[i].Cells["ThreadState"].Value = "Stoped";
+                        threadDGV.Rows[i].Cells["ThreadState"].Style = Red;
+                    }));   
+                }
+
+                else
+                {
+                    threadDGV.Rows[i].Cells["ThreadState"].Value = "Stoped";
+                    threadDGV.Rows[i].Cells["ThreadState"].Style = Red;
+                }
+            }
         }
 
         private void threadDGV_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -230,6 +253,7 @@ namespace TwitterCollector.Forms
             if (dr["ThreadDesirableState"].ToString().Equals("Stop"))
             {
                 selectedRow.Cells["ThreadState"].Style = Red;
+                selectedRow.Cells["ThreadState"].Value = "Stop";
             }
             else if (dr["ThreadDesirableState"].ToString().Equals("Start") && dr["ThreadState"].ToString().Equals("Start"))
             {

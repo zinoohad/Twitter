@@ -42,8 +42,6 @@ namespace TwitterCollector.Threading
                     {
                         this.Abort();
                     }
-
-                    //while (true) Global.Sleep(1000);    //TODO: Remove this line
                 }
                 catch (Exception e)
                 {
@@ -59,6 +57,8 @@ namespace TwitterCollector.Threading
         private void CreateAllThreads()
         {
             DataTable subjectsDT = db.GetActiveSubjects(true);
+
+            db.StopAllThreads(SupervisorThreadState.Stop);
 
             // Threads for specific subject
             foreach (DataRow subject in subjectsDT.Rows)
