@@ -76,7 +76,11 @@ namespace TwitterCollector.Threading
                             CheckSubjectRelevantTweetAndSave(tweets);
                     }
                 }
-                catch (Exception e) { new TwitterException(e); }
+                catch (Exception e) 
+                {
+                    if (!e.Message.StartsWith("Violation of PRIMARY KEY"))
+                        new TwitterException(e); 
+                }
             }
         }
 

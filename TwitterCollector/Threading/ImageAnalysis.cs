@@ -44,27 +44,6 @@ namespace TwitterCollector.Threading
                         //faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this);
                         SafeAddThread(imageAnalysisMultiRequestLimit);
                         new Thread(new ThreadStart(() => GetFaceDetectAndImageAnalysis(imageStatus))).Start();
-                        //if (faceDetect.images[0].error != null)
-                        //{
-                        //    //Update the user was check and the image is corrupted.
-                        //    User updateUser = twitter.GetUserProfile("", user.ID);
-                        //    updateUser.ProfileImage = updateUser.ProfileImage.Replace("_normal", "");
-                        //    db.UpdateUserProfile(updateUser);
-                        //    faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(updateUser.ProfileImage);
-                        //    if (faceDetect.images[0].error != null)
-                        //    {
-                        //        db.BadUrlProfileImage(user.UserPropertiesID);
-                        //    }
-                        //    else
-                        //    {
-                        //        UpdateUserGenderAndAge(user.UserPropertiesID, faceDetect);
-                        //    }
-                            
-                        //}
-                        //else
-                        //{
-                        //    UpdateUserGenderAndAge(user.UserPropertiesID, faceDetect);
-                        //}
                     }
                 }
                 catch (Exception e)
