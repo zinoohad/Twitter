@@ -97,3 +97,6 @@ C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\MoreLinq.dll
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\symbol-map\symbol-map.html
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\data\us-state-centroids.json
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\data\us-states.json

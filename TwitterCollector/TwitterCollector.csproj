@@ -222,6 +222,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Diagrams\examples\data\faithful.json" />
+    <None Include="Diagrams\examples\data\flare-imports.json" />
+    <None Include="Diagrams\examples\data\flare.json" />
+    <None Include="Diagrams\examples\data\morley.csv" />
+    <None Include="Diagrams\examples\data\README" />
+    <None Include="Diagrams\examples\data\us-borders.json" />
+    <None Include="Diagrams\examples\data\us-counties.json" />
+    <None Include="Diagrams\examples\data\us-state-centroids.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Diagrams\examples\data\us-states.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Diagrams\examples\data\world-countries.json" />
     <None Include="packages.config" />
     <None Include="Pictures\X.png" />
     <None Include="TwitterDataSet.xsc">
@@ -260,6 +274,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Diagrams\examples\symbol-map\symbol-map.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
