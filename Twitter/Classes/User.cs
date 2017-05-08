@@ -64,7 +64,7 @@ namespace Twitter.Classes
         public string url { get; set; }
         public int? utc_offset { get; set; }
         public bool? verified { get; set; }
-        public string withheld_in_countries { get; set; }
+        public IList<string> withheld_in_countries { get; set; }
         public string withheld_scope { get; set; }
 
         public IList<Error> errors { get; set; }
@@ -80,7 +80,7 @@ namespace Twitter.Classes
 
         public object[] GetData()
         {
-            object[] row = new object[] { ID, CreateDate, Name, Name, FollowersCount, FriendsCount,Language,Location };
+            object[] row = new object[] { ID, CreateDate, Name, Name, FollowersCount, FriendsCount, Language, Location };
             return row;
         }
         public User() { }

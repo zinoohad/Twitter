@@ -11,6 +11,7 @@ namespace Twitter.Classes
         public Hashtag[] hashtags { get; set; }
         public Media[] media { get; set; }
         public URL[] urls { get; set; }
+        public IList<object> symbols { get; set; }
         public UserMention[] user_mentions { get; set; }
 
         public string hashtagsToString()

@@ -38,8 +38,8 @@ namespace TwitterCollector.Common
 
         #region Global Params
 
-        //public static DBHandler DB { get { return new DBHandler(); } }
-        public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.8.100", "1433", "Avi", "1234", "Twitter")); } }
+        public static DBHandler DB { get { return new DBHandler(); } }
+        //public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.8.100", "1433", "Avi", "1234", "Twitter")); } }
         //new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.8.100", "1433", "Avi", "1234", "Twitter")
 
 

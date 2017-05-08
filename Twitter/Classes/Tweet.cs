@@ -49,7 +49,7 @@ namespace Twitter.Classes
         public bool? truncated { get; set; }
         public User user { get; set; }
         public bool? withheld_copyright { get; set; }
-        public string[] withheld_in_countries { get; set; }
+        public IList<string> withheld_in_countries { get; set; }
         public string withheld_scope { get; set; }
 
 

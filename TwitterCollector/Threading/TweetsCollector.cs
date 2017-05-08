@@ -16,9 +16,11 @@ namespace TwitterCollector.Threading
     {
         #region Params
 
-        private int subjectID;
+        private int _subjectID;
 
-        private bool newSubject;
+        private bool _newSubject;
+
+        private string _languageCode;
 
         private List<KeywordO> keywords = new List<KeywordO>();
         
@@ -37,7 +39,8 @@ namespace TwitterCollector.Threading
                     // Run stream thread
                     if (streamThread == null || !streamThread.IsAlive) (streamThread = new Thread(new ThreadStart(this.ManageOnStream))).Start();
 
-                    if (newSubject) StartNewSearch();
+                    //if (_newSubject) StartNewSearch();
+                    if (true) StartNewSearch();
                     else ContinueToSearch();
                 }
                 catch (Exception e)
@@ -49,9 +52,10 @@ namespace TwitterCollector.Threading
 
         public override void SetInitialParams(params object[] Params)
         {
-            subjectID = (int)Params[0];
-            newSubject = (bool)Params[1];
-            keywords = db.GetSubjectKeywordsList(subjectID);
+            _subjectID = (int)Params[0];
+            _newSubject = (bool)Params[1];
+            _languageCode = Params[2].ToString();
+            keywords = db.GetSubjectKeywordsList(_subjectID);
         }
 
         #region Collector Main Functions
@@ -65,12 +69,7 @@ namespace TwitterCollector.Threading
             {
                 List<Tweet> tweets = GetTweetsByKeyword(keyword.Name, keyword.ID);
             }   
-            //foreach (KeyValuePair<int, string> keyword in keywordss)
-            //{
-            //    List<Tweet> tweets = GetTweetsByKeyword(keyword.Value, keyword.Key);
-            //    //CheckSubjectRelevantTweetAndSave(tweets);
-            //}
-            db.UpdateSubjectStatus(subjectID, false); //  Set flag to false
+            db.UpdateSubjectStatus(_subjectID, false); //  Set flag to false
             ContinueToSearch();
 
         }
@@ -79,7 +78,7 @@ namespace TwitterCollector.Threading
         {
             while (ThreadOn)
             {
-                List<Tweet> topTweets = db.GetTopTweets(subjectID);
+                List<Tweet> topTweets = db.GetTopTweets(_subjectID);
                 if (topTweets.Count == 0) ZeroPoint();
                 else ExploreTweets(topTweets);
             }
@@ -90,8 +89,8 @@ namespace TwitterCollector.Threading
         /// </summary>
         private void ZeroPoint()
         {
-            List<long> topRatedUsersIDs = db.GetTopUsersIDRatingForZeroPoint(subjectID);    // Get top (X) rated users
-            List<Tweet> tweets = db.TopRatedNotRelatedSubjectTweet(subjectID, topRatedUsersIDs.ToArray());  //Get users top rated, but not related to subject, tweet.
+            List<long> topRatedUsersIDs = db.GetTopUsersIDRatingForZeroPoint(_subjectID);    // Get top (X) rated users
+            List<Tweet> tweets = db.TopRatedNotRelatedSubjectTweet(_subjectID, topRatedUsersIDs.ToArray());  //Get users top rated, but not related to subject, tweet.
             ExploreTweets(tweets);
         }
 
@@ -149,13 +148,19 @@ namespace TwitterCollector.Threading
         /// </summary>
         /// <param name="tweet">Tweet object.</param>
         /// <returns>True if contains keyword, else false.</returns>
-        private bool IsTweetRelevantToSubject(ref Tweet tweet)
+        private bool IsTweetRelevantToSubject(ref Tweet tweet, ref bool sameLanguage)
         {
+            sameLanguage = true;
             List<int> keyword = new List<int>();
             foreach (KeywordO key in keywords)
             {
                 if (tweet.Text.ToLower().Contains(key.Name.ToLower()))
                 {
+                    if (!tweet.Language.Equals(key.LanguageCode))
+                    {
+                        sameLanguage = false;
+                        return false;
+                    }
                     keyword.Add(key.ID);
                 }
             }           
@@ -171,17 +176,23 @@ namespace TwitterCollector.Threading
         /// <param name="tweets">List of tweets to check.</param>
         private void CheckSubjectRelevantTweetAndSave(List<Tweet> tweets)
         {
+            bool sameLanguage = true;
             foreach (Tweet tweet in tweets)
             {
+                
                 Tweet tweetPointer = tweet;
-                if (IsTweetRelevantToSubject(ref tweetPointer)) //Add all keywords id that relevant to subject in the tweet text
+                if (IsTweetRelevantToSubject(ref tweetPointer, ref sameLanguage)) //Add all keywords id that relevant to subject in the tweet text
                 {
                     //TODO: Check if it's work. (Added: 1/4/17)
                     KeywordO k = (from key in keywords where key.ID == tweetPointer.keywordID[0] select key).SingleOrDefault();
                     if (tweetPointer.Language != k.LanguageCode) continue;  // This is not language that we need
                 }
-                db.SaveTweet(tweetPointer);
-                
+                else if (!sameLanguage || !tweet.Language.Equals(_languageCode)) //The tweet not in the same language as the keyword or subject
+                {
+                    continue;
+                }
+
+                db.SaveTweet(tweetPointer);               
             }
         }
 

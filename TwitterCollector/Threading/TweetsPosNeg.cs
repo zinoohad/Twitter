@@ -55,6 +55,11 @@ namespace TwitterCollector.Threading
                         {
                             _currentUserID = userID;
                             tweets = db.GetTweetsByUserID(userID);
+                            if (tweets.Count == 0)
+                            {
+                                db.UnlockUser(userID);
+                                continue;
+                            }
                             foreach (Tweet t in tweets)
                             {
                                 AnalyzeTweet(t);
@@ -92,40 +97,6 @@ namespace TwitterCollector.Threading
                 }
             }   
         }
-
-        //public override void RunThread()
-        //{
-        //    while (ThreadOn)
-        //    {
-        //        try
-        //        {
-        //            tweets = db.GetTweetsToCheckSentementAnalysis(ThreadType.TWEET_POS_NEG);
-
-        //            if (tweets.Count == 0)
-        //            {
-        //                Global.Sleep(60);
-        //            }
-        //            else
-        //            {
-        //                foreach (Tweet t in tweets)
-        //                {
-        //                    posNegTweet.Clear();    // Clear the positive and negative object
-        //                    posNegTweet.ID = t.id_str;
-        //                    FindEmoticons(t.Text);   // Find the emoticons in the text
-        //                    string textWithoutPunctuation = Global.GetStringWithoutPunctuation(t.Text);    // Remove punctuation from the text
-        //                    FindPositiveAndNegativeWords(textWithoutPunctuation);   // Check for positive and negative words
-        //                    posNegTweet.CalculateRank();    // Calculate the total score for the current tweet
-        //                    db.SaveTweetPosNegRank(posNegTweet);
-
-        //                }
-        //            }
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            new TwitterException(e);
-        //        }
-        //    }
-        //}
 
         private void AnalyzeTweet(Tweet tweet)
         {

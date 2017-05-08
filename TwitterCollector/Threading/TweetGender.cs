@@ -27,21 +27,22 @@ namespace TwitterCollector.Threading
 
         private int maxWordInSubSentence;
         private List<WordGender> emoticonsArrayValue;
-        private List<Tweet> usertweethistory;
+        private List<Tweet> usertweethistory;                        //WTF! (Capital letter)
         private List<long> usersIDs;
         private string tweetWithoutPunctuation;
-        private WordClassification TestDictionary;
+        private WordClassification TestDictionary;                                       //WTF! (Name & Capital letter)
         private List<string> senctence;
-        private StringBuilder UserText;
-        private Dictionary<string, double> GenderDictionary ;
+        private StringBuilder UserText;                                        //WTF! (Capital letter)
+        private Dictionary<string, double> GenderDictionary;                                        //WTF! (Capital letter)
         #endregion
+
         public override void RunThread()
         {
             while (ThreadOn)
             {
                 try
                 {
-                    usersIDs = db.GetUserIDsToCheckAnalysisByGender(ThreadType.TWEET_GENDER);
+                    usersIDs = db.GetUserIDsToCheckAnalysisByGender(ThreadType.TWEET_GENDER);                       //WTF! (In this function their is no check on the send argument, it's not relevant).
 
                     if (usersIDs.Count == 0)
                     {
@@ -57,7 +58,7 @@ namespace TwitterCollector.Threading
                             foreach (Tweet tweet in usertweethistory)
                             {
                                 tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
-                                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");
+                                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");             //WTF! (All the replase, need to understand way to use them)
                                 UserText.Append(tweetWithoutPunctuation + " ");
                             }
                             foreach (KeyValuePair<string, double> entry in GenderDictionary)
@@ -66,13 +67,11 @@ namespace TwitterCollector.Threading
                                 count = SplitByDelimiters(UserText.ToString(), entry.Key).Length - 1;
                                 if(count > 0 )
                                 {
-                                    userWordValueCounter += count * entry.Value;
-                                   
+                                    userWordValueCounter += count * entry.Value; 
                                 }
                             }
                             SaveUserGenderScoreToDB(userID);
-                        }
-                        
+                        }                       
                     }
                 }
                 catch (Exception e)
@@ -102,21 +101,21 @@ namespace TwitterCollector.Threading
             {
                 index++;
                 tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
-                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");
+                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");     //WTF! (All the replase, need to understand way to use them & same lines above.)
                 CompareSentenceEmoticonsArray(tweetWithoutPunctuation);
 
                 // breack the sentence to combinations of maxWordInSubSentence and compare to db dictionary
                 senctence = Global.SplitSentenceToSubSentences(tweetWithoutPunctuation, maxWordInSubSentence);
                 CompareSentenceToGenderDictionary(senctence);
                 /*Tests*/
-                Console.WriteLine("Tweet number {0} from {1}", index, usertweethistory.Count);
+                //Console.WriteLine("Tweet number {0} from {1}", index, usertweethistory.Count);
                 /*Tests*/
                 if (index > 200)
                     break;
             }
             /*Tests*/
-            Console.WriteLine("Counter =" + userWordValueCounter);
-            TestDictionary.print();
+            //Console.WriteLine("Counter =" + userWordValueCounter);
+            //TestDictionary.print();
             /*Tests*/
 
             SaveUserGenderScoreToDB(userID);
@@ -128,14 +127,14 @@ namespace TwitterCollector.Threading
             if (userWordValueCounter > 0)
             {
                 db.UpdateUserPropertiesByUserID("GenderID", (int)Common.Gender.FEMALE, userID);
-                Console.WriteLine("User ID : {0} is Female", userID);
-                Console.WriteLine("Counter =" + userWordValueCounter);
+                //Console.WriteLine("User ID : {0} is Female", userID);
+               // Console.WriteLine("Counter =" + userWordValueCounter);
             }     
             else if (userWordValueCounter < 0)
             {
                 db.UpdateUserPropertiesByUserID("GenderID", (int)Common.Gender.MALE, userID);
-                Console.WriteLine("User ID : {0} is Male", userID);
-                Console.WriteLine("Counter =" + userWordValueCounter);
+                //Console.WriteLine("User ID : {0} is Male", userID);
+                //Console.WriteLine("Counter =" + userWordValueCounter);
             }
 
             else if (userWordValueCounter == 0)
@@ -200,12 +199,12 @@ namespace TwitterCollector.Threading
         /// <param name="str">Given sentence</param>
         /// <param name="delimiterStrings">Given delimiters</param>
         /// <returns>Return split sentence by delimiters</returns>
-        private string[] SplitByDelimiters(string str, params string[] delimiterStrings)
+        private string[] SplitByDelimiters(string str, params string[] delimiterStrings) //WTF! (Why not use the function from global class? This function copied from Global.)
         {
             return str.Split(delimiterStrings, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private string GetStringWithoutPunctuation(string oldString)
+        private string GetStringWithoutPunctuation(string oldString)//WTF! (Why not use the function from global class? This function copied from Global.)
         {
             var newString = new StringBuilder();
             for (int i = 0; i < oldString.Length; i++)

@@ -120,6 +120,10 @@ namespace Twitter
                 t = t.OrderBy(x => x.ID).ToList();
                 if (updater != null) // Add new tweets to UI
                     updater.Update(t, ApiAction.GET_TWEETS);
+
+                if (t.Count == 0)
+                    return t;
+
                 long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
                 {

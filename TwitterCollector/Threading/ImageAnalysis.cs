@@ -22,6 +22,10 @@ namespace TwitterCollector.Threading
 
         private static int threadNumber = 0;
 
+        private static List<long> globalUsersIDs = new List<long>();
+
+        public static object usersLocker = new object();
+
         public override void RunThread()
         {
             while (ThreadOn)
@@ -31,7 +35,6 @@ namespace TwitterCollector.Threading
                     int topUsersForImageAnalysis = int.Parse(db.GetValueByKey("TopUsersForImageAnalysis", 30).ToString());
                     int imageAnalysisMultiRequestLimit = int.Parse(db.GetValueByKey("ImageAnalysisMultiRequestLimit", 5).ToString());
                     List<User> users = db.GetUsersToImageAnalysis();
-                    FaceDetectObject faceDetect;
                     ImageAnalysisStatus imageStatus;
                     if(users.Count == 0) 
                     {
@@ -40,8 +43,9 @@ namespace TwitterCollector.Threading
 
                     foreach (User user in users)
                     {
+                        if (!SafeAddToUsersList(user.ID))   //If the user id alrady in the list continue. It means there is a thread that working on this user.
+                            continue;
                         imageStatus = new ImageAnalysisStatus() { UserID = user.ID, ImageURL = user.ProfileImage, UserPropertiesID = user.UserPropertiesID };
-                        //faceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(imageStatus, this);
                         SafeAddThread(imageAnalysisMultiRequestLimit);
                         new Thread(new ThreadStart(() => GetFaceDetectAndImageAnalysis(imageStatus))).Start();
                     }
@@ -64,6 +68,7 @@ namespace TwitterCollector.Threading
 	        {
                 if (!e.Message.Equals("The remote server returned an error: (429) Too Many Requests."))
                     new TwitterException(e);
+                SafeRemoveFromUsersList(imageStatus.UserID);
                 SafeSubThread();
 	        }
         }
@@ -131,12 +136,27 @@ namespace TwitterCollector.Threading
                         return;
                     }
 
+                    string oldImageURL = user.ProfileImage;
                     user.ProfileImage = ias.ImageURL = user.ProfileImage.Replace("_normal", "");
                     db.UpdateUserProfile(user); // Save user changes
                     ias.FaceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(ias);    // Try to detect the image again
                     if (ias.FaceDetect.images[0].error != null)
                     {
-                        db.BadUrlProfileImage(ias.UserPropertiesID);
+                        if (ias.FaceDetect.images[0].error.error_id.Equals("input_error"))
+                        {
+                            // Try another version of the picture
+                            user.ProfileImage = ias.ImageURL = oldImageURL.Replace("_normal", "_400x400");
+                            db.UpdateUserProfile(user); // Save user changes
+                            ias.FaceDetect = imageAnalysis.GetFaceDetectAndImageAnalysis(ias);    // Try to detect the image again
+                            if (ias.FaceDetect.images[0].error != null)
+                            {
+                                db.BadUrlProfileImage(ias.UserPropertiesID);
+                            }
+                            else
+                                UpdateUserGenderAndAge(ias.UserPropertiesID, ias.FaceDetect);
+                        }
+                        else
+                            db.BadUrlProfileImage(ias.UserPropertiesID);
                     }
                     else
                     {
@@ -148,12 +168,15 @@ namespace TwitterCollector.Threading
                 {
                     UpdateUserGenderAndAge(ias.UserPropertiesID, ias.FaceDetect);
                 }
-                SafeSubThread();
             }
             catch (Exception e)
             {
                 if (!e.Message.Equals("The remote server returned an error: (429) Too Many Requests."))
-                    new TwitterException(e);
+                    new TwitterException(e);                
+            }
+            finally
+            {
+                SafeRemoveFromUsersList(ias.UserID);
                 SafeSubThread();
             }
         }
@@ -192,6 +215,27 @@ namespace TwitterCollector.Threading
             lock (locker)
             {
                 threadNumber--;
+            }
+        }
+
+        public bool SafeAddToUsersList(long userID)
+        {
+            lock (usersLocker)
+            {
+                if (globalUsersIDs.Contains(userID))
+                    return false;
+                //Console.WriteLine("Add " + userID);
+                globalUsersIDs.Add(userID);
+                return true;
+            }
+        }
+
+        public void SafeRemoveFromUsersList(long userID)
+        {
+            //Console.WriteLine("Remove " + userID);
+            lock (usersLocker)
+            {
+                globalUsersIDs.Remove(userID);
             }
         }
     }

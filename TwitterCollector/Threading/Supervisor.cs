@@ -69,10 +69,11 @@ namespace TwitterCollector.Threading
                 // Start TweetsCollector thread
                 bool newSubject = bool.Parse(subject["StartNewSubject"].ToString());
                 int subjectID = int.Parse(subject["ID"].ToString());
-                AddThread(subjectID, new TweetsCollector(), subjectID, newSubject);
+                string languageCode = subject["LanguageCode"].ToString();
+                AddThread(subjectID, new TweetsCollector(), subjectID, newSubject, languageCode);
 
                 // Start User Collector thread
-                AddThread(subjectID, new UsersCollector(), subjectID);
+                AddThread(subjectID, new UsersCollector(), subjectID, languageCode);
 
                 //TODO: Add the rest threads
 
