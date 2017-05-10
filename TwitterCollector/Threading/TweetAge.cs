@@ -32,19 +32,25 @@ namespace TwitterCollector.Threading
 
         public const int AGE_GROUP_30_PLUS = 4;
 
-        private List<double> ageHash = Enumerable.Repeat<double>(0, 4).ToList();
+        public const int WORDS_COUNT = 53;
+
+        public const int Range = 5;
+
+        private List<double> ageHash = Enumerable.Repeat<double>(0, WORDS_COUNT).ToList();
 
         private int maxWordInSubSentence;
         private List<WordAge> emoticonsArrayValue;
         private List<Tweet> userTweetHistory;
         private List<long> usersIDs;
         private string tweetWithoutPunctuation;
-        private WordClassification TestDictionary;                                        //WTF! (Name & Capital letter)
+        private StringBuilder UserText;
+        private WordClassification TestDictionary;
+        private Dictionary<string, AgeWord> AgeDictionary;
 
         #endregion
         public override void RunThread()
         {
-            emoticonsArrayValue = db.FindEmoticonsForAges();
+            
             maxWordInSubSentence = int.Parse(db.GetValueByKey("MaxWordInSubSentence",3).ToString());
             while (ThreadOn)
             {
@@ -62,25 +68,49 @@ namespace TwitterCollector.Threading
                         {
                             ClearAgeHash();
                             userTweetHistory = db.GetUserTweetByUserID(userID);
-                            TestDictionary = new WordClassification();
+                            UserText = new StringBuilder();
                             foreach (Tweet tweet in userTweetHistory)
                             {
                                 tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
-                                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("@", "");//.Replace("RT", "");    //WTF! (All the replase, need to understand way to use them)
-                                CompareSentenceEmoticonsArray(tweetWithoutPunctuation);
-
+                                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "");//.Replace("@", "");//.Replace("RT", "");    //WTF! (All the replase, need to understand way to use them)
+                                UserText.Append(tweetWithoutPunctuation + " ");
+                            }//foreach
+                            Dictionary<string, int> wordCounterPerUser = new Dictionary<string, int>();
+                            Dictionary<string, int> wordCounterNotPerUser = new Dictionary<string, int>();
+                            foreach (KeyValuePair<string, AgeWord> entry in AgeDictionary)
+                            {
+                                int numberOfWordRepeat = 0;
                                
-                                // breack the sentence to combinations of maxWordInSubSentence and compare to db dictionary
-                                if (!string.IsNullOrEmpty(tweetWithoutPunctuation))                                                                              //WTF! (Added empty string check!)
-                                    CompareSentenceToAgeDictionary(Global.SplitSentenceToSubSentences(tweetWithoutPunctuation, maxWordInSubSentence));
-                                //ageHash.ForEach(item => Console.Write(+item + ","));
-                                //Console.WriteLine();
-                            }
-                        /*Test Dictionary*/
-                        //TestDictionary.print();
+                                numberOfWordRepeat = SplitByDelimiters(UserText.ToString(), entry.Key).Length - 1;
+                                if (numberOfWordRepeat > 0)
+                                {
+                                    wordCounterPerUser.Add(entry.Key, numberOfWordRepeat);
 
-                        SaveUserAgeScoreToDB(userID);
-                        }
+                                }//if
+                                else
+                                {
+                                    wordCounterNotPerUser.Add(entry.Key, numberOfWordRepeat);
+                                }
+                            }//foreach
+                            var myList = wordCounterPerUser.ToList();
+                            myList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+                            myList.Reverse();
+
+                            //Count all the values for anlysis
+
+                            for(int index = 0;index < myList.Count;index++)
+                            {
+                                var r = myList[index];
+                                for(int i=0;i<WORDS_COUNT;i++)
+                                {
+                                    double wordValue = AgeDictionary[r.Key].WordRates[i];
+                                    ageHash[i] += wordValue;
+                                }
+                            }
+
+
+                            SaveUserAgeScoreToDB(userID);
+                        } //foreach save every user
                     }
                 }
                 catch (Exception e)
@@ -90,25 +120,46 @@ namespace TwitterCollector.Threading
             }
         }
 
-        private void SaveUserAgeScoreToDB(long userID)
+        public TweetAge():base()
         {
-            double max = ageHash.Max();
-            //find max value
-            ageHash.IndexOf(max);
-            db.UpdateUserPropertiesByUserID( "AgeGroupID", ageHash.IndexOf(max) + 1, userID);   
+            emoticonsArrayValue = db.FindEmoticonsForAges();
+            AgeDictionary = db.GetAgeDictionary();
         }
 
+        private void SaveUserAgeScoreToDB(long userID)
+        {
+            int max = FindMaxByRange(Range);
+           // ageHash.IndexOf(max);
+            db.UpdateUserPropertiesByUserID( "AgeGroupID", max + 13, userID);   
+        }
+        private int FindMaxByRange(int range)
+        {
+            int maxIndex = 0,i,j;
+            double maxValue=0,temp;
+            for (i = 0; i < ageHash.Count - range; i++)
+            {
+                temp = 0;
+                for (j = 0; j < range; j++)
+                {
+                    temp += ageHash[i + j];
+                }
+                if (temp > maxValue)
+                {
+                    maxValue = temp;
+                    maxIndex = i + range / 2;
+                }
+            }
+            return maxIndex;
+        }
         /// <summary>
         /// This function compare each word or words combination from
         /// the original sentence to dictionary Age Value
         /// </summary>
         /// <param name="splitSentence"></param>
         private void CompareSentenceToAgeDictionary(List<string> splitSentences)
-        {
-            int index = 0;                                        //WTF!
+        {                                    
             foreach (string word in splitSentences)
-            {
-                index++;                                        //WTF!
+            {                                   
                 WordAge returnValue = null;
                 try
                 {
@@ -154,7 +205,7 @@ namespace TwitterCollector.Threading
             {
                 if(Sentence.Contains( Emoticon.Word) )
                 {
-                    switch (Emoticon.MostPositiveAgeGroup)                                          //WTF! (Same code lines in line 123. Create common function.)         
+                    switch (Emoticon.MostPositiveAgeGroup)    
                     {
                         case AGE_GROUP_13_TO_18:
                             ageHash[0] += Emoticon.Age13To18;
@@ -179,7 +230,7 @@ namespace TwitterCollector.Threading
 
         private void ClearAgeHash()
         {
-            for (int i = 1 ; i < ageHash.Count ; i++)
+            for (int i = 0 ; i < ageHash.Count ; i++)
             {
                 ageHash[i] = 0;
             }
