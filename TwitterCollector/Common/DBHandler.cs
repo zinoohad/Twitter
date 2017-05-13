@@ -962,6 +962,7 @@ namespace TwitterCollector.Common
             }
             catch { return false; }
         }
+
         public bool AddNegativeWord(string word)
         {
             if (string.IsNullOrEmpty(word)) return false;
@@ -1043,6 +1044,7 @@ namespace TwitterCollector.Common
             }
             return tweetID;
         }
+
         public void InsertHashtags(Hashtag[] hashtag, long userID, long tweetID)
         {
             long hashtagID;
@@ -1340,6 +1342,42 @@ namespace TwitterCollector.Common
                               wordAge.Age23To29, wordAge.Age30Plus, wordAge.MostPositiveAgeGroup, wordAge.MostNegativeAgeGroup, DateTime.Now.ToString(SqlServerDateTimeFormat));
                 }
             }
+        }
+
+        public void UpsertDictionaryAllAges(WordAge wordAge, bool isEmoticon = false)
+        {
+            long recordID;
+            string word = wordAge.Word.Replace("'","''");
+            DataTable dt = Select("SELECT ID FROM DictionaryAllAges WHERE Word = '{0}'", word);
+
+            string ratesForUpdate = "";
+            string ratesIndexForInsert = "";
+            string ratesValueForInsert = "";
+
+            for( int i = 13 ; i <= 65 ; i++)
+            {
+                ratesForUpdate += string.Format(" Age{0} = {1},",i,wordAge.AllAgesRate[i]);
+                ratesIndexForInsert += string.Format(" Age{0},",i);
+                ratesValueForInsert += string.Format(" {0},",wordAge.AllAgesRate[i]);
+            }
+            ratesForUpdate = ratesForUpdate.Substring(0, ratesForUpdate.Length - 1);
+            ratesIndexForInsert = ratesIndexForInsert.Substring(0, ratesIndexForInsert.Length - 1);
+            ratesValueForInsert = ratesValueForInsert.Substring(0, ratesValueForInsert.Length - 1);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                DataRow dr = dt.Rows[0];
+                recordID = long.Parse(dr["ID"].ToString());
+                Update("UPDATE DictionaryAllAges SET {0} WHERE ID = {1}", ratesForUpdate, recordID);
+            }
+            else
+            {
+                if (isEmoticon)
+                    Insert("INSERT INTO DictionaryAllAges (Word,{0},IsEmoticon) VALUES ('{1}',{2},1)", ratesIndexForInsert, word, ratesValueForInsert);
+                else
+                    Insert("INSERT INTO DictionaryAllAges (Word,{0}) VALUES ('{1}',{2})", ratesIndexForInsert, word, ratesValueForInsert);
+            }
+
         }
 
         #endregion

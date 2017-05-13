@@ -13,6 +13,7 @@ using Receptiviti.Client;
 using TopicSentimentAnalysis;
 using TwitterCollector.Threading;
 using System.IO;
+using TopicSentimentAnalysis.Classes;
 
 namespace TwitterCollector
 {
@@ -22,50 +23,21 @@ namespace TwitterCollector
         static void Main()
         {
 
-
-
-            /*----Age Test---*/
-            //TweetAge test = new TweetAge();
-            //test.Start();
-            /*----Age Test---*/
-
-            /*----Gender Test---*/
-            //TweetGender test2 = new TweetGender();
-            //test2.Start();
-            /*----Gender Test---*/
-
-            //var result = i.GetImageAnalysisFreeImagga("http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg");
-            //i.GetImageAnalysisIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
-            //i.DetectFacesIBM("https://pbs.twimg.com/profile_background_images/695841058/a00189f47992007bfa0cc8a13fba107e.jpeg");
-
-            //(new SentimentAnalysis()).Start();
-
-            //(new Supervisor()).Start();
-
-            //List<string> sentence = Global.SplitSentenceToSubSentences("the punishment assigned to a defendant found guilty by a court", 30);
-            //var s = WordSentimentAnalysis.CheckWordAge(sentence.ToArray());
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             new CMain();
             Application.Run();
+            //var db = Global.DB;
+            //DataTable dt = db.GetTable("DictionaryAge","WORD NOT IN ( SELECT Word FROM DictionaryAllAges )");
+            //foreach (DataRow dr in dt.Rows)
+            //{
+            //    WordAge word = WordSentimentAnalysis.CheckWordAge(dr["Word"].ToString())[0];
+            //    bool isEmoticon = bool.Parse(dr["IsEmoticon"].ToString());
+            //    db.UpsertDictionaryAllAges(word, isEmoticon);
+            //}
 
-
-            //DBHandler db = new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.1.10", "1433", "Avi", "1234", "Twitter"));
-
-            //DBHandler dbh = Global.DB;
-
-            //dbh.UpdateDictionaryAge();
-            //List<string> data = WebHandler.ReadWebPage("http://www.urbandictionary.com/popular.php?character=A");
-            //List<string> data = WebHandler.ReadWebPage("http://time.com/4373616/text-abbreviations-acronyms/");
-
-
-
-            //CMain controller = new CMain();
 
         }
-
-
     }
 }
 
