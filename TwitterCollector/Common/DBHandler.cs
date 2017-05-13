@@ -712,6 +712,26 @@ namespace TwitterCollector.Common
             return UserTweets;
         }
 
+        public Dictionary<string, AgeWord> GetAgeDictionary()
+        {
+            Dictionary<string, AgeWord> ageDictionary = new Dictionary<string, AgeWord>();
+            DataTable dt = Select("SELECT * FROM DictionaryAllAges");
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    AgeWord word = new AgeWord();
+                    for ( int i=13;i<=65;i++)
+                    {
+                        string currntAge = i.ToString();
+                            word.WordRates[i-13] = double.Parse(dr["Age"+ currntAge].ToString());
+                    }
+                    ageDictionary.Add(dr["Word"].ToString(), word);
+                }
+            }
+            return ageDictionary;
+
+        }
         #endregion
 
         #region Tweet Gender

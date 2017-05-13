@@ -28,27 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubjectResult));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.chart3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.button1 = new System.Windows.Forms.Button();
             this.startTimeTB = new System.Windows.Forms.TextBox();
             this.startTimeL = new System.Windows.Forms.Label();
             this.onOffS = new JCS.ToggleSwitch();
-            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.totalUsersUD = new System.Windows.Forms.NumericUpDown();
             this.totalUsersL = new System.Windows.Forms.Label();
             this.totalTweetsUD = new System.Windows.Forms.NumericUpDown();
@@ -71,10 +57,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
             this.settingsIcon = new System.Windows.Forms.ToolStripButton();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalUsersUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalTweetsUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -88,12 +72,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
-            this.panel1.Controls.Add(this.chart3);
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.startTimeTB);
             this.panel1.Controls.Add(this.startTimeL);
             this.panel1.Controls.Add(this.onOffS);
-            this.panel1.Controls.Add(this.chart2);
-            this.panel1.Controls.Add(this.chart1);
             this.panel1.Controls.Add(this.totalUsersUD);
             this.panel1.Controls.Add(this.totalUsersL);
             this.panel1.Controls.Add(this.totalTweetsUD);
@@ -106,29 +89,15 @@
             this.panel1.Size = new System.Drawing.Size(992, 586);
             this.panel1.TabIndex = 5;
             // 
-            // chart3
+            // button1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart3.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart3.Legends.Add(legend1);
-            this.chart3.Location = new System.Drawing.Point(727, 159);
-            this.chart3.Name = "chart3";
-            this.chart3.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.EarthTones;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            series1.YValuesPerPoint = 2;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "Series2";
-            this.chart3.Series.Add(series1);
-            this.chart3.Series.Add(series2);
-            this.chart3.Size = new System.Drawing.Size(380, 214);
-            this.chart3.TabIndex = 12;
-            this.chart3.Text = "chart3";
+            this.button1.Location = new System.Drawing.Point(430, 53);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(140, 33);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "View Diagrams";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.diagrms_button_click);
             // 
             // startTimeTB
             // 
@@ -161,52 +130,6 @@
             this.onOffS.Style = JCS.ToggleSwitch.ToggleSwitchStyle.BrushedMetal;
             this.onOffS.TabIndex = 9;
             this.onOffS.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.onOffS_CheckedChanged);
-            // 
-            // chart2
-            // 
-            this.chart2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea2.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart2.Legends.Add(legend2);
-            this.chart2.Location = new System.Drawing.Point(420, 342);
-            this.chart2.Name = "chart2";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chart2.Series.Add(series3);
-            this.chart2.Size = new System.Drawing.Size(323, 221);
-            this.chart2.TabIndex = 8;
-            this.chart2.Text = "chart2";
-            title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
-            title1.Name = "Title";
-            title1.Text = "Gender Division";
-            this.chart2.Titles.Add(title1);
-            // 
-            // chart1
-            // 
-            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
-            this.chart1.Location = new System.Drawing.Point(420, 21);
-            this.chart1.Name = "chart1";
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.chart1.Series.Add(series4);
-            this.chart1.Size = new System.Drawing.Size(301, 228);
-            this.chart1.TabIndex = 7;
-            this.chart1.Text = "chart1v";
-            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
-            title2.Name = "Age Split";
-            title2.Text = "Age Division";
-            this.chart1.Titles.Add(title2);
             // 
             // totalUsersUD
             // 
@@ -276,12 +199,12 @@
             // tweetContainsCount
             // 
             this.tweetContainsCount.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.tweetContainsCount.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.tweetContainsCount.DefaultCellStyle = dataGridViewCellStyle2;
             this.tweetContainsCount.HeaderText = "Tweet Contains Count";
             this.tweetContainsCount.Name = "tweetContainsCount";
             this.tweetContainsCount.ReadOnly = true;
-            this.tweetContainsCount.Width = 156;
+            this.tweetContainsCount.Width = 160;
             // 
             // subjectCB
             // 
@@ -327,6 +250,7 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mainIcon,
             this.toolStripSeparator4,
@@ -350,7 +274,7 @@
             this.mainIcon.Image = global::TwitterCollector.Properties.Resources.home;
             this.mainIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mainIcon.Name = "mainIcon";
-            this.mainIcon.Size = new System.Drawing.Size(23, 24);
+            this.mainIcon.Size = new System.Drawing.Size(24, 24);
             this.mainIcon.Text = "toolStripButton1";
             this.mainIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
@@ -364,7 +288,7 @@
             this.subjectIcon.Image = global::TwitterCollector.Properties.Resources.blue_pencil;
             this.subjectIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.subjectIcon.Name = "subjectIcon";
-            this.subjectIcon.Size = new System.Drawing.Size(78, 24);
+            this.subjectIcon.Size = new System.Drawing.Size(82, 24);
             this.subjectIcon.Text = "Subject";
             this.subjectIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
@@ -378,7 +302,7 @@
             this.statisticsIcon.Image = global::TwitterCollector.Properties.Resources.pie_chart;
             this.statisticsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.statisticsIcon.Name = "statisticsIcon";
-            this.statisticsIcon.Size = new System.Drawing.Size(87, 24);
+            this.statisticsIcon.Size = new System.Drawing.Size(91, 24);
             this.statisticsIcon.Text = "Statistics";
             this.statisticsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
@@ -392,7 +316,7 @@
             this.toolIcon.Image = global::TwitterCollector.Properties.Resources.twitter;
             this.toolIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolIcon.Name = "toolIcon";
-            this.toolIcon.Size = new System.Drawing.Size(155, 24);
+            this.toolIcon.Size = new System.Drawing.Size(161, 24);
             this.toolIcon.Text = "Twitter Search Tool";
             this.toolIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
@@ -406,7 +330,7 @@
             this.dictionaryIcon.Image = global::TwitterCollector.Properties.Resources.dictionary;
             this.dictionaryIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dictionaryIcon.Name = "dictionaryIcon";
-            this.dictionaryIcon.Size = new System.Drawing.Size(97, 24);
+            this.dictionaryIcon.Size = new System.Drawing.Size(101, 24);
             this.dictionaryIcon.Text = "Dictionary";
             this.dictionaryIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
@@ -417,9 +341,19 @@
             this.settingsIcon.Image = ((System.Drawing.Image)(resources.GetObject("settingsIcon.Image")));
             this.settingsIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.settingsIcon.Name = "settingsIcon";
-            this.settingsIcon.Size = new System.Drawing.Size(23, 24);
+            this.settingsIcon.Size = new System.Drawing.Size(24, 24);
             this.settingsIcon.Text = "Settings";
             this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(576, 54);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(145, 32);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "Close Diagrams";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.CloseXmapp);
             // 
             // SubjectResult
             // 
@@ -436,9 +370,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onExit_Click);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalUsersUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalTweetsUD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -465,8 +396,6 @@
         private System.Windows.Forms.Label tweetBelongL;
         private System.Windows.Forms.NumericUpDown totalUsersUD;
         private System.Windows.Forms.Label totalUsersL;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton subjectIcon;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -480,7 +409,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.TextBox startTimeTB;
         private System.Windows.Forms.Label startTimeL;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart3;
         private System.Windows.Forms.ToolStripButton settingsIcon;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

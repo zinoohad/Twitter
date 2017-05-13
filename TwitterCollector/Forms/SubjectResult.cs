@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace TwitterCollector.Forms
     {
         #region Params
         private CSubjectResult controller;
+        public  Boolean XmappisRunning;
         #endregion
         public SubjectResult()
         {
@@ -41,6 +43,7 @@ namespace TwitterCollector.Forms
         {
             Global.ExitApplication(sender, e);
         } 
+        
         #endregion
 
         #region Realtime Updating UI
@@ -67,8 +70,26 @@ namespace TwitterCollector.Forms
         public void LoadAllParams(SubjectResultUI values)
         {
         }
+
         #endregion
 
+        private void diagrms_button_click(object sender, EventArgs e)
+        {
+            controller.OpenDiagrams();
+            XmappisRunning = true;
+        }
 
+        private void CloseXmapp(object sender, EventArgs e)
+        {
+            if (XmappisRunning)
+            {
+                string xmapp = @"C:\xampp\xampp_stop";
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.FileName = xmapp;
+                Process.Start(startInfo);
+                XmappisRunning = false;
+            }
+        }
     }
 }

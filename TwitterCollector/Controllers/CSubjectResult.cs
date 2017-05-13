@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace TwitterCollector.Controllers
     {
         #region Params
         private SubjectResult form = new SubjectResult();
-
         #endregion
         public CSubjectResult()
         {
@@ -28,6 +28,20 @@ namespace TwitterCollector.Controllers
         }
         public void SwitchStateChanged(SwitchState state)
         {
+        }
+        public void OpenDiagrams()
+        {
+            if (!form.XmappisRunning)
+            {
+                string xmapp = @"C:\xampp\xampp_start";
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.FileName = xmapp;
+                Process.Start(startInfo);
+                form.XmappisRunning = true;
+            }
+            string path = @"http://localhost/Twitter1/index.html";
+            Process.Start("chrome.exe", path);
         }
         #endregion
         #region Functions
