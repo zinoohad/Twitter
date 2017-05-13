@@ -46,6 +46,7 @@ namespace TopicSentimentAnalysis.Classes
 
         public int MostNegativeAgeGroup;
 
+        public double[] AllAgesRate = Enumerable.Repeat<double>(0.0,66).ToArray(); 
 
         public WordAge() { }
 
@@ -85,7 +86,20 @@ namespace TopicSentimentAnalysis.Classes
                 MostNegativeAgeGroup = 3;
             else if (MinValue == Age30Plus)
                 MostNegativeAgeGroup = 4;
+
+            UseAllAges(word, ageResultList);
             
+        }
+
+        private void UseAllAges(string word, List<AgeResult> ageResultList)
+        {
+            foreach (AgeResult ar in ageResultList)
+            {
+                if (ar.Age >= 13 && ar.Age <= 65)
+                {
+                    AllAgesRate[ar.Age] = ar.Frequency;
+                }
+            }
         }
 
     }

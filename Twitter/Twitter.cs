@@ -109,20 +109,21 @@ namespace Twitter
             List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=0&exclude_replies=1&contributor_details=1", countPerPage, userName);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userName);
             else
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=0&exclude_replies=1&contributor_details=1", countPerPage, userID);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userID);
             try
             {
                 jsonStr = GetRequest(requestUri);
                 //t = serializer.Deserialize<List<Tweet>>(jsonStr);
                 t = JsonConvert.DeserializeObject<List<Tweet>>(jsonStr);
                 t = t.OrderBy(x => x.ID).ToList();
-                if (updater != null) // Add new tweets to UI
-                    updater.Update(t, ApiAction.GET_TWEETS);
 
                 if (t.Count == 0)
                     return t;
+
+                if (updater != null) // Add new tweets to UI
+                    updater.Update(t, ApiAction.GET_TWEETS);
 
                 long SinceID = t[0].ID;
                 while (t.Count < maxTweets)
