@@ -58,7 +58,7 @@ namespace TwitterCollector.Threading
                             foreach (Tweet tweet in usertweethistory)
                             {
                                 tweetWithoutPunctuation = GetStringWithoutPunctuation(tweet.Text);
-                                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "").Replace("RT", "").Replace("@", "");             //WTF! (All the replase, need to understand way to use them)
+                                tweetWithoutPunctuation = tweet.Text.Replace("http://", "").Replace("https://", "");//.Replace("RT", "").Replace("@", "");             //WTF! (All the replase, need to understand way to use them)
                                 UserText.Append(tweetWithoutPunctuation + " ");
                             }
                             foreach (KeyValuePair<string, double> entry in GenderDictionary)

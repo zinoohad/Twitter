@@ -382,7 +382,12 @@ namespace TwitterCollector.Common
                 List<string> splitSentence = SplitSentenceToSubSentences(sentence, maxWordInSubSentence);
                 List<WordAge> apiResult = WordSentimentAnalysis.CheckWordAge(splitSentence.ToArray());
                 DBHandler db = DB;
-                db.UpsertWordToAgeDictionaryAfterUsingAPI(apiResult);
+                
+                foreach (WordAge wordAge in apiResult)
+                {
+                    bool isEmoticon = Global.IsEmoticon(wordAge.Word);
+                    db.UpsertDictionaryAllAges(wordAge, isEmoticon);
+                }
             }
             catch (Exception e)
             {
