@@ -61,13 +61,20 @@ C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitt
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.SubjectResult.resources
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Properties.Resources.resources
 C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csproj.GenerateResource.Cache
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\MoreLinq.dll
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\symbol-map\symbol-map.html
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\data\us-state-centroids.json
+C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\data\us-states.json
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TwitterCollector.exe.config
-C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.exe
-C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.pdb
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TwitterCollector.exe
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TwitterCollector.pdb
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\DataBaseConnections.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.dll
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Receptiviti.Client.dll
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ToggleSwitch.dll
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TopicSentimentAnalysis.dll
@@ -78,7 +85,9 @@ C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ToggleSwi
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\DataBaseConnections.pdb
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\TopicSentimentAnalysis.pdb
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Twitter.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Receptiviti.Client.xml
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csprojResolveAssemblyReference.cache
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.DictionaryManager.resources
@@ -89,14 +98,5 @@ C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCo
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Forms.SubjectResult.resources
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.Properties.Resources.resources
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csproj.GenerateResource.Cache
-C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
-C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.dll
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\ObjectListView.xml
-C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.dll
-C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\MoreLinq.dll
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\MoreLinq.xml
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\symbol-map\symbol-map.html
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\data\us-state-centroids.json
-C:\Users\Avi\Desktop\לימודים\פרוייקט\חלק א\Final Project\Twitter\TwitterCollector\bin\Debug\Diagrams\examples\data\us-states.json
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.exe
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.pdb

@@ -11,6 +11,7 @@ using TopicSentimentAnalysis.Classes;
 using Twitter.Common;
 using TopicSentimentAnalysis;
 using System.Threading;
+using Twitter;
 
 namespace TwitterCollector.Common
 {
@@ -20,6 +21,8 @@ namespace TwitterCollector.Common
 
         private DBConnection db;
 
+        private TwitterAPI twitter;
+
         public const string TwitterDateTemplate = "ddd MMM dd HH:mm:ss +ffff yyyy";
 
         public const string SqlServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
@@ -28,9 +31,17 @@ namespace TwitterCollector.Common
 
         #region Constructors
 
-        public DBHandler() { db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); }
+        public DBHandler() 
+        { 
+            db = new DBConnection(DBTypes.SQLServer, "localhost", "", "", "", "Twitter", true); 
+            twitter = new TwitterAPI(GetTwitterKey()); 
+        }
 
-        public DBHandler(DBConnection db) { this.db = db; }
+        public DBHandler(DBConnection db) 
+        { 
+            this.db = db; 
+            twitter = new TwitterAPI(GetTwitterKey()); 
+        }
 
         #endregion
         
@@ -1002,6 +1013,7 @@ namespace TwitterCollector.Common
             {
                 try
                 {
+                    Place metaData = twitter.GetPlaceMetaData(place.url);
                     object tmpResult = GetSingleValue("Places", "ID", string.Format("PlaceID = '{0}'", place.id));
                     if (tmpResult == null)
                     {

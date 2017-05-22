@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Twitter.Classes
 {
-    public class Place
+    public class Place : PlaceBase
+    {
+        public List<PlaceBase> contained_within { get; set; }
+        public Geometry geometry { get; set; }
+        public IList<string> polylines { get; set; }
+    }
+
+    public class PlaceBase
     {
         public PlaceAttributes attributes { get; set; }
         public BoundingBox bounding_box { get; set; }
@@ -17,7 +24,15 @@ namespace Twitter.Classes
         public string name { get; set; }
         public string place_type { get; set; }
         public string url { get; set; }
+
     }
+
+    public class Geometry
+    {
+        public IList<IList<IList<double>>> coordinates { get; set; }
+        public string type { get; set; }
+    }
+
     public class PlaceAttributes
     {
         public object obj { get; set; }

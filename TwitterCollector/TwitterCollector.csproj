@@ -127,6 +127,7 @@
     <Compile Include="Forms\SubjectResult.Designer.cs">
       <DependentUpon>SubjectResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Objects\AgeWord.cs" />
     <Compile Include="Objects\ApiKeys.cs" />
     <Compile Include="Objects\GeneralThreadParams.cs" />
     <Compile Include="Objects\PosNegTweet.cs" />
