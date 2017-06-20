@@ -20,10 +20,16 @@ namespace TwitterCollector.Controllers
             //form.ShowDialog();
         }
         #region Implement Methods
+        public override Form GetUI(UiState state)
+        {
+            return form;
+        }
+
         public override Form GetUI()
         {
             return form;
         }
+
         public override void ToolStripAction(string buttonName)
         {
             Global.ToolStripAction(buttonName, this);

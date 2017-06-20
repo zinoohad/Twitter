@@ -42,8 +42,16 @@ namespace TwitterCollector.Common
         //public static DBHandler DB { get { return new DBHandler(new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.8.100", "1433", "Avi", "1234", "Twitter")); } }
         //new DataBaseConnections.DBConnection(DataBaseConnections.DBTypes.SQLServer, "192.168.8.100", "1433", "Avi", "1234", "Twitter")
 
-
         private static NewAgeWordsTimer ageWordsTimer;
+
+        private static string _mainLanguageCode;
+        public static string MainLanguageCode { 
+            get{ 
+                if(string.IsNullOrEmpty(_mainLanguageCode))
+                    _mainLanguageCode = "'" + DB.GetValueByKey("MainLanguageCode", "en").ToString().ToLower() + "'";
+                return _mainLanguageCode; 
+            } 
+        }
 
         /// <summary>
         /// Value is true if the space is low.
@@ -90,10 +98,10 @@ namespace TwitterCollector.Common
             {
                 case "mainIcon":
                     if (sender == main) return;
-                    form = main.GetUI();
+                    form = main.GetUI(UiState.SHOW);
                     form.Location = sender.GetUI().Location;
                     form.Show();
-                    sender.GetUI().Hide();
+                    sender.GetUI(UiState.HIDE).Hide();
                     break;
                 case "subjectIcon":
                     if (subjectManager != null && sender == subjectManager) return;
@@ -101,15 +109,15 @@ namespace TwitterCollector.Common
                     {
                         subjectManager = new CSubjectManager();    //Create Controller
                         subjectManager.GetUI().Location = sender.GetUI().Location;
-                        sender.GetUI().Hide();
-                        subjectManager.GetUI().ShowDialog();
+                        sender.GetUI(UiState.HIDE).Hide();
+                        subjectManager.GetUI(UiState.SHOW).ShowDialog();
                     }
                     else
                     {
-                        form = subjectManager.GetUI();
+                        form = subjectManager.GetUI(UiState.SHOW);
                         form.Location = sender.GetUI().Location;
                         form.Show();
-                        sender.GetUI().Hide();
+                        sender.GetUI(UiState.HIDE).Hide();
                     }
                     break;
                 case "statisticsIcon":
@@ -118,15 +126,15 @@ namespace TwitterCollector.Common
                     {
                         subjectResult = new CSubjectResult();    //Create Controller
                         subjectResult.GetUI().Location = sender.GetUI().Location;
-                        sender.GetUI().Hide();
-                        subjectResult.GetUI().ShowDialog();
+                        sender.GetUI(UiState.HIDE).Hide();
+                        subjectResult.GetUI(UiState.SHOW).ShowDialog();
                     }
                     else
                     {
-                        form = subjectResult.GetUI();
+                        form = subjectResult.GetUI(UiState.SHOW);
                         form.Location = sender.GetUI().Location;
                         form.Show();
-                        sender.GetUI().Hide();
+                        sender.GetUI(UiState.HIDE).Hide();
                     }
                     break;
                 case "toolIcon":
@@ -146,15 +154,15 @@ namespace TwitterCollector.Common
                     {
                         dictionaryManager = new CDictionaryManager();    //Create Controller
                         dictionaryManager.GetUI().Location = sender.GetUI().Location;
-                        sender.GetUI().Hide();
-                        dictionaryManager.GetUI().ShowDialog();
+                        sender.GetUI(UiState.HIDE).Hide();
+                        dictionaryManager.GetUI(UiState.SHOW).ShowDialog();
                     }
                     else
                     {
-                        form = dictionaryManager.GetUI();
+                        form = dictionaryManager.GetUI(UiState.SHOW);
                         form.Location = sender.GetUI().Location;
                         form.Show();
-                        sender.GetUI().Hide();
+                        sender.GetUI(UiState.HIDE).Hide();
                     }
                     break;
                 case "settingsIcon":
@@ -163,15 +171,15 @@ namespace TwitterCollector.Common
                     {
                         settings = new CSettings();    //Create Controller
                         settings.GetUI().Location = sender.GetUI().Location;
-                        sender.GetUI().Hide();
-                        settings.GetUI().ShowDialog();
+                        sender.GetUI(UiState.HIDE).Hide();
+                        settings.GetUI(UiState.SHOW).ShowDialog();
                     }
                     else
                     {
-                        form = settings.GetUI();
+                        form = settings.GetUI(UiState.SHOW);
                         form.Location = sender.GetUI().Location;
                         form.Show();
-                        sender.GetUI().Hide();
+                        sender.GetUI(UiState.HIDE).Hide();
                     }
                     break;
             }

@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubjectResult));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.startTimeTB = new System.Windows.Forms.TextBox();
             this.startTimeL = new System.Windows.Forms.Label();
@@ -57,7 +58,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dictionaryIcon = new System.Windows.Forms.ToolStripButton();
             this.settingsIcon = new System.Windows.Forms.ToolStripButton();
-            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.totalUsersUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalTweetsUD)).BeginInit();
@@ -88,6 +88,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(992, 586);
             this.panel1.TabIndex = 5;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(576, 54);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(145, 32);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "Close Diagrams";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.CloseXmapp);
             // 
             // button1
             // 
@@ -199,12 +209,12 @@
             // tweetContainsCount
             // 
             this.tweetContainsCount.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.tweetContainsCount.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.tweetContainsCount.DefaultCellStyle = dataGridViewCellStyle1;
             this.tweetContainsCount.HeaderText = "Tweet Contains Count";
             this.tweetContainsCount.Name = "tweetContainsCount";
             this.tweetContainsCount.ReadOnly = true;
-            this.tweetContainsCount.Width = 160;
+            this.tweetContainsCount.Width = 156;
             // 
             // subjectCB
             // 
@@ -239,6 +249,7 @@
             // 
             // tiltleL
             // 
+            this.tiltleL.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.tiltleL.AutoSize = true;
             this.tiltleL.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.tiltleL.ForeColor = System.Drawing.Color.White;
@@ -316,7 +327,7 @@
             this.toolIcon.Image = global::TwitterCollector.Properties.Resources.twitter;
             this.toolIcon.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolIcon.Name = "toolIcon";
-            this.toolIcon.Size = new System.Drawing.Size(161, 24);
+            this.toolIcon.Size = new System.Drawing.Size(159, 24);
             this.toolIcon.Text = "Twitter Search Tool";
             this.toolIcon.Click += new System.EventHandler(this.toolStripAction_Click);
             // 
@@ -344,16 +355,6 @@
             this.settingsIcon.Size = new System.Drawing.Size(24, 24);
             this.settingsIcon.Text = "Settings";
             this.settingsIcon.Click += new System.EventHandler(this.toolStripAction_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(576, 54);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(145, 32);
-            this.button2.TabIndex = 13;
-            this.button2.Text = "Close Diagrams";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.CloseXmapp);
             // 
             // SubjectResult
             // 

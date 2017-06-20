@@ -100,3 +100,17 @@ C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCo
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csproj.GenerateResource.Cache
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.exe
 C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.pdb
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Autofac.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Microsoft.Threading.Tasks.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Microsoft.Threading.Tasks.Extensions.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\System.Net.Http.Extensions.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\System.Net.Http.Primitives.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Tweetinvi.dll
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Autofac.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Microsoft.Threading.Tasks.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Microsoft.Threading.Tasks.Extensions.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\System.Net.Http.Extensions.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\bin\Debug\System.Net.Http.Primitives.xml
+C:\Users\zinoo\Google Drive\Studies\Twitter\TwitterCollector\obj\Debug\TwitterCollector.csproj.App.config

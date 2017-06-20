@@ -40,8 +40,9 @@ namespace TwitterCollector.Threading
                     if (streamThread == null || !streamThread.IsAlive) (streamThread = new Thread(new ThreadStart(this.ManageOnStream))).Start();
 
                     //if (_newSubject) StartNewSearch();
-                    if (true) StartNewSearch();
-                    else ContinueToSearch();
+                    StartNewSearch();
+                    //if (true) StartNewSearch();
+                    //else ContinueToSearch();
                 }
                 catch (Exception e)
                 {

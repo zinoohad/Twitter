@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twitter", "Twitter\Twitter.csproj", "{944CD58E-ECB7-43FA-A6F6-B962CDF96676}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicSentimentAnalysis", "TopicSentimentAnalysis\TopicSentimentAnalysis.csproj", "{E7A7638B-7DDF-4488-A4E8-6ED58B5FAA09}"

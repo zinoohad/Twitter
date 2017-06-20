@@ -31,4 +31,16 @@ namespace TwitterCollector.Common
         ,Stop
         ,Start
     }
+
+    public enum UpdateType
+    {
+        MAIN,
+        SUBJECT_RESULTS
+    }
+
+    public enum UiState
+    {
+        SHOW,
+        HIDE
+    }
 }                                                                                                                                                                                                                                                                                                                                                                                     

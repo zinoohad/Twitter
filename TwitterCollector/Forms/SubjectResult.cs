@@ -54,12 +54,14 @@ namespace TwitterCollector.Forms
         {
         }
         #endregion
+
         #region Interface Implement
         public void SetController(BaseController controller)
         {
             this.controller = (CSubjectResult)controller;
         }
         #endregion
+
         #region Functions
         public void LoadSubjectComboBox(List<string> subjects)
         {

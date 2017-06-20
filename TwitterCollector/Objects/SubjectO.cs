@@ -52,6 +52,8 @@ namespace TwitterCollector.Objects
 
         public string LanguageCode = "en";
 
+        public int RelatedTweetsCount = 0;
+
         public KeywordO() { }
 
         public KeywordO(DataRow dr)

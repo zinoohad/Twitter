@@ -23,11 +23,15 @@ namespace TwitterCollector
         static void Main()
         {
 
+            //(new TweetinviHelper()).UpdateAdminPlace();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             new CMain();
             Application.Run();
-            //var db = Global.DB;
+
+            var db = Global.DB;
+
             //DataTable dt = db.GetTable("DictionaryAge","WORD NOT IN ( SELECT Word FROM DictionaryAllAges )");
             //foreach (DataRow dr in dt.Rows)
             //{

@@ -111,6 +111,11 @@ namespace TwitterCollector.Controllers
 
         #region Implement Methods
 
+        public override Form GetUI(UiState state)
+        {
+            return form;
+        }
+
         public override Form GetUI()
         {
             return form;

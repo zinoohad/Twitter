@@ -88,6 +88,10 @@ namespace Twitter.Classes
             }
         }
 
+        public string GetTextReplaced()
+        {
+            return Text.Replace("&gt;", ">").Replace("&lt;", "<");
+        }
 
 
     }

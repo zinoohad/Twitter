@@ -27,7 +27,7 @@ namespace Twitter.Classes
 
     }
 
-    public class Geometry
+    public class Geometry 
     {
         public IList<IList<IList<double>>> coordinates { get; set; }
         public string type { get; set; }

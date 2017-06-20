@@ -44,6 +44,9 @@
             this.addKeywordTB = new System.Windows.Forms.TextBox();
             this.addSubjectB = new System.Windows.Forms.Button();
             this.dgvSubject = new System.Windows.Forms.DataGridView();
+            this.subecjtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lang = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.delete = new System.Windows.Forms.DataGridViewImageColumn();
             this.addSubjectL = new System.Windows.Forms.Label();
             this.addSubjectTB = new System.Windows.Forms.TextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -60,9 +63,6 @@
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.languagesTableAdapter = new TwitterCollector.TwitterDataSetTableAdapters.LanguagesTableAdapter();
-            this.subecjtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lang = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.delete = new System.Windows.Forms.DataGridViewImageColumn();
             this.topPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKeyword)).BeginInit();
@@ -132,6 +132,7 @@
             this.dgvKeyword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvKeyword.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvKeyword.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dgvKeyword.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvKeyword.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
@@ -224,6 +225,7 @@
             this.dgvSubject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvSubject.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvSubject.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dgvSubject.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSubject.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.subecjtName,
@@ -239,6 +241,37 @@
             this.dgvSubject.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.subjectDGV_CellClick);
             this.dgvSubject.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvSubject_CurrentCellDirtyStateChanged);
             this.dgvSubject.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvSubject_DataError);
+            // 
+            // subecjtName
+            // 
+            this.subecjtName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.subecjtName.HeaderText = "Subject Name";
+            this.subecjtName.Name = "subecjtName";
+            this.subecjtName.ReadOnly = true;
+            // 
+            // lang
+            // 
+            this.lang.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.lang.DataSource = this.languagesBindingSource;
+            this.lang.DisplayMember = "NAME";
+            this.lang.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.lang.HeaderText = "Language";
+            this.lang.Name = "lang";
+            this.lang.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.lang.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.lang.ValueMember = "NAME";
+            this.lang.Width = 97;
+            // 
+            // delete
+            // 
+            this.delete.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.delete.HeaderText = "";
+            this.delete.Image = global::TwitterCollector.Properties.Resources.X;
+            this.delete.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.delete.Name = "delete";
+            this.delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.delete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.delete.Width = 19;
             // 
             // addSubjectL
             // 
@@ -378,37 +411,6 @@
             // languagesTableAdapter
             // 
             this.languagesTableAdapter.ClearBeforeFill = true;
-            // 
-            // subecjtName
-            // 
-            this.subecjtName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.subecjtName.HeaderText = "Subject Name";
-            this.subecjtName.Name = "subecjtName";
-            this.subecjtName.ReadOnly = true;
-            // 
-            // lang
-            // 
-            this.lang.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.lang.DataSource = this.languagesBindingSource;
-            this.lang.DisplayMember = "NAME";
-            this.lang.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.lang.HeaderText = "Language";
-            this.lang.Name = "lang";
-            this.lang.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.lang.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.lang.ValueMember = "NAME";
-            this.lang.Width = 97;
-            // 
-            // delete
-            // 
-            this.delete.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.delete.HeaderText = "";
-            this.delete.Image = global::TwitterCollector.Properties.Resources.X;
-            this.delete.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.delete.Name = "delete";
-            this.delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.delete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.delete.Width = 19;
             // 
             // SubjectManager
             // 

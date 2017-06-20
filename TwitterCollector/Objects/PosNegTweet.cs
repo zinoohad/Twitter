@@ -10,6 +10,8 @@ namespace TwitterCollector.Objects
     {
         public string ID;
 
+        public long UserID;
+
         public int PositiveEmoticons;
 
         public int NegativeEmoticons;

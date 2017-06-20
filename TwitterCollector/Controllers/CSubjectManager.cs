@@ -58,6 +58,12 @@ namespace TwitterCollector.Controllers
             else
             {
                 if (CurrentSubject.Keywords.Where(k => k.Name.ToLower().Equals(keyword.ToLower())).ToList().Count > 0) return;   // The keyword already exists
+                try
+                {
+                }
+                catch (Exception e)
+                {
+                }
                 int keywordID = db.AddRemoveKeyword(Common.Action.ADD, CurrentSubject.ID, 0, keyword,CurrentSubject.LanguageID); //Save keyword in DB
                 CurrentSubject.Keywords.Add(new KeywordO(keywordID, keyword));
                 form.AddKeywordToGrid(keyword,CurrentSubject.LanguageName);
@@ -161,10 +167,16 @@ namespace TwitterCollector.Controllers
         #endregion
 
         #region Implement Methods
+        public override Form GetUI(UiState state)
+        {
+            return form;
+        }
+
         public override Form GetUI()
         {
             return form;
         }
+
         public override void ToolStripAction(string buttonName)
         {
             Global.ToolStripAction(buttonName, this);

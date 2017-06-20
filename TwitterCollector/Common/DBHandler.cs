@@ -235,7 +235,7 @@ namespace TwitterCollector.Common
             return db.Select(query); 
         }
 
-        private long Update(string query, params object[] args) 
+        public long Update(string query, params object[] args) 
         {
             query = string.Format(query, args);
             return db.Update(query); 
@@ -285,6 +285,21 @@ namespace TwitterCollector.Common
 
         }
 
+        public bool SetSingleValue(string tableName, string columnName, string whereStatment, object value)
+        {
+            try
+            {
+                string sqlQuery = string.Format("UPDATE {0} SET {1} = {2} WHERE {3}", tableName, columnName, value, whereStatment);
+                db.Update(sqlQuery);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
         public DataTable GetTable(string tableName, string where = null, string orderBy = null)
         {
             string sqlQuery = string.Format("SELECT * FROM {0}", tableName);
@@ -318,7 +333,7 @@ namespace TwitterCollector.Common
         
         #endregion
 
-        #region Select
+         #region Select
 
         #region Twitter
 
@@ -509,7 +524,12 @@ namespace TwitterCollector.Common
             }
             return topUsers;
         }
-        
+
+        public void UnlockAllUsers()
+        {
+            Update("UPDATE Users SET IsLocked = 0 WHERE IsLocked = 1");
+        }
+
         #endregion
 
         #region TweetPosNeg
@@ -540,10 +560,15 @@ namespace TwitterCollector.Common
 
             int selectQueryPercent = int.Parse(GetValueByKey("SelectQueryPercent", 5).ToString());
 
-            if(threadType == ThreadType.SENTIMENT_ANALYSIS)
-                query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NOT NULL AND SentementAnalysisRank IS NULL AND RetweetID IS NULL AND Language = 'en' ORDER BY newid()", top, selectQueryPercent);
+            if (threadType == ThreadType.SENTIMENT_ANALYSIS)
+                query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NOT NULL AND SentementAnalysisRank IS NULL AND RetweetID IS NULL AND Language = {1} ORDER BY newid()", top, Global.MainLanguageCode);
             else
-                query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NULL AND RetweetID IS NULL AND Language = 'en' ORDER BY newid()", top, selectQueryPercent);
+                query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NULL AND RetweetID IS NULL AND Language = {1} ORDER BY newid()", top, Global.MainLanguageCode);
+
+            //if(threadType == ThreadType.SENTIMENT_ANALYSIS)
+            //    query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NOT NULL AND SentementAnalysisRank IS NULL AND RetweetID IS NULL AND Language = 'en' ORDER BY newid()", top, selectQueryPercent);
+            //else
+            //    query = string.Format("SELECT TOP {0} * FROM Tweets WHERE Rank IS NULL AND RetweetID IS NULL AND Language = 'en' ORDER BY newid()", top, selectQueryPercent);
 
             DataTable dt = Select(query);
             if (dt != null && dt.Rows.Count > 0)
@@ -560,7 +585,7 @@ namespace TwitterCollector.Common
         {
             List<Tweet> tweets = new List<Tweet>();            
             //DataTable dt = Select("SELECT * FROM Tweets WHERE Rank IS NULL AND Language = 'en' AND UserID = {0}", userID);
-            DataTable dt = Select("SELECT * FROM ViewTweetsConnectToSubject WHERE Rank IS NULL AND Language = 'en' AND UserID = {0}", userID);
+            DataTable dt = Select("SELECT * FROM ViewTweetsConnectToSubject WHERE Rank IS NULL AND Language = {1} AND UserID = {0}", userID, Global.MainLanguageCode);
             if (dt != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
@@ -582,7 +607,7 @@ namespace TwitterCollector.Common
             int topUsers = int.Parse(GetValueByKey("TopUsersForPosNegAnalysis", 25).ToString());
 
             //string query = string.Format("SELECT TOP {0} ID FROM Users WHERE Language = 'en' AND HasAllHistory = 'True' AND AlreadyChecked = 'False' AND IsLocked = 'False' ORDER BY newid()", topUsers);
-            string query = string.Format("SELECT TOP {0} UserID FROM ViewTweetsConnectToSubject WHERE UserLanguage = 'en' AND UserHasAllHistory = 'True' AND UserAlreadyChecked = 'False' AND UserIsLocked = 'False' ORDER BY newid()", topUsers);
+            string query = string.Format("SELECT TOP {0} UserID FROM ViewTweetsConnectToSubject WHERE UserLanguage = {1} AND UserHasAllHistory = 'True' AND UserAlreadyChecked = 'False' AND UserIsLocked = 'False' GROUP BY UserID ORDER BY newid()", topUsers, Global.MainLanguageCode);
             DataTable dt = Select(query);
             foreach (DataRow dr in dt.Rows)
             {
@@ -622,6 +647,36 @@ namespace TwitterCollector.Common
             string orJoin = string.Join(" OR ", splitSentence);
             string sqlQuery = string.Format("SELECT * FROM DictionaryPositiveNegative WHERE IsEmoticon = 1 AND ({0})", orJoin);
             return Select(sqlQuery);
+        }
+
+        #endregion
+
+        #region User Pos Neg
+
+        public List<long> GetUsersForFastPosNegAnalysis(bool lockRecords = false)
+        {
+            List<long> users = new List<long>();
+            int topUsers = int.Parse(GetValueByKey("TopUsersForPosNegAnalysis", 25).ToString());
+            string query = string.Format("SELECT A.UserID FROM (" +
+                "SELECT TOP {0} UserID FROM ViewTweetsConnectToSubject WHERE UserLanguage = {1} AND UserHasAllHistory = 'True' AND UserAlreadyChecked = 'False' AND UserIsLocked = 'False' GROUP BY UserID ORDER BY newid() ) A " +
+                "LEFT OUTER JOIN UserProperties B ON A.UserID = B.UserID " +
+                "WHERE B.PositiveNegativeRank IS NULL AND B.ImageAnalysisAgeConfidence IS NOT NULL", topUsers, Global.MainLanguageCode);            
+            DataTable dt = Select(query);
+            foreach (DataRow dr in dt.Rows)
+            {
+                users.Add((long)dr["UserID"]);
+            }
+
+            if (lockRecords && users.Count > 0)
+            {
+                Update("UPDATE Users SET IsLocked = 'True' WHERE ID IN ({0})", string.Join(",", users.ToArray()));
+            }
+            return users;
+        }
+
+        public void AnalyzeUser(PosNegTweet posNegTweet)
+        {
+            Update("UPDATE UserProperties SET PositiveNegativeRank = {0} WHERE UserID = {1}", posNegTweet.LocalRank, posNegTweet.UserID);
         }
 
         #endregion
@@ -859,6 +914,49 @@ namespace TwitterCollector.Common
 
         #endregion
 
+        #region TweetinviHelper
+
+        public List<string> GetUncheckedPlaces()
+        {
+            DataTable dt = Select("SELECT PlaceID FROM Places WHERE PlaceMainCountry IS NULL");
+            List<string> uncheckedPlaces = new List<string>();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                uncheckedPlaces = dt.AsEnumerable().Select(r => r.Field<string>("PlaceID")).ToList();
+            }
+            return uncheckedPlaces;
+        }
+
+        #endregion
+
+        #region Main Controller
+
+        public SubjectResultUI GetMainResults()
+        {
+            SubjectResultUI subjectResult = new SubjectResultUI();
+            subjectResult.SubjectKeywordsTweetCount = new Dictionary<string, List<KeywordO>>();
+
+            DataTable dt = Select("SELECT * FROM ViewActiveSubjects ORDER BY ID");
+            DataView view = new DataView(dt);
+            DataTable distinctValues = view.ToTable(true, "Subject");
+            subjectResult.Subjects = distinctValues.AsEnumerable().Select(r => r.Field<string>("Subject")).ToList();
+
+            foreach (string subject in subjectResult.Subjects)
+            {
+                DataRow[] Rows = dt.Select(string.Format("Subject = '{0}'", subject));
+                List<KeywordO> keywords = new List<KeywordO>();
+                foreach (DataRow dr in Rows)
+                {
+                    keywords.Add(new KeywordO() { Name = dr["Keyword"].ToString(), 
+                        RelatedTweetsCount = int.Parse(dr["RelatedTweetsCount"].ToString())});
+                }
+                subjectResult.SubjectKeywordsTweetCount.Add(subject, keywords);
+            }
+            return subjectResult;
+        }
+
+        #endregion
+
         #endregion
 
         #region Insert
@@ -884,7 +982,15 @@ namespace TwitterCollector.Common
                 else IncUsersCount();
                 return userID;
             }
-            catch (Exception e) { new TwitterException(e); return userID; }
+            catch (Exception e) 
+            { 
+                if(e.Message.StartsWith("String or binary data would be truncated."))
+                {
+
+                }
+                new TwitterException(e); 
+                return userID; 
+            }
         }
 
         public void SaveTweet(Tweet tweet, List<int> keywordID = null)
@@ -900,6 +1006,10 @@ namespace TwitterCollector.Common
             // Insert User if not exists
             if (!UserAlreadyExists(tweet.user.ID))
             {
+                if (string.IsNullOrEmpty(tweet.user.Name))
+                {
+                    tweet.user = twitter.GetUserProfile("", tweet.user.ID);
+                }
                 userID = InsertUser(tweet.user);
             }
             else userID = tweet.user.ID;
@@ -1013,7 +1123,15 @@ namespace TwitterCollector.Common
             {
                 try
                 {
-                    Place metaData = twitter.GetPlaceMetaData(place.url);
+                    Place metaData;
+                    try
+                    {
+                        metaData = twitter.GetPlaceMetaData(place.url);
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }                   
                     object tmpResult = GetSingleValue("Places", "ID", string.Format("PlaceID = '{0}'", place.id));
                     if (tmpResult == null)
                     {
@@ -1054,7 +1172,7 @@ namespace TwitterCollector.Common
                 DateTime createdAt = DateTime.ParseExact(tweet.Date, TwitterDateTemplate, new System.Globalization.CultureInfo("en-US"));
                 tweetID = (long)Insert(string.Format(@"INSERT INTO Tweets (ID,Date,Text,Language,RetweetCount,FavoritesCount,UserID,PlaceID,TweetLength,HasHashtags,SubjectKeyword,RetweetID) "+
                               "VALUES ({0},'{1}',{2},'{3}',{4},{5},{6},{7},{8},'{9}',{10},{11})"
-                    , tweet.ID, createdAt.ToString("yyyy-MM-dd HH:mm:ss"), ReplaceQuote(tweet.Text), tweet.Language, tweet.RetweetCount, tweet.FavoritesCount, userID, placeID == null ? "NULL" : placeID.ToString(),
+                    , tweet.ID, createdAt.ToString("yyyy-MM-dd HH:mm:ss"), ReplaceQuote(tweet.GetTextReplaced()), tweet.Language, tweet.RetweetCount, tweet.FavoritesCount, userID, placeID == null ? "NULL" : placeID.ToString(),
                                 tweet.Text.Length, hasHashtag.ToString(), "NULL", tweet.retweeted_status == null ? "NULL" : tweet.retweeted_status.ID.ToString()),true);
                 if (tweetID == 0)
                 {
@@ -1070,8 +1188,9 @@ namespace TwitterCollector.Common
             }
             catch(Exception e) 
             { 
-                if(!e.Message.StartsWith("Violation of PRIMARY KEY"))
-                new TwitterException(e); 
+                if(!e.Message.StartsWith("Violation of PRIMARY KEY") && 
+                    !e.Message.StartsWith("The INSERT statement conflicted with the FOREIGN KEY constraint"))
+                        new TwitterException(e); 
                 tweetID = tweet.ID; 
             }
             return tweetID;
@@ -1096,7 +1215,7 @@ namespace TwitterCollector.Common
                     }
                     catch (Exception e) 
                     { 
-                        if(!e.Message.StartsWith("Violation of PRIMARY KEY"))
+                        if(!e.Message.StartsWith("Violation of PRIMARY KEY") && !e.Message.StartsWith("The INSERT statement conflicted with the FOREIGN KEY constraint"))
                             new TwitterException(e); 
                     }
                 }
@@ -1193,11 +1312,11 @@ namespace TwitterCollector.Common
             return;
             // TODO: Delete all other rows
             // TODO: Save score for all the retweets 
-            DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", tweet.id_str));
-            string[] ids = dt.AsEnumerable()
-                            .Select(row => row["ID"].ToString())
-                            .ToArray();
-            Update(string.Format("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID IN ({2})", score, confidence, string.Join(",", ids)));           
+            //DataTable dt = Select(string.Format("SELECT ID FROM Tweets WHERE ID = {0} OR RetweetID = {0}", tweet.id_str));
+            //string[] ids = dt.AsEnumerable()
+            //                .Select(row => row["ID"].ToString())
+            //                .ToArray();
+            //Update(string.Format("UPDATE Tweets SET SentementAnalysisRank = '{0}', SentementAnalysisConfidence = {1} WHERE ID IN ({2})", score, confidence, string.Join(",", ids)));           
         }
 
         public void LearnNewPosNegWord(object obj)
@@ -1336,6 +1455,15 @@ namespace TwitterCollector.Common
         public void UpdateThreadDesirableState(int processID, string threadState)
         {
             Update("UPDATE ThreadsControl SET ThreadDesirableState = '{0}' WHERE ThreadProcessID = {1} AND MachineName = '{2}'", threadState, processID, Environment.MachineName);
+        }
+
+        #endregion
+
+        #region TweetinviHelper
+
+        public void UpdatePlaceValues(string placeID, string stateName, string postalCode)
+        {
+            Update("UPDATE Places SET PlaceMainCountry = '{0}', MainCountryPostalCode = '{1}' WHERE PlaceID = '{2}'",stateName,postalCode,placeID);
         }
 
         #endregion

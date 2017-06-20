@@ -24,5 +24,9 @@ namespace TwitterCollector.Objects
         public Dictionary<string, double> AgeDivision;
 
         public Dictionary<string, double> GenderDivision;
+
+        public List<string> Subjects;
+
+        public Dictionary<string, List<KeywordO>> SubjectKeywordsTweetCount;
     }
 }

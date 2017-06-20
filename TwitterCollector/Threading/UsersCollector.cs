@@ -36,8 +36,9 @@ namespace TwitterCollector.Threading
             {
                 try
                 {
+                    db.UnlockAllUsers();
                     keywords = db.GetSubjectKeywordsList(subjectID);
-
+                    
                     // Run stream thread
                     if (streamThread == null || !streamThread.IsAlive) (streamThread = new Thread(new ThreadStart(this.ManageOnStream))).Start();
                     StartToCollect();

@@ -25,6 +25,10 @@ namespace Twitter
     
         private string OAuthConsumerKey { get; set; }
 
+        private string OAuthAccessToken { get; set; }
+
+        private string OAuthAccessTokenSecret { get; set; }
+
         private const string serviceAddress = "https://api.twitter.com/1.1";    //Twitter API Address
 
         private JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -33,12 +37,15 @@ namespace Twitter
 
         private readonly HMACSHA1 sigHasher;
 
+        private readonly DateTime epochUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         #endregion
 
         public TwitterAPI()
         {           
             OAuthConsumerKey = ConfigurationSettings.AppSettings["OAuthConsumerKey"];
             OAuthConsumerSecret = ConfigurationSettings.AppSettings["OAuthConsumerSecret"];
+            sigHasher = new HMACSHA1(new ASCIIEncoding().GetBytes(string.Format("{0}&{1}", OAuthConsumerKey, OAuthConsumerSecret)));
         }
 
         public TwitterAPI(string OAuthConsumerKey, string OAuthConsumerSecret)
@@ -53,8 +60,11 @@ namespace Twitter
         {
             this.OAuthConsumerSecret = twitterKey.OAuthConsumerSecret;
             this.OAuthConsumerKey = twitterKey.OAuthConsumerKey;
+            this.OAuthAccessToken = twitterKey.AccessKey;
+            this.OAuthAccessTokenSecret = twitterKey.AccessSecret;
 
-            sigHasher = new HMACSHA1(new ASCIIEncoding().GetBytes(string.Format("{0}&{1}", OAuthConsumerKey, OAuthConsumerSecret)));
+            //sigHasher = new HMACSHA1(new ASCIIEncoding().GetBytes(string.Format("{0}&{1}", Uri.EscapeDataString(OAuthConsumerKey), Uri.EscapeDataString(OAuthConsumerSecret))));
+            sigHasher = new HMACSHA1(new ASCIIEncoding().GetBytes(string.Format("{0}&{1}", Uri.EscapeDataString(OAuthConsumerSecret), Uri.EscapeDataString(OAuthAccessTokenSecret))));
         }
 
         #region Global Functions
@@ -78,20 +88,20 @@ namespace Twitter
             return item["access_token"];
         }
 
-        public string GetAccessTokenOauth1()
+        public void GetAccessTokenOauth1(ref Dictionary<string, string> data)
         {
-            var httpClient = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.twitter.com/oauth1/token");
-            var customerInfo = Convert.ToBase64String(new UTF8Encoding().GetBytes(OAuthConsumerKey + ":" + OAuthConsumerSecret));
-            request.Headers.Add("Authorization", "Basic " + customerInfo);
-            request.Content = new StringContent("grant_type=app", requestEncoding, "application/x-www-form-urlencoded");
 
-            HttpResponseMessage response = httpClient.SendAsync(request).Result;
-
-            string json = response.Content.ReadAsStringAsync().Result;
-            var serializer = new JavaScriptSerializer();
-            dynamic item = serializer.Deserialize<object>(json);
-            return item["access_token"];
+            // Timestamps are in seconds since 1/1/1970.
+            var timestamp = (int)((DateTime.UtcNow - epochUtc).TotalSeconds);
+            var oauth_nonce = Convert.ToBase64String(new ASCIIEncoding().GetBytes(DateTime.Now.Ticks.ToString()));
+            // Add all the OAuth headers we'll need to use when constructing the hash.
+            data.Add("oauth_consumer_key", OAuthConsumerKey);
+            data.Add("oauth_signature_method", "HMAC-SHA1");
+            data.Add("oauth_timestamp", timestamp.ToString());  
+            data.Add("oauth_nonce", oauth_nonce); // Required, but Twitter doesn't appear to use it, so "a" will do.
+            data.Add("oauth_version", "1.0");
+            data.Add("oauth_token", OAuthAccessToken);
+            
         }
 
         /// <summary>
@@ -104,10 +114,7 @@ namespace Twitter
         {
             if (accessToken == null)
             {
-                if(Oauth2)
-                    accessToken = GetAccessTokenOauth2();
-                else
-                    accessToken = GetAccessTokenOauth1();
+                accessToken = GetAccessTokenOauth2();              
             }
 
             var requestUserTimeline = new HttpRequestMessage(HttpMethod.Get, requestUri);
@@ -118,13 +125,36 @@ namespace Twitter
             return jsonStr;
         }
 
-        private string PostRequest(string requestUri)
+        private string PostRequest(string requestUri, Dictionary<string, string> data = null)
         {
+            if (data == null)
+                data = new Dictionary<string, string>();
+
+            GetAccessTokenOauth1(ref data);
+
+            // Generate the OAuth signature and add it to our payload.
+            data.Add("oauth_signature", GenerateSignature(requestUri, data));
+                
+            // Build the OAuth HTTP Header from the data.
+            string oAuthHeader = GenerateOAuthHeader(data);
+
+            // Build the form data (exclude OAuth stuff that's already in the header).
+            var formData = new FormUrlEncodedContent(data.Where(kvp => !kvp.Key.StartsWith("oauth_")));
+
+            using (var http = new HttpClient())
+            {
+                http.DefaultRequestHeaders.Add("Authorization", oAuthHeader);
+
+                var httpResp = http.GetAsync(requestUri).Result;
+                var respBody = httpResp.Content.ReadAsStringAsync();
+
+            }
 
             var requestUserTimeline = new HttpRequestMessage(HttpMethod.Post, requestUri);
-            requestUserTimeline.Headers.Add("Authorization", "Bearer " + accessToken);
+            requestUserTimeline.Headers.Add("Authorization", oAuthHeader);
+            requestUserTimeline.Headers.Add("ContentType", "application/x-www-form-urlencoded");
             var httpClient = new HttpClient();
-            HttpResponseMessage responseUserTimeLine = httpClient.SendAsync(requestUserTimeline).Result;
+            HttpResponseMessage responseUserTimeLine = httpClient.PostAsync(requestUri, formData).Result;
             string jsonStr = responseUserTimeLine.Content.ReadAsStringAsync().Result;
             return jsonStr;
         }
@@ -134,12 +164,19 @@ namespace Twitter
         /// </summary>
         string GenerateSignature(string url, Dictionary<string, string> data)
         {
+            //var sigString = string.Join(
+            //    "&",
+            //    data
+            //        .Union(data)
+            //        .Select(kvp => string.Format("{0}={1}", Uri.EscapeDataString(kvp.Key), Uri.EscapeDataString(kvp.Value)))
+            //        .OrderBy(s => s)
+            //);
+
             var sigString = string.Join(
                 "&",
                 data
                     .Union(data)
                     .Select(kvp => string.Format("{0}={1}", Uri.EscapeDataString(kvp.Key), Uri.EscapeDataString(kvp.Value)))
-                    .OrderBy(s => s)
             );
 
             var fullSigData = string.Format(
@@ -148,8 +185,8 @@ namespace Twitter
                 Uri.EscapeDataString(url),
                 Uri.EscapeDataString(sigString.ToString())
             );
-
-            return Convert.ToBase64String(HMACSHA1.ComputeHash(new ASCIIEncoding().GetBytes(fullSigData.ToString())));
+            string returnValue = Convert.ToBase64String(sigHasher.ComputeHash(new ASCIIEncoding().GetBytes(fullSigData.ToString())));
+            return returnValue;
         }
 
         /// <summary>
@@ -158,7 +195,7 @@ namespace Twitter
         string GenerateOAuthHeader(Dictionary<string, string> data)
         {
             return "OAuth " + string.Join(
-                ", ",
+                ",",
                 data
                     .Where(kvp => kvp.Key.StartsWith("oauth_"))
                     .Select(kvp => string.Format("{0}=\"{1}\"", Uri.EscapeDataString(kvp.Key), Uri.EscapeDataString(kvp.Value)))
@@ -174,7 +211,7 @@ namespace Twitter
         {
             try
             {
-                string json = GetRequest(URL,false);
+                string json = PostRequest(URL);
                 return JsonConvert.DeserializeObject<Place>(json);
             }
             catch (Exception)
@@ -200,9 +237,9 @@ namespace Twitter
             List<Tweet> t = new List<Tweet>();
             string requestUri, requestUriWithCursor, jsonStr;
             if (userID == null)
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userName);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&screen_name={1}&trim_user=1&exclude_replies=1&contributor_details=1&include_rts=1", countPerPage, userName);
             else
-                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1", countPerPage, userID);
+                requestUri = string.Format(serviceAddress + "/statuses/user_timeline.json?count={0}&user_id={1}&trim_user=1&exclude_replies=1&contributor_details=1&include_rts=1", countPerPage, userID);
             try
             {
                 jsonStr = GetRequest(requestUri);

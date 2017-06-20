@@ -96,6 +96,9 @@ namespace TwitterCollector.Threading
             //Start ImageAnalysis thread
             AddThread(0, new ImageAnalysis());
 
+            // Start UserPosNeg thread, the fastest version of TweetPosNeg, write to db just the User result.
+            AddThread(0, new UserPosNeg());
+
             Global.settings.LoadThreadsTable();
         }
 
@@ -188,7 +191,7 @@ namespace TwitterCollector.Threading
                         gtp.Thread.Start();
                         UpdateUIThreadState(gtp.Thread.ThreadProcessID, gtp.Name, subjectID, SupervisorThreadState.Running);
                     }
-                    else if (drs[0]["ThreadDesirableState"].ToString().Equals("Stop") && gtp.Thread.ThreadState == System.Threading.ThreadState.Running)
+                    else if (drs[0]["ThreadDesirableState"].ToString().Equals("Stop") && ( gtp.Thread.ThreadState == System.Threading.ThreadState.Running || gtp.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin ))
                     {
                         // Stop the thread
                         gtp.Thread.Abort();
